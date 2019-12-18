@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
+@import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:100,100i,300,300i,400,400i,500,500i,700,700i,800,800i,900,900i');
+
+/*
+ *
+ *   BDTASK - Responsive Admin Theme
+ *   version 1.0
+ *
+*/
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.main-footer {
+    background: #fff;
+    padding: 15px;
+    color: #444;
+    border-top: 1px solid #d2d6de;
+}
+
+
+/* General Links */
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+a:hover,
+a:active,
+a:focus {
+    outline: none;
+    text-decoration: none;
+    color: #000;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+hr {
+    border-top: 1px solid #e1e6ef;
+}
+
+
+/*--- Component: Main Header ---*/
+
+
+.main-header .navbar {
+    -webkit-transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.3s ease-in-out;
+    margin-bottom: 0;
+    margin-left: 250px;
+    border: none;
+    min-height: 60px;
+    border-radius: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #e1e6ef;
+}
+
+
+.main-header .navbar-custom-menu,
+.main-header .navbar-right {
+    float: right;
+    margin-right: 25px;
+}
+
+
+.main-header .logo {
+    display: block;
+    float: left;
+    height: 60px;
+    font-size: 20px;
+    line-height: 60px;
+    text-align: center;
+    width: 250px;
+    padding: 0 15px;
+    font-weight: 300;
+    overflow: hidden;
+    background-color: #9a12b3;
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    -webkit-transition: width 0.3s ease-in-out;
+    transition: width 0.3s ease-in-out;
+}
+
+.main-header .logo .logo-lg {
+    display: block;
+}
+
+.main-header .logo .logo-lg img,
+.main-header .logo .logo-mini img {
+    height: 42px;
+}
+
+.main-header .logo .logo-mini {
+    display: none;
+}
+
+.main-header .navbar-brand {
+    color: #fff;
+}
+
+
+
+/*** Portfolio page
+==============================================================================*/
+
+.card {
+    margin-bottom: 20px;
+}
+
+
+.rating-block,
+.review-block {
+    background-color: #fff;
+    border: 1px solid #e1e6ef;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.review-block {
+    margin-bottom: 20px;
+}
+
+.review-block-img img {
+    height: 100px;
+    width: 125px;
+}
+
+

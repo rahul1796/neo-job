@@ -1,0 +1,22 @@
+<!-- BEGIN VENDOR CSS-->
+@import url("<?php echo base_url('adm-assets/css/bootstrap.min.css')?>");
+<!-- font icons-->
+@import url("<?php echo base_url('adm-assets/fonts/icomoon.css')?>");
+@import url("<?php echo base_url('adm-assets/fonts/flag-icon-css/css/flag-icon.min.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/sliders/slick/slick.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/extensions/pace.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/file-uploaders/dropzone.min.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/charts/jquery-jvectormap-2.0.3.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/charts/morris.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/extensions/unslider.css')?>");
+@import url("<?php echo base_url('adm-assets/vendors/css/weather-icons/climacons.min.css')?>");
+<!-- END VENDOR CSS-->
+<!-- BEGIN ROBUST CSS-->
+@import url("<?php echo base_url('adm-assets/css/bootstrap-extended.min.css')?>");
+@import url("<?php echo base_url('adm-assets/css/app.min.css')?>");
+@import url("<?php echo base_url('adm-assets/css/colors.min.css')?>");
+<!-- END ROBUST CSS-->
+<!-- BEGIN Page Level CSS-->
+@import url("<?php echo base_url('adm-assets/css/core/menu/menu-types/vertical-content-menu.min.css')?>");
+@import url("<?php echo base_url('adm-assets/css/core/menu/menu-types/vertical-overlay-menu.min.css')?>");
+

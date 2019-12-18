@@ -1,0 +1,11 @@
+/.idea
+/.svn
+/application/config/database.php
+/application/cache
+/documents/
+/application/logs
+/db_backup
+/nbproject/private/
+/nbproject
+/uploads/
+web.config
