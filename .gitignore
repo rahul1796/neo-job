@@ -8,4 +8,6 @@
 /nbproject/private/
 /nbproject
 /uploads/
+.htaccess
+/application/config/config.php
 web.config
