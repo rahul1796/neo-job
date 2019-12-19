@@ -10,6 +10,7 @@ class Employer_model extends CI_Model
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->helper('role_helper');
 	}
 
 	/**
@@ -1105,12 +1106,24 @@ class Employer_model extends CI_Model
                     foreach ($result_recs->result() as $customer) {
                             $row = array();
                             $slno++;
-							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a><a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
-								if (trim($customer->file_name)!='')
-									$ActionColumn .= '<a class="btn btn-warning btn-sm" href="'. base_url(). CUSTOMER_DOCUMENT_PATH .$customer->file_name.'" target="_blank" title="Download Commercial Document" style="margin-left:5px;"><i class="fa fa-download" ></i></a>';
-									if($customer->is_paid){
-											$ActionColumn .= "<button class='btn btn-warning btn-sm' onclick='showCommercialModal({$customer->id})' title='View Commercials' style='margin-left:5px;'><i class='fa fa-rupee' ></i></button>";
+							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a>';
+							 if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
+							{
+							 $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';		
+							}
+							 if (trim($customer->file_name)!='')
+							{
+								$ActionColumn .= '<a class="btn btn-warning btn-sm" href="'. base_url(). CUSTOMER_DOCUMENT_PATH .$customer->file_name.'" target="_blank" title="Download Commercial Document" style="margin-left:5px;"><i class="fa fa-download" ></i></a>';
+							}
+									
+							if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_commercial_view_roles()))
+							{
+								if($customer->is_paid)
+									{
+									  $ActionColumn .= "<button class='btn btn-warning btn-sm' onclick='showCommercialModal({$customer->id})' title='View Commercials' style='margin-left:5px;'><i class='fa fa-rupee' ></i></button>";
 									}
+							}
+									
 
 
                             $row[] = $slno;
