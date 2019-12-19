@@ -389,7 +389,7 @@ function jobBoard_list_inner_content(resp,colcount)
                   {
                         job_list_html += '<img src="'+base_url+'/adm-assets/images/position_filled.png" height="120" width="250">';
                         
-                        job_list_html += '<a class="btn btn-info" style="margin-bottom: -109px; width: 271px; margin-left: -89%;"  href="'+site_url+'/Pramaan/candidate_joined_jobwise/'+b.id+'">Joined Candidates ('+b.joined_candidates+')</a>';
+                        //job_list_html += '<a class="btn btn-info" style="margin-bottom: -109px; width: 271px; margin-left: -89%;"  href="'+site_url+'/Pramaan/candidate_joined_jobwise/'+b.id+'">Joined Candidates ('+b.joined_candidates+')</a>';
                      
                   }             
             job_list_html += '  </div> ';
