@@ -3,20 +3,22 @@
       <div class="card" style="margin-top: 35px; padding: 16px;">
         <div class="card-body">
           <h5 class="card-title">Job Details</h5>
-          <?php if(strtoupper($this->uri->segment(2))!= strtoupper('candidate_joined_jobwise')):?>
-          <a href="<?php echo base_url('/Pramaan/candidate_joined_jobwise/'.$job_id) ;?>" class="btn btn-info btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Joined Candidates</a>
-          <?php endif; ?>
-          <?php if(strtoupper($this->uri->segment(2))!= strtoupper('appliedCandidates')):?>
-          <a href="<?php echo base_url('/candidatescontroller/appliedCandidates/'.$job_id) ;?>" class="btn btn-success btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Applied Candidates</a>
-          <?php endif; ?>
-          <?php if(strtoupper($this->uri->segment(2))!= strtoupper('suggestedCandidates')):?>
-          <a href="<?php echo base_url('/candidatescontroller/suggestedCandidates/'.$job_id) ;?>" class="btn btn-primary btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Recommended Candidates</a>
-          <?php endif; ?>
-          <?php if(strtoupper($this->uri->segment(2))!= strtoupper('mtoCandidates')):?>
-          <a href="<?php echo base_url('/candidatescontroller/mtoCandidates/'.$job_id) ;?>" class="btn btn-warning btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">MTO Candidates</a>
-          <?php endif; ?>
-          <?php if(strtoupper($this->uri->segment(2))!= strtoupper('allCandidates')):?>
-          <a href="<?php echo base_url('/candidatescontroller/allCandidates/'.$job_id) ;?>" class="btn btn-danger btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Non Matching Candidates</a>
+          <?php if($is_filled): ?>
+            <?php if(strtoupper($this->uri->segment(2))!= strtoupper('candidate_joined_jobwise')):?>
+            <a href="<?php echo base_url('/Pramaan/candidate_joined_jobwise/'.$job_id) ;?>" class="btn btn-info btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Joined Candidates</a>
+            <?php endif; ?>
+            <?php if(strtoupper($this->uri->segment(2))!= strtoupper('appliedCandidates')):?>
+            <a href="<?php echo base_url('/candidatescontroller/appliedCandidates/'.$job_id) ;?>" class="btn btn-success btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Applied Candidates</a>
+            <?php endif; ?>
+            <?php if(strtoupper($this->uri->segment(2))!= strtoupper('suggestedCandidates')):?>
+            <a href="<?php echo base_url('/candidatescontroller/suggestedCandidates/'.$job_id) ;?>" class="btn btn-primary btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Recommended Candidates</a>
+            <?php endif; ?>
+            <?php if(strtoupper($this->uri->segment(2))!= strtoupper('mtoCandidates')):?>
+            <a href="<?php echo base_url('/candidatescontroller/mtoCandidates/'.$job_id) ;?>" class="btn btn-warning btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">MTO Candidates</a>
+            <?php endif; ?>
+            <?php if(strtoupper($this->uri->segment(2))!= strtoupper('allCandidates')):?>
+            <a href="<?php echo base_url('/candidatescontroller/allCandidates/'.$job_id) ;?>" class="btn btn-danger btn-min-width mr-1 mb-1" style="float: right; margin-top: -41px;">Non Matching Candidates</a>
+            <?php endif; ?>
           <?php endif; ?>
           <div class="form-group row" style="margin-top: 20px;">
             <div class="col-md-6">
