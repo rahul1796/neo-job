@@ -83,7 +83,7 @@
                                                 <option value="4">Managed By</option>
                                                 <option value="5">Spoc Name</option>
                                                 <option value="6">Spoc Email</option>
-                                                <option value="7">Spoc Phone</option>                                        
+                                                <option value="7">Spoc Phone</option>
                                                 <option value="8">State</option>
                                                 <option value="9">Source</option>
                                             </select>
@@ -128,7 +128,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                              <div class="hidden" id="spoc_name_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_name_list" name="spoc_name_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Name</option>
@@ -137,7 +137,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <div class="hidden" id="spoc_email_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_email_list" name="spoc_email_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Email</option>
@@ -146,7 +146,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <div class="hidden" id="spoc_phone_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_phone_list" name="spoc_phone_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Phone</option>
@@ -155,13 +155,13 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <label id="lblsearchbox" style="color:red; display: none;margin-left: 12%;">* Please Enter Search Value</label>
 
                                            </div>
                                       </div>
                                     <label id="lblSearchError" style="color:red;display:block ;margin-left: 120px;  float: left; margin-top: 63px;"></label>
-                                </div>                            
+                                </div>
                                 <div class="text-center hidden" style="margin-bottom: 18px;  margin-left: 670px;  margin-top: -55px;" name="search_btn" id="search_btn">
                                         <a class="btn btn-primary btn-md" id="btn_search" onclick="btnSearch_OnClick()" style="color: white; cursor: pointer;"><i class="fa fa-search "></i> Search</a>
                                         <Button type="button" onclick="window.location.reload();" class="btn btn-secondary btn-md "> Clear Search</Button>
@@ -182,7 +182,7 @@
                                     <th>Managed By</th>
 				    <th>SPOC Name</th>
                                     <th>SPOC Email</th>
-                                    <th>SPOC Phone</th>                                    
+                                    <th>SPOC Phone</th>
                                     <th>State</th>
                                     <th>District</th>
                                     <th>Business Probability (%)</th>
@@ -310,12 +310,12 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('adm-assets/datetimepicker/css/bootstrap-datetimepicker.css')?>">
 <script src="<?php echo base_url().'adm-assets/datetimepicker/js/bootstrap-datetimepicker.js'?>" type="text/javascript"></script>
 <script>
-    $(document).ready(function(){        
+    $(document).ready(function(){
         $('#search_by').on('change', function(){
             $('#lblSearchError').html('');
         });
     });
-    var varTable;    
+    var varTable;
     function searchby_onchange(varSearchByValue)
     {
         if (varSearchByValue=='0')
@@ -326,21 +326,21 @@
         //lert(varSearchByValue);
         $("#business_vertical_id").val('0');
         $("#customer_list").selectedIndex = "0";
-        $("#lead_managed_by_id").selectedIndex = "0"; 
+        $("#lead_managed_by_id").selectedIndex = "0";
         $("#spoc_name_list").selectedIndex = "0";
         $("#spoc_email_list").selectedIndex = "0";
         $("#spoc_phone_list").selectedIndex = "0";
         $("#status_id").val('0');
         $("#state_id").val('0');
         $("#source_id").val('0');
-        $("#searchbox").val('');  
+        $("#searchbox").val('');
     }
-    
+
     function LoadTableData()
     {
         var varSearchTypeId = $("#search_by").val(),
-            varSearchValue = $("#searchbox").val();  
-    
+            varSearchValue = $("#searchbox").val();
+
         switch(varSearchTypeId)
         {
             case "1":
@@ -349,41 +349,41 @@
             case "2":
                 varSearchValue = $("#business_vertical_id").val();
                 break;
-                
+
             case "3":
                 varSearchValue = $("#status_id").val();
                 break;
-                
+
             case "4":
                 varSearchValue = $("#lead_managed_by_id option:selected").text();
                 break;
-                
+
             case "5":
             varSearchValue = $("#spoc_name_list option:selected").text();
             break;
-            
+
              case "6":
             varSearchValue = $("#spoc_email_list option:selected").text();
             break;
-            
+
              case "7":
             varSearchValue = $("#spoc_phone_list option:selected").text();
             break;
-                
+
             case "8":
             varSearchValue = $("#state_id").val();
             break;
-                
+
             case "9":
                 varSearchValue = $("#source_id").val();
                 break;
         }
-        
+
         if (varTable != undefined && varTable != null)
         {
             varTable.clear().destroy();
         }
-        
+
         varTable = $("#tblList").DataTable({
             "serverSide": true,
             "paging": true,
@@ -414,13 +414,13 @@
             buttons: []
         });
     }
-    
+
     function btnSearch_OnClick()
     {
         $("#lblSearchError").hide();
         var varSearchTypeId = $("#search_by").val(),
-            varSearchValue = $("#searchbox").val();  
-    
+            varSearchValue = $("#searchbox").val();
+
         switch(varSearchTypeId)
         {
             case "1":
@@ -430,8 +430,8 @@
                     $("#lblSearchError").show();
                     return;
                 }
-                break;           
-            
+                break;
+
             case "2":
                 if ($("#business_vertical_id").val() == '0')
                 {
@@ -440,7 +440,7 @@
                     return;
                 }
                 break;
-                
+
             case "3":
                 if ($("#status_id").val() == '0')
                 {
@@ -449,7 +449,7 @@
                     return;
                 }
                 break;
-                
+
                 case "4":
                 if ($("#lead_managed_by_id option:selected").index() < 1)
                   {
@@ -458,7 +458,7 @@
                     return;
                 }
                 break;
-                
+
                  case "5":
                 if ($("#spoc_name_list option:selected").index() < 1)
                   {
@@ -467,7 +467,7 @@
                     return;
                 }
                 break;
-                
+
                  case "6":
                 if ($("#spoc_email_list option:selected").index() < 1)
                   {
@@ -476,7 +476,7 @@
                     return;
                 }
                 break;
-                
+
                  case "7":
                 if ($("#spoc_phone_list option:selected").index() < 1)
                   {
@@ -485,7 +485,7 @@
                     return;
                 }
                 break;
-                
+
                case "8":
                 if ($("#state_id").val() == '0')
                 {
@@ -493,8 +493,8 @@
                     $("#lblSearchError").show();
                     return;
                 }
-                break;  
-                
+                break;
+
             case "9":
                 if ($("#source_id").val() == '0')
                 {
@@ -503,7 +503,7 @@
                     return;
                 }
                 break;
-                
+
             default:
                 if (varSearchValue.trim() == '')
                 {
@@ -528,13 +528,13 @@
 //                        $("#lblSearchError").text('* Please input Location!');
 //                        break;
                     }
-                    
+
                     $("#lblSearchError").show();
                     return;
                 }
                 break;
         }
-        
+
         LoadTableData();
     }
 
@@ -693,26 +693,67 @@ $('#name_input').bind('keypress', name_input);
       $('#alert-box').removeClass('hidden');
       return;
     }
-    if(lead_status_id == 8 && (proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0)) {
-      $('#alert-box').removeClass('hidden');
-      console.log('inside2');
-      return;
-    }
-    if($('#lead_status_selector').find(':selected').attr('data-notification')==1 && (name=='' || schedule_date=='' || phone=='' || remark.trim()=="")) {
-      $('#alert-box').removeClass('hidden');
-      console.log('inside2');
-      return;
-    }
-    if($('#lead_status_selector').find(':selected').attr('data-svalue')<0 && remark.trim()=="") {
-      $('#alert-box').removeClass('hidden');
-      return;
-    }
-    if(lead_status_id==16){
-      let result = confirm("Sure about commercial of this item?");
-      if(!result) {
+    if(lead_status_id == 8 ) {
+      if(proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0) {
+        $('#alert-box').removeClass('hidden');
+        console.log('inside2');
         return;
+      } else {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
       }
     }
+    if($('#lead_status_selector').find(':selected').attr('data-notification')==1) {
+      if(name=='' || schedule_date=='' || phone=='' || remark.trim()=="") {
+        $('#alert-box').removeClass('hidden');
+        console.log('inside2');
+        return;
+      } else {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      }
+    }
+    if($('#lead_status_selector').find(':selected').attr('data-svalue')<0) {
+      if(remark.trim()=="") {
+        $('#alert-box').removeClass('hidden');
+        return;
+      } else{
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      }
+    }
+    if(lead_status_id==11 || lead_status_id==12 || lead_status_id==19) {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+    }
+    if(lead_status_id==16){
+      // let result = confirm("Sure about commercial of this item?");
+      // if(!result) {
+      //   return;
+      // }  else {
+      //
+      // }
+      lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    }
+  }
+
+  function lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id) {
+      let commercial_text = customer_commercial_type==0 ? 'Free' : 'Commercial';
+      swal(
+          {
+              title: "",
+              text: "Sure about commercial of this item? You Selected "+commercial_text ,
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No, Cancel!",
+              closeOnConfirm: false,
+              closeOnCancel: true
+          },
+          function(isConfirm) {
+              if (isConfirm) {
+                updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+              }
+          }
+      );
+  }
+
+  function updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id) {
     var request = $.ajax({
       url: "<?php echo base_url(); ?>salesController/leadStatusUpdate",
       type: "POST",
@@ -746,6 +787,7 @@ $('#name_input').bind('keypress', name_input);
       //location.reload();
     });
   }
+
   function lead_history(lead_id)
   {
       $('.form-group').removeClass('has-error'); // clear error class
@@ -927,7 +969,7 @@ $(document).ready(function () {
             }
             else {
                 $('#searchbox').removeClass('hidden');
-                $('#searchbox').focus();               
+                $('#searchbox').focus();
             }
         });
     });
@@ -938,10 +980,10 @@ $(document).ready(function () {
             }
             else {
                 $('#status_id').removeClass('hidden');
-                $('#status_id').focus();               
+                $('#status_id').focus();
             }
         });
-    }); 
+    });
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8') {
@@ -949,11 +991,11 @@ $(document).ready(function () {
             }
             else {
                 $('#source_id').removeClass('hidden');
-                $('#source_id').focus();               
+                $('#source_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8'|| $('#search_by').val() == '9') {
@@ -961,11 +1003,11 @@ $(document).ready(function () {
             }
             else {
                 $('#lead_managed_by_id').removeClass('hidden');
-                $('#lead_managed_by_id').focus();               
+                $('#lead_managed_by_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -973,7 +1015,7 @@ $(document).ready(function () {
             }
             else {
                 $('#search_btn').removeClass('hidden');
-                $('#search_btn').focus();               
+                $('#search_btn').focus();
             }
         });
     });
@@ -986,11 +1028,11 @@ $(document).ready(function () {
             }
             else {
                 $('#business_vertical_id').removeClass('hidden');
-                $('#business_vertical_id').focus();               
+                $('#business_vertical_id').focus();
             }
         });
-    }); 
-    
+    });
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '9') {
@@ -998,11 +1040,11 @@ $(document).ready(function () {
             }
             else {
                 $('#state_id').removeClass('hidden');
-                $('#state_id').focus();               
+                $('#state_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1010,11 +1052,11 @@ $(document).ready(function () {
             }
             else {
                 $('#customer_list_container').removeClass('hidden');
-                $('#customer_list_container').focus();               
+                $('#customer_list_container').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1022,12 +1064,12 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_name_list_container').removeClass('hidden');
-                $('#spoc_name_list_container').focus();               
+                $('#spoc_name_list_container').focus();
             }
         });
     });
-    
-    
+
+
      $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '5' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1035,11 +1077,11 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_email_list_container').removeClass('hidden');
-                $('#spoc_email_list_container').focus();               
+                $('#spoc_email_list_container').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1047,12 +1089,12 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_phone_list_container').removeClass('hidden');
-                $('#spoc_phone_list_container').focus();               
+                $('#spoc_phone_list_container').focus();
             }
         });
     });
-    
-    
+
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -1060,15 +1102,15 @@ $(document).ready(function () {
             }
             else {
                 $('#lblSearchError').removeClass('hidden');
-                $('#lblSearchError').focus();               
+                $('#lblSearchError').focus();
             }
         });
     });
-    
+
      $(document).ready(function() {
         $('.select2-neo').select2();
       });
- 
+
 // $(document).keypress(function(e){
 //    if (e.which == 13){
 //        $("#btn_search").click();
