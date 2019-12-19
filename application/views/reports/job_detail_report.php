@@ -43,17 +43,22 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
-                                <div class="col-md-6 form-group">
-                                    <label for="" class="label">Start Date</label>
-                                    <input type='text' class="form-control" readonly id='start_date_input'>
+                            <div class="card" style="margin-top: 5px; padding: 16px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Job Created</h5>
+                                    <div class="row">
+                                        <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
+                                        <div class="col-md-6 form-group">
+                                            <label for="" class="label">From</label>
+                                            <input type='text' class="form-control" readonly id='start_date_input'>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label for="" class="label">To</label>
+                                            <input type='text' class="form-control" readonly id='end_date_input' />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="" class="label">End Date</label>
-                                    <input type='text' class="form-control" readonly id='end_date_input' />
-                                </div>
-                            </div>
+                            </div>        
 
                             <div class="row">
                                 <div class="col-md-6 form-group">

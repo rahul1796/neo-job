@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <?php $this->load->view('jobs/job_details', ['job_id' => $job_id, 'job'=> $data['job']]); ?>
+    <?php $this->load->view('jobs/job_details', ['job_id' => $job_id, 'job'=> $data['job'], 'is_filled'=> $data['is_filled']]); ?>
 
     <div class="row">
         <div class="col-md-12">

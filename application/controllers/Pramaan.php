@@ -7814,7 +7814,7 @@ die;*/
         $data['employer_type_list'] = $this->db->query("SELECT id,name FROM neo_master.employment_type WHERE is_active=TRUE AND name!='Self Employed'  ORDER BY name")->result_array();
         $data['page']      = 'candidate_joined_jobwise';
         $data['title']     = 'Joined Candidates';
-
+        $data['is_filled']=$this->candidate->getJobVacancyDetail($job_id);
         $job_details;
 
         $Query = "SELECT    J.job_title,

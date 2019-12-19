@@ -338,6 +338,12 @@ class MY_Model extends CI_Model {
     return $query->result();
   }
 
+  public function getJobVacancyDetail($job_id) {
+    $openings = $this->db->where('id', $job_id)->get('neo_job.jobs')->row_array()['no_of_position'];
+    $filled_vacancies = $this->db->where('job_id', $job_id)->where('candidate_status_id', 15)->from('neo_job.candidates_jobs')->count_all_results();
+    return $openings>$filled_vacancies;
+  }
+
   // public function getStates($country_id) {
   //   return $this->db->select('neo_master.state.*')->from('neo_master.state')
   //   ->join('neo_master.regions', 'neo_master.state.region_id=neo_master.regions.id', 'LEFT')
