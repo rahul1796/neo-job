@@ -344,6 +344,16 @@ class MY_Model extends CI_Model {
     return $openings>$filled_vacancies;
   }
 
+  public function getSpocsByCustomerID($id) {
+    $spocs = $this->db->select('spoc_detail')->where('customer_id', $id)->get('neo_customer.customer_branches')->row_array();
+    $hr = $this->db->select('hr_name as spoc_name, hr_email as spoc_email, hr_phone as spoc_phone, hr_designation as spoc_designation')
+          ->where('id', $id)->get('neo_customer.customers')->row();
+    $spoc_array = json_decode($spocs['spoc_detail']);
+    array_push($spoc_array, $hr);
+    return array_unique($spoc_array, SORT_REGULAR);
+  }
+
+
   // public function getStates($country_id) {
   //   return $this->db->select('neo_master.state.*')->from('neo_master.state')
   //   ->join('neo_master.regions', 'neo_master.state.region_id=neo_master.regions.id', 'LEFT')

@@ -17,7 +17,7 @@
 <div class="form-group row" style="margin-top: 20px;">
      <div class="col-md-4">
         <label for="customer_id" class="label">Client:</label>
-        <select class="form-control select2-neo" name="customer_id">
+        <select class="form-control select2-neo" name="customer_id" id="customer_id">
             <option value="">Select Client</option>
             <?php foreach($customer_options as $customer):?>
                 <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->customer_name; ?></option>
@@ -52,12 +52,37 @@
         <?php echo form_error('job_expiry_date'); ?>
     </div>
 
-    <div class="col-md-4">
+    <!-- <div class="col-md-4">
         <label for="customer_manager" class="">Client Manager:</label>
         <input type="text" class="form-control" id="customer_manager" placeholder="Enter Client Manager" name="customer_manager" value="<?php echo $fields['customer_manager']; ?>">
-        <?php echo form_error('customer_manager'); ?>
-    </div>
+        <?php //echo form_error('customer_manager'); ?>
+    </div> -->
+
+    <div class="col-md-4">
+      <label for="client_manager_name" class="label">Client Manager:</label>
+      <select class="form-control" name="client_manager_name" id="client_manager_name">
+          <option value=" ">Select Client Manager</option>          
+        <option value="<?php echo $fields['client_manager_name']; ?>" <?php echo ($fields['client_manager_name']) ? 'selected' : '' ?> ><?php echo $fields['client_manager_name'] ?></option>
+      </select>
+      <?php echo form_error('client_manager_name'); ?>
+  </div>
+    
 </div>
+
+ <div class="form-group row">
+    <div class="col-md-6">
+        <label for="client_manager_email" class="">Client Manager Email:</label>
+        <input type="text" class="form-control" id="spoc_email" placeholder="" name="client_manager_email"  value="<?php echo $fields['client_manager_email']; ?>" readonly>
+        <?php// echo form_error('applicable_consulting_fee'); ?>
+    </div>
+
+    <div class="col-md-6">
+        <label for="client_manager_phone" class="">Client Manager Phone:</label>
+        <input type="text" class="form-control" id="spoc_phone" placeholder="" name="client_manager_phone" value="<?php echo $fields['client_manager_phone']; ?>" readonly>
+        <?php //echo form_error('practice'); ?>
+    </div>
+
+</div> 
 
 <div class="form-group row">
 <!--    <div class="col-md-3" style="display:none;">
@@ -118,10 +143,28 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
         <label for="key_skills" class="label">Key Skills:</label>
         <textarea class="form-control" name="key_skills" placeholder="Enter Key Skill eg: (Java, Plumbing, PHP, hardware)" maxlength="255" title="key_skills" id="key_skills" value=""><?php echo $fields['key_skills']; ?></textarea>
-        <?php echo form_error('key_skills'); ?>
+        <?php //echo form_error('key_skills'); ?>
+    </div> -->
+
+    <div class="col-md-4">
+        <label for="domain_skills" class="label">Domain Skills:</label>
+        <input type="text" class="form-control" id="domain_skills" placeholder="Enter Domain Skills" name="domain_skills"  value="<?php echo $fields['domain_skills']; ?>">
+        <?php echo form_error('domain_skills'); ?>
+    </div>
+
+    <div class="col-md-4">
+        <label for="soft_skills" class="label">Soft Skills:</label>
+        <input type="text" class="form-control" id="soft_skills" placeholder="Enter Soft Skills" name="soft_skills"  value="<?php echo $fields['soft_skills']; ?>">
+        <?php echo form_error('soft_skills'); ?>
+    </div>
+
+    <div class="col-md-4">
+        <label for="type_of_workplace" class="label">Type of Workplace:</label>
+        <input type="text" class="form-control" id="type_of_workplace" placeholder="Enter Type of Workplace" name="type_of_workplace"  value="<?php echo $fields['type_of_workplace']; ?>">
+        <?php echo form_error('type_of_workplace'); ?>
     </div>
 </div>
 
@@ -444,7 +487,80 @@
      });
    });
 
+  
+
+   $('#customer_id').on('change', function() {
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0));
+     var c_id = $(this).val();
+     var request = $.ajax({
+       url: "<?php echo base_url(); ?>JobsController/getSpocDetails/"+c_id,
+       type: "GET",
+     });
+
+     request.done(function(msg) {
+        varSpocList = JSON.parse(msg);
+        // alert(response);
+        // return;
+        $("#client_manager_name").empty();
+        $('#client_manager_name').append(new Option("Select Client Manager", ""));
+        //alert(msg);
+
+        var varArr = [];
+        $.each(varSpocList, function(key, item) 
+        {
+            if (item.spoc_name != null)
+            {
+                if (item.spoc_name != undefined)
+                {
+                    if (item.spoc_name.toString().toUpperCase()!='NULL') 
+                    {
+                        if (!varArr.includes(item.spoc_name))
+                        {
+                            $('#client_manager_name').append(new Option(item.spoc_name, item.spoc_name));
+                            varArr.push(item.spoc_name);
+                        }
+                    }
+                }
+            }
+        });
+     });
+
+     request.fail(function(jqXHR, textStatus) {
+       alert( "Request failed: " + textStatus );
+     });
+   });
+
  });
+
+ var varSpocList = JSON.parse("[]");
+
+ $("#client_manager_name").on('change', function() {
+    if ($("#client_manager_name").val().trim() != "")
+    {
+        ShowSpocDetails($("#client_manager_name").val());
+    }
+ });
+
+ function ShowSpocDetails(SpocName)
+ {
+    $.each(varSpocList, function(key, item) 
+    {        
+        if (item.spoc_name != null)
+        {
+            if (item.spoc_name != undefined)
+            {
+                if (item.spoc_name.toString().toUpperCase() == SpocName.toString().toUpperCase()) 
+                {
+                    $('#spoc_email').val(item.spoc_email);
+                    $('#spoc_phone').val(item.spoc_phone);
+                    // alert(item.spoc_email + " - " + item.spoc_phone + " - " + item.spoc_designation);
+                    // return;
+                }
+            }
+        }
+    });
+ }
 
  $(document).ready(function() {
 
