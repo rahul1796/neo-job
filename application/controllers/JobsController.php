@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class JobsController extends MY_Controller {
 
-  protected $jobFields= [ 'job_title', 'job_description', 'no_of_position', 'customer_id', 'customer_manager',
+  protected $jobFields= [ 'job_title', 'job_description', 'no_of_position', 'customer_id', 'client_manager_name', 'client_manager_email','client_manager_phone',
                           'applicable_consulting_fee', 'business_vertical_id', 'practice', 'office_location',
-                          'key_skills', 'functional_area_id', 'industry_id', 'primary_skills', 'reference_id',
+                          /*'key_skills',*/ 'domain_skills', 'soft_skills','type_of_workplace', 'functional_area_id', 'industry_id', 'primary_skills', 'reference_id',
                            'education_id', 'job_open_type_id', 'job_location', 'age_from', 'age_to', 'job_priority_level_id',
                            'experience_from', 'experience_to', 'relevent_experience_from', 'relevant_experience_to',
                            'offered_ctc_from', 'offered_ctc_to', 'shifts_available', 'preferred_nationality', 'gender_id',
@@ -46,6 +46,11 @@ class JobsController extends MY_Controller {
      $this->load->view('jobs/index', $data);
      $this->load->view('layouts/footer');
    }
+
+   public function getSpocDetails($id) {
+    echo json_encode($this->sale->getSpocsByCustomerID($id));
+    exit;
+  }
 
 
     public function create($id=0) {
@@ -129,11 +134,14 @@ class JobsController extends MY_Controller {
     $this->form_validation->set_rules('job_expiry_date', 'Job Expiry Date', 'required');
     $this->form_validation->set_rules('offered_ctc_from', 'Minimum CTC per Month', 'required|is_natural|greater_than_equal_to[10]');
     $this->form_validation->set_rules('offered_ctc_to', 'Maximum CTC per Month', 'required|is_natural|less_than_equal_to[50000000]|callback_compare_number[offered_ctc_from]');
-    $this->form_validation->set_rules('key_skills', 'Key Skills', 'required');
+    //$this->form_validation->set_rules('key_skills', 'Key Skills', 'required');
+    $this->form_validation->set_rules('domain_skills', 'Domain Skills', 'required');
+    $this->form_validation->set_rules('soft_skills', 'Soft Skills', 'required');
+    $this->form_validation->set_rules('type_of_workplace', 'Type of Workplace', 'required');
     $this->form_validation->set_rules('education_id', 'Education', 'required|is_natural');
     $this->form_validation->set_rules('qualification_pack_id', 'Qualification Pack', 'required|is_natural');
     //$this->form_validation->set_rules('job_location', 'Job Location', 'required');
-    $this->form_validation->set_rules('customer_manager', 'Client Manager', '');
+    $this->form_validation->set_rules('client_manager_name', 'Client Manager', 'required');
     $this->form_validation->set_rules('applicable_consulting_fee', 'Fees', 'is_natural');
     $this->form_validation->set_rules('business_vertical_id', 'Business Vertical', 'required|is_natural');
 //    $this->form_validation->set_rules('practice', 'Practice', '');
@@ -246,6 +254,7 @@ class JobsController extends MY_Controller {
     $data['data']['qualification_pack_options'] = $this->job->getQualificationPacks();
     $data['data']['functional_area_options'] = $this->job->getFunctionalAreas();
     $data['data']['education_options'] = $this->job->getEducations();
+    //$data['data']['client_manager_name'] = $this->sale->getSpocsByCustomerID($id);
     //$data['data']['location_options'] = $this->job->getLocations();
     $data['data']['business_vertical_options'] = $this->job->getBusinessVerticals();
     $data['data']['job_priority_level_options'] = $this->job->getJobPriorityLevels();
