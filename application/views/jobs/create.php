@@ -19,7 +19,7 @@
 
   <div id="Personal" class="w3-container info" style="background: white; ">
     <!--<h2>Personal Info</h2>-->
-    <form action="<?php echo base_url();?>/jobscontroller/store" method="POST">
+    <form action="<?php echo base_url();?>/jobscontroller/store" method="POST" name="frm">
       <?php $this->load->view('jobs/form_fields', $data); ?>
     </form>
   </div>

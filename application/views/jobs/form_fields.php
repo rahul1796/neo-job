@@ -13,12 +13,41 @@
     }
 
 </style>
+
+<script>
+ var statusOptions = JSON.parse('<?= json_encode($joined_candidates); ?>');
+  console.log(statusOptions);
+
+  $("form").submit(function() {
+  var _txt1 = $('#no_of_position').val();
+  var _txt2 = $('#joined').val();
+  
+  if (_txt1 >= _txt2)
+  {
+     //alert('Matching!');
+     return true;
+  }
+  else
+  {
+    swal({
+            title: 'No of openings cant be less than joined count.',
+            text: 'it must be equal or greater than joined count!',
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+            buttons: ['yes, forsure', 'no, thanks']
+        });
+    //alert('No of openings cant be less than joined count. it must be equal or greater than joined count!');
+    return false;
+  }
+});
+
+</script>
 <?php $this->load->view('layouts\soft_error'); ?>
 <div class="form-group row" style="margin-top: 20px;">
      <div class="col-md-4">
         <label for="customer_id" class="label">Client:</label>
         <select class="form-control select2-neo" name="customer_id" id="customer_id">
-            <option value="">Select Client</option>
             <?php foreach($customer_options as $customer):?>
                 <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->customer_name; ?></option>
             <?php endforeach; ?>
@@ -46,6 +75,14 @@
         <?php echo form_error('no_of_position'); ?>
     </div>
 
+    <div class="hidden" id="job_code_list_container">
+            <select class="form-control select2-neo" id="joined" name="joined">
+            <?php foreach($joined_candidates as $option): ?>
+                <option value="<?php echo $option->joined_candidates; ?>"><?php echo $option->joined_candidates; ?></option>
+            <?php endforeach; ?>
+            </select>
+    </div>
+    
     <div class="col-md-4">
         <label for="job_expiry_date" class="label">Job Expiry Date:</label>
         <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="job_expiry_date" placeholder="Select Date" name="job_expiry_date" value="<?= ($fields['job_expiry_date']!='') ? date_format(date_create($fields['job_expiry_date']),'d-M-Y') : '' ;?>">
@@ -61,8 +98,11 @@
     <div class="col-md-4">
       <label for="client_manager_name" class="label">Client Manager:</label>
       <select class="form-control" name="client_manager_name" id="client_manager_name">
-          <option value=" ">Select Client Manager</option>          
-        <option value="<?php echo $fields['client_manager_name']; ?>" <?php echo ($fields['client_manager_name']) ? 'selected' : '' ?> ><?php echo $fields['client_manager_name'] ?></option>
+          <option value=" ">Select Client Manager</option>  
+          <?= var_dump($client_manager_name); ?>
+        <?php foreach($client_manager_name as $cmn):?>
+                <option value="<?php echo $cmn->spoc_name; ?>" <?php echo ($cmn->spoc_name==$fields['client_manager_name']) ? 'selected' : '' ?> ><?php echo $cmn->spoc_name; ?></option>
+            <?php endforeach; ?>
       </select>
       <?php echo form_error('client_manager_name'); ?>
   </div>
@@ -440,60 +480,11 @@
 
 <script type="text/javascript">
  $(document).ready(function() {
-   $('#country_id').on('change', function() {
-     var c_id = $(this).val();
-     var request = $.ajax({
-       url: "<?php echo base_url(); ?>CandidatesController/getStates/"+c_id,
-       type: "GET",
-     });
-
-     request.done(function(msg) {
-       var response = JSON.parse(msg);
-       // alert(response);
-       $('#state_id').html('');
-       $('#state_id').append($('<option>').text('Select State').attr('value', 0));
-       response.forEach(function(state) {
-          $('#state_id').append($('<option>').text(state.name).attr('value', state.id));
-       })
-       console.log(response);
-     });
-
-     request.fail(function(jqXHR, textStatus) {
-       alert( "Request failed: " + textStatus );
-     });
-   });
-
-   $('#state_id').on('change', function() {
-     $('#district_id').html('');
-     $('#district_id').append($('<option>').text('Select District').attr('value', 0));
-     var s_id = $(this).val();
-     var request = $.ajax({
-       url: "<?php echo base_url(); ?>CandidatesController/getDistricts/"+s_id,
-       type: "GET",
-     });
-
-     request.done(function(msg) {
-       var response = JSON.parse(msg);
-       // alert(response);
-
-       response.forEach(function(district) {
-          $('#district_id').append($('<option>').text(district.name).attr('value', district.id));
-       })
-       console.log(response);
-     });
-
-     request.fail(function(jqXHR, textStatus) {
-       alert( "Request failed: " + textStatus );
-     });
-   });
-
-  
-
    $('#customer_id').on('change', function() {
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0));
-     var c_id = $(this).val();
-     var request = $.ajax({
+     let c_id = $(this).val();
+     let request = $.ajax({
        url: "<?php echo base_url(); ?>JobsController/getSpocDetails/"+c_id,
        type: "GET",
      });
@@ -509,25 +500,21 @@
         var varArr = [];
         $.each(varSpocList, function(key, item) 
         {
-            if (item.spoc_name != null)
+            if (item.spoc_name != null && item.spoc_name != undefined && item.spoc_name.toString().toUpperCase()!='NULL')
             {
-                if (item.spoc_name != undefined)
-                {
-                    if (item.spoc_name.toString().toUpperCase()!='NULL') 
-                    {
+                
                         if (!varArr.includes(item.spoc_name))
                         {
                             $('#client_manager_name').append(new Option(item.spoc_name, item.spoc_name));
                             varArr.push(item.spoc_name);
                         }
-                    }
-                }
+                   
             }
         });
      });
 
      request.fail(function(jqXHR, textStatus) {
-       //alert( "Request failed: " + textStatus );
+       alert( "Request failed: " + textStatus );
      });
    });
 
@@ -564,7 +551,10 @@
 
  $(document).ready(function() {
 
-   $('.select2-neo').select2();
+   $('.select2-neo').select2({
+       placeholder: 'Select an option',
+       allowClear: true
+   });
  });
 
  $('#job_expiry_date').on('changeDate', function(ev){
@@ -576,6 +566,7 @@
   var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 0 ?>;
   var state_id = <?= (!empty($fields['state_id'])) ? $fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
+  var client_manager_name = <?= (!empty($fields['spoc_name'])) ? $fields['spoc_name'] : 0 ?>;
 
 
  $(document).ready(function() {
@@ -656,4 +647,6 @@
      alert( "Select Valid Value for the Country" );
    });
  }
+
+ 
 </script>

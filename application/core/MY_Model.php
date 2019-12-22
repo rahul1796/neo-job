@@ -303,7 +303,7 @@ class MY_Model extends CI_Model {
     $query = $this->db->get();
     return $query->result();
   }
-
+  
   public function getReligions() {
     return $this->db->get('neo_master.religions')->result();
   }
@@ -319,6 +319,12 @@ class MY_Model extends CI_Model {
 
   public function getWorkAuthorizations() {
     $query = $this->db->get('neo_master.work_authorizations');
+    return $query->result();
+  }
+
+
+  public function getJoinedCandidateCount($id) {
+    $query = $this->db->select("joined_candidates")->where('id', $id)->get('neo_job.vw_job_list');
     return $query->result();
   }
   
