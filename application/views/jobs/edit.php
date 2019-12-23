@@ -15,7 +15,7 @@
   </div>
 
   <div id="Personal" class="w3-container info" style="background: white;padding: 15px; ">
-    <form action="<?php echo base_url('/jobscontroller/update/').$id;?>" method="POST" name="frm">
+    <form action="<?php echo base_url('/jobscontroller/update/').$id;?>" method="POST">
 
       <?php $this->load->view('jobs/form_fields', $data); ?>
 
