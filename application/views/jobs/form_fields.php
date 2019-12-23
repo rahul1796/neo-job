@@ -14,15 +14,12 @@
 
 </style>
 
-<script>
- var statusOptions = JSON.parse('<?= json_encode($joined_candidates); ?>');
-  console.log(statusOptions);
-
+<script> 
   $("form").submit(function() {
-  var _txt1 = $('#no_of_position').val();
-  var _txt2 = $('#joined').val();
+  var no_of_position = $('#no_of_position').val();
+  var joined = $('#joined').val();
   
-  if (_txt1 >= _txt2)
+  if (no_of_position >= joined)
   {
      //alert('Matching!');
      return true;
@@ -47,7 +44,8 @@
 <div class="form-group row" style="margin-top: 20px;">
      <div class="col-md-4">
         <label for="customer_id" class="label">Client:</label>
-        <select class="form-control select2-neo" name="customer_id" id="customer_id">
+        <select class="form-control neo-select2" name="customer_id" id="customer_id">
+        <option value="">Select Client</option>
             <?php foreach($customer_options as $customer):?>
                 <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->customer_name; ?></option>
             <?php endforeach; ?>
@@ -76,11 +74,11 @@
     </div>
 
     <div class="hidden" id="job_code_list_container">
-            <select class="form-control select2-neo" id="joined" name="joined">
-            <?php foreach($joined_candidates as $option): ?>
-                <option value="<?php echo $option->joined_candidates; ?>"><?php echo $option->joined_candidates; ?></option>
-            <?php endforeach; ?>
-            </select>
+        <select class="form-control select2-neo" id="joined" name="joined">
+        <?php foreach($joined_candidates as $option): ?>
+            <option value="<?php echo $option->joined_candidates; ?>"><?php echo $option->joined_candidates; ?></option>
+        <?php endforeach; ?>
+        </select>
     </div>
     
     <div class="col-md-4">
@@ -89,20 +87,11 @@
         <?php echo form_error('job_expiry_date'); ?>
     </div>
 
-    <!-- <div class="col-md-4">
-        <label for="customer_manager" class="">Client Manager:</label>
-        <input type="text" class="form-control" id="customer_manager" placeholder="Enter Client Manager" name="customer_manager" value="<?php echo $fields['customer_manager']; ?>">
-        <?php //echo form_error('customer_manager'); ?>
-    </div> -->
-
     <div class="col-md-4">
       <label for="client_manager_name" class="label">Client Manager:</label>
-      <select class="form-control" name="client_manager_name" id="client_manager_name">
-          <option value=" ">Select Client Manager</option>  
-          <?= var_dump($client_manager_name); ?>
-        <?php foreach($client_manager_name as $cmn):?>
-                <option value="<?php echo $cmn->spoc_name; ?>" <?php echo ($cmn->spoc_name==$fields['client_manager_name']) ? 'selected' : '' ?> ><?php echo $cmn->spoc_name; ?></option>
-            <?php endforeach; ?>
+      <select class="form-control neo-select2" name="client_manager_name" id="client_manager_name">
+          <option value="">Select Client Manager</option> 
+        
       </select>
       <?php echo form_error('client_manager_name'); ?>
   </div>
@@ -111,16 +100,14 @@
 
  <div class="form-group row">
     <div class="col-md-6">
-        <label for="client_manager_email" class="">Client Manager Email:</label>
-        <input type="text" class="form-control" id="spoc_email" placeholder="" name="client_manager_email"  value="<?php echo $fields['client_manager_email']; ?>" readonly>
-        <?php// echo form_error('applicable_consulting_fee'); ?>
-    </div>
+      <label for="spoc_email" class="">Client Manager Email:</label>
+      <input type="text" class="form-control" id="client_manager_email" placeholder="" name="client_manager_email" value="<?php echo $fields['client_manager_email']; ?>" readonly>
+  </div>
 
-    <div class="col-md-6">
-        <label for="client_manager_phone" class="">Client Manager Phone:</label>
-        <input type="text" class="form-control" id="spoc_phone" placeholder="" name="client_manager_phone" value="<?php echo $fields['client_manager_phone']; ?>" readonly>
-        <?php //echo form_error('practice'); ?>
-    </div>
+  <div class="col-md-6">
+      <label for="district_id" class="">Client Manager Phone:</label>
+      <input type="text" class="form-control" id="client_manager_phone" placeholder="" name="client_manager_phone" value="<?php echo $fields['client_manager_phone']; ?>" readonly>
+   </div>
 
 </div> 
 
@@ -275,7 +262,7 @@
 
     <div class="col-md-6">
       <label for="district_id" class="label">Assign Recruiter:</label>
-      <select class="select2-neo form-control" multiple name="recruiters[]">
+      <select class="neo-select2 form-control" multiple name="recruiters[]">
         <option value="">Select Recruiters</option>
         <?php foreach($recruiters_options as $option): ?>
             <option value="<?php echo $option->id; ?>" <?= (in_array($option->id, $fields['recruiters'])) ? 'selected':'' ?> ><?php echo $option->name; ?></option>
@@ -286,7 +273,7 @@
 
     <div class="col-md-6">
       <label for="district_id" class="label">Assign Placement Manager:</label>
-      <select class="select2-neo form-control" multiple name="placement_officers[]">
+      <select class="neo-select2 form-control" multiple name="placement_officers[]">
         <option value="">Select Placement Officers</option>
         <?php foreach($placement_officer_options as $option): ?>
             <option value="<?php echo $option->id; ?>" <?= (in_array($option->id, $fields['placement_officers'])) ? 'selected':'' ?> ><?php echo $option->name; ?></option>
@@ -479,79 +466,10 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
 <script type="text/javascript">
- $(document).ready(function() {
-   $('#customer_id').on('change', function() {
-     $('#client_manager_name').html('');
-     $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0));
-     let c_id = $(this).val();
-     let request = $.ajax({
-       url: "<?php echo base_url(); ?>JobsController/getSpocDetails/"+c_id,
-       type: "GET",
-     });
 
-     request.done(function(msg) {
-        varSpocList = JSON.parse(msg);
-        // alert(response);
-        // return;
-        $("#client_manager_name").empty();
-        $('#client_manager_name').append(new Option("Select Client Manager", ""));
-        //alert(msg);
-
-        var varArr = [];
-        $.each(varSpocList, function(key, item) 
-        {
-            if (item.spoc_name != null && item.spoc_name != undefined && item.spoc_name.toString().toUpperCase()!='NULL')
-            {
-                
-                        if (!varArr.includes(item.spoc_name))
-                        {
-                            $('#client_manager_name').append(new Option(item.spoc_name, item.spoc_name));
-                            varArr.push(item.spoc_name);
-                        }
-                   
-            }
-        });
-     });
-
-     request.fail(function(jqXHR, textStatus) {
-       alert( "Request failed: " + textStatus );
-     });
-   });
-
- });
-
- var varSpocList = JSON.parse("[]");
-
- $("#client_manager_name").on('change', function() {
-    if ($("#client_manager_name").val().trim() != "")
-    {
-        ShowSpocDetails($("#client_manager_name").val());
-    }
- });
-
- function ShowSpocDetails(SpocName)
- {
-    $.each(varSpocList, function(key, item) 
-    {        
-        if (item.spoc_name != null)
-        {
-            if (item.spoc_name != undefined)
-            {
-                if (item.spoc_name.toString().toUpperCase() == SpocName.toString().toUpperCase()) 
-                {
-                    $('#spoc_email').val(item.spoc_email);
-                    $('#spoc_phone').val(item.spoc_phone);
-                    // alert(item.spoc_email + " - " + item.spoc_phone + " - " + item.spoc_designation);
-                    // return;
-                }
-            }
-        }
-    });
- }
 
  $(document).ready(function() {
-
-   $('.select2-neo').select2({
+   $('.neo-select2').select2({
        placeholder: 'Select an option',
        allowClear: true
    });
@@ -566,10 +484,15 @@
   var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 0 ?>;
   var state_id = <?= (!empty($fields['state_id'])) ? $fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
-  var client_manager_name = <?= (!empty($fields['spoc_name'])) ? $fields['spoc_name'] : 0 ?>;
-
-
+  var customer_id = <?= (!empty($fields['customer_id'])) ? $fields['customer_id'] : 0 ?>;
+  var client_manager_name = "<?= (!empty($fields['client_manager_name'])) ? $fields['client_manager_name'] : '' ?>";
+ 
  $(document).ready(function() {
+
+   
+    if(customer_id!=0){
+        getSpocName(customer_id); 
+   }  
 
    if(country_id!=0){
      getStates(country_id);
@@ -600,6 +523,22 @@
         getDistricts(state_id);
      }
    });
+
+   $('#customer_id').on('change', function() {
+    let customer_id = $(this).val();
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0).prop('selected', true).change());
+     if(customer_id!=0) {
+        getSpocName(customer_id);
+     }
+   });
+
+   $('#client_manager_name').on('change', function() {
+     $('#client_manager_email').val($(this).find(":selected").attr('data-spocemail'));
+     $('#client_manager_phone').val( $(this).find(":selected").attr('data-spocphone'));
+    
+   });
+
 
  });
 
@@ -648,5 +587,27 @@
    });
  }
 
- 
+
+ function getSpocName(id) {
+   var request = $.ajax({
+     url: "<?php echo base_url(); ?>Jobscontroller/getSpocDetails/"+id,
+     type: "GET",
+     async: false,
+   });
+   request.done(function(msg) {
+     var response = JSON.parse(msg);
+      //alert(response);
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('').attr('value', 0).prop('selected', true));
+     response.forEach(function(spoc) {
+        $('#client_manager_name').append($('<option>').text(spoc.spoc_name).attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
+     });
+     $('#client_manager_name').val(client_manager_name).change();
+   });
+
+   request.fail(function(jqXHR, textStatus) {
+     alert( "Select Valid Value for the Customer" );
+   });
+
+ }
 </script>
