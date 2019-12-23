@@ -248,6 +248,14 @@
                <label for="" class="label">Proposal Shared to</label>
                <input type="text" class="form-control" name="remarks" id="proposal_shared_to_input" value="" >
              </div>
+             <div class="col-md-6">
+               <label for="" class="label">Potential Numbers</label>
+               <input type="text" pattern="^[1-9]*" maxlength="8" id="potential_number" name="potential_number" class="form-control"  value="">
+             </div>
+             <div class="col-md-6">
+               <label for="" class="label">Potential Order Value Per Month</label>
+               <input type="text" pattern="^[1-9]*" maxlength="8" class="form-control" name="potential_order_value_per_month" id="potential_order_value_per_month" value="" >
+             </div>
              <input type="hidden" id="proposal_customer_id" name="customer_id" value="">
              <input type="hidden" name="lead_status_id" id="proposal_lead_status_id" value="">
              <div class="col-md-12">
@@ -553,9 +561,10 @@
         forceParse: 0,
         showMeridian: 1
       });
-      $('.numbers').keyup(function () {
+
+  $('.numbers, #potential_order_value_per_month, #potential_number').keyup(function () {
     this.value = this.value.replace(/[^0-9\.]/g,'');
-});
+  });
 
 
 function name_input(event) {
@@ -630,15 +639,6 @@ $('#name_input').bind('keypress', name_input);
     $.each(statusOptions, function(index, op){
         let options ='';
 
-        // if(!(lead_status_id==18 && op.id ==1) && !(lead_status_id!=18 && op.id ==19)) {
-        //   if(lead_status_id!=19) {
-        //     if(lead_status_id <= op.id) {
-        //         options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
-        //     }
-        //   } else {
-        //     options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
-        //   }
-        // }
         if(lead_status_id==19 && op.id!=1) {
           options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
         } else {
@@ -681,6 +681,8 @@ $('#name_input').bind('keypress', name_input);
     var customer_commercial_type = $('#customer_commercial_input').find(':selected').val();
     var proposal_date_input = $('#proposal_date_input').val();
     var proposal_shared_to_input = $('#proposal_shared_to_input').val();
+    var potential_order_value_per_month = $('#potential_order_value_per_month').val();
+    var potential_number = $('#potential_number').val();
     var form_data;
     if(lead_status_id==8){
       form_data = new FormData(document.getElementById('proposal_form'));
@@ -694,7 +696,7 @@ $('#name_input').bind('keypress', name_input);
       return;
     }
     if(lead_status_id == 8 ) {
-      if(proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0) {
+      if(proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0 || potential_order_value_per_month=='' || potential_number=='') {
         $('#alert-box').removeClass('hidden');
         console.log('inside2');
         return;
@@ -723,12 +725,6 @@ $('#name_input').bind('keypress', name_input);
         updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
     }
     if(lead_status_id==16){
-      // let result = confirm("Sure about commercial of this item?");
-      // if(!result) {
-      //   return;
-      // }  else {
-      //
-      // }
       lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
     }
   }
@@ -821,6 +817,8 @@ $('#name_input').bind('keypress', name_input);
             $('#historytblBody').append('<td>'+((history.phone!=null && history.phone!='')? history.phone : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.address!=null && history.address!='')? history.address : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.city!=null && history.city!='')? history.city : 'N/A')+'</td>');
+            $('#historytblBody').append('<td>'+((history.potential_order_value_per_month!=null && history.potential_order_value_per_month!='') ? history.potential_order_value_per_month : 'N/A')+'</td>');
+            $('#historytblBody').append('<td>'+((history.potential_number!=null && history.potential_number!='') ? history.potential_number : 'N/A')+'</td>');
 
             if(history.file_name!=null && history.file_name!='') {
               $('#historytblBody').append('<td><a class="btn btn-success mr-1 mb-1" href="<?= base_url('documents/');?>'+history.file_name+'" target="_blank"><i class="fa fa-download"></i></a></td>');
@@ -928,6 +926,8 @@ function secondary_spoc_count(lead_id)
                                     <th>Phone</th>
                                     <th>Address</th>
                                     <th>City</th>
+                                    <th>POV Per Month</th>
+                                    <th>Potential Number</th>
                                     <th>Attachment</th>
                                     <th>Status Updated Date</th>
                                     <!--<th>Action </th>-->

@@ -266,6 +266,8 @@ class SalesController extends MY_Controller {
     } else {
       $data['remarks'] = $this->input->post('remarks');
       $data['schedule_date'] = $this->input->post('schedule_date');
+      $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
+      $data['potential_number'] = $this->input->post('potential_number');
       $data = $this->addFileInfo($data);
     }
     $status = $this->sale->updateLeadStatus($data);
