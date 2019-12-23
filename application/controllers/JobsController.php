@@ -257,7 +257,7 @@ class JobsController extends MY_Controller {
     $data['data']['qualification_pack_options'] = $this->job->getQualificationPacks();
     $data['data']['functional_area_options'] = $this->job->getFunctionalAreas();
     $data['data']['education_options'] = $this->job->getEducations();
-    $data['data']['client_manager_name'] = $this->sale->getSpocsByCustomerID($data['data']['fields']['customer_id']);
+    //$data['data']['client_manager_name'] = $this->sale->getSpocsByCustomerID($data['data']['fields']['customer_id']);
     //$data['data']['location_options'] = $this->job->getLocations();
     $data['data']['business_vertical_options'] = $this->job->getBusinessVerticals();
     $data['data']['job_priority_level_options'] = $this->job->getJobPriorityLevels();
