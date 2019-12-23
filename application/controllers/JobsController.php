@@ -40,6 +40,7 @@ class JobsController extends MY_Controller {
 
      $data['qualification_pack_options'] = $this->job->getQualificationPacks();
      $data['education_options'] = $this->job->getEducations();
+     $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
      $data['jobs'] = $this->job->searchJob(1);
      $data['job_list'] = $this->load->view('jobs/job', $data, TRUE);
      $this->load->view('layouts/header');
@@ -93,6 +94,7 @@ class JobsController extends MY_Controller {
     public function edit($id) {
       $this->authorize(job_edit_roles());
       $data = $this->setData($id);
+      $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
       $data['id'] = $id;
       $this->loadFormViews('edit', $data);
     }
@@ -100,6 +102,7 @@ class JobsController extends MY_Controller {
     public function update($id) {
       $this->authorize(job_edit_roles());
         $data = $this->setData($id);
+        $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
         $data['id'] = $id;
 
         if($this->validateRequest()){
@@ -254,7 +257,7 @@ class JobsController extends MY_Controller {
     $data['data']['qualification_pack_options'] = $this->job->getQualificationPacks();
     $data['data']['functional_area_options'] = $this->job->getFunctionalAreas();
     $data['data']['education_options'] = $this->job->getEducations();
-    //$data['data']['client_manager_name'] = $this->sale->getSpocsByCustomerID($id);
+    $data['data']['client_manager_name'] = $this->sale->getSpocsByCustomerID($data['data']['fields']['customer_id']);
     //$data['data']['location_options'] = $this->job->getLocations();
     $data['data']['business_vertical_options'] = $this->job->getBusinessVerticals();
     $data['data']['job_priority_level_options'] = $this->job->getJobPriorityLevels();
@@ -262,6 +265,7 @@ class JobsController extends MY_Controller {
     $data['data']['countries_options'] = $this->candidate->getCountries();
     $data['data']['recruiters_options'] = $this->job->getRecruiters();
     $data['data']['placement_officer_options'] = $this->job->getPlacementOfficers();
+    $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
     return $data;
   }
 
