@@ -14,32 +14,7 @@
 
 </style>
 
-<script> 
-  $("form").submit(function() {
-  var no_of_position = $('#no_of_position').val();
-  var joined = $('#joined').val();
-  
-  if (no_of_position >= joined)
-  {
-     //alert('Matching!');
-     return true;
-  }
-  else
-  {
-    swal({
-            title: 'No of openings cant be less than joined count.',
-            text: 'it must be equal or greater than joined count!',
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-            buttons: ['yes, forsure', 'no, thanks']
-        });
-    //alert('No of openings cant be less than joined count. it must be equal or greater than joined count!');
-    return false;
-  }
-});
 
-</script>
 <?php $this->load->view('layouts\soft_error'); ?>
 <div class="form-group row" style="margin-top: 20px;">
      <div class="col-md-4">
@@ -68,19 +43,13 @@
 
 <div class="form-group row">
     <div class="col-md-4">
+    <input type="hidden" value="<?= $joined_candidates->joined_candidates; ?>" id="joined_candidates">
         <label for="no_of_position" class="label">Number of Vacancies:</label>
         <input type="tel" class="form-control" id="no_of_position" placeholder="Enter Number of Vacancies" name="no_of_position" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "3" value="<?php echo $fields['no_of_position']; ?>">
         <?php echo form_error('no_of_position'); ?>
     </div>
 
-    <div class="hidden" id="job_code_list_container">
-        <select class="form-control select2-neo" id="joined" name="joined">
-        <?php foreach($joined_candidates as $option): ?>
-            <option value="<?php echo $option->joined_candidates; ?>"><?php echo $option->joined_candidates; ?></option>
-        <?php endforeach; ?>
-        </select>
-    </div>
-    
+
     <div class="col-md-4">
         <label for="job_expiry_date" class="label">Job Expiry Date:</label>
         <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="job_expiry_date" placeholder="Select Date" name="job_expiry_date" value="<?= ($fields['job_expiry_date']!='') ? date_format(date_create($fields['job_expiry_date']),'d-M-Y') : '' ;?>">
@@ -610,4 +579,32 @@
    });
 
  }
+</script>
+
+<script> 
+  $("form").submit(function() {
+  var no_of_position = $('#no_of_position').val();
+  var joined = $('#joined_candidates').val();
+  //alert(joined);
+  
+  if (parseInt(no_of_position) >= parseInt(joined))
+  {
+     //alert('Matching!');
+     return true;
+  }
+  else
+  {
+    swal({
+            title: 'No of openings cant be less than joined count.',
+            text: 'it must be equal or greater than joined count!',
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+            buttons: ['yes, forsure', 'no, thanks']
+        });
+    //alert('No of openings cant be less than joined count. it must be equal or greater than joined count!');
+    return false;
+  }
+});
+
 </script>
