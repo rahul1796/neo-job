@@ -100,12 +100,31 @@ class Sale extends MY_Model
   //   return $this->db->trans_status();
   // }
 
-  public function verfied_customer($id) {
-    $data['legally_verified'] = TRUE;
-    $data['is_customer'] = TRUE;
+  public function verfied_customer($id, $status) {
+    $data['legally_verified'] = FALSE;
+    $data['is_customer'] = FALSE;
+    $data['updated_by'] = $this->session->userdata('usr_authdet')['id'];
+    $data['updated_at'] = date('Y-m-d H:i:s');
+
+    $logs_data['lead_status_id'] = 21;
+    $logs_data['customer_id'] = $id;
+    $logs_data['created_by'] = $this->session->userdata('usr_authdet')['id'];
+
+    if($status=='accept') {
+      $data['legally_verified'] = TRUE;
+      $data['is_customer'] = TRUE;
+      $logs_data['lead_status_id'] = 20;
+    } else {
+      $data['lead_status_id'] = 21;
+    }
     $this->db->trans_start();
+
     $this->db->where('id', $id);
     $this->db->update($this->tableName, $data);
+
+    $this->db->reset_query();
+    $this->db->insert('neo_customer.lead_logs', $logs_data);
+
     $this->db->trans_complete();
     return $this->db->trans_status();
   }

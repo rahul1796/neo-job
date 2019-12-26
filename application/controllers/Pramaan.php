@@ -58,7 +58,7 @@ class Pramaan extends CI_Controller
 
         if(!isset($_SESSION['user_hierarchy'])) {
           $hierarchy_data=[];
-          if($this->session->userdata['usr_authdet']['user_group_id']==15) {
+          if($this->session->userdata['usr_authdet']['user_group_id']==15 || $this->session->userdata['usr_authdet']['user_group_id']==17) {
               $hierarchy_data = $this->dashboard->getUserHierarchy(1);
           } else {
               $hierarchy_data = $this->dashboard->getUserHierarchy($this->session->userdata['usr_authdet']['id']);

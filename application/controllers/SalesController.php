@@ -144,9 +144,13 @@ class SalesController extends MY_Controller {
   }
 
   public function verify_documents_commercial($id) {
-
-    if ($this->sale->verfied_customer($id)) {
-      $this->msg = 'Documents Verified, Lead Converted to Customer';
+    $status = $this->input->get('status');
+    if ($this->sale->verfied_customer($id, $status)) {
+      if($status=='accept') {
+          $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+      } else {
+        $this->msg = 'Documents & Commercials Rejected. Status updated for Lead';
+      }
     } else {
       $this->msg = 'Error verifiying documents';
     }
@@ -542,6 +546,38 @@ class SalesController extends MY_Controller {
     $response['msg'] = $this->msg;
     echo json_encode($response);
     exit;
+  }
+
+  public function check_commercial_document($customer_id)
+  {	   
+    //echo $customer_id;
+      $result = array(
+        "file_name" => ""
+      );
+      $query = "WITH RES AS
+      (
+          SELECT 	LL.file_name,
+                  ROW_NUMBER() OVER(PARTITION BY LL.customer_id,LL.lead_status_id ORDER BY id DESC) AS counter
+          FROM 	neo_customer.lead_logs AS LL
+          WHERE	LL.customer_id= $customer_id
+          AND		LL.lead_status_id=8
+      )
+      SELECT 	COALESCE(RES.file_name,'') AS file_name
+      FROM	RES
+      WHERE	RES.counter=1 ";  
+
+      $response = $this->db->query($query);
+      if ($response->num_rows() > 0)
+      {
+          //echo json_encode($response->row());
+          $result["file_name"] = $response->row()->file_name;
+      }
+      else
+      {
+          $result["file_name"] = "";
+      }
+
+      echo json_encode($result);
   }
 
 }
