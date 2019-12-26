@@ -616,6 +616,7 @@ $('#name_input').bind('keypress', name_input);
   });
 
   function open_lead_popup(lead_id,lead_status_id) {
+    $('#customer_commercial_input').val('-1');
     $('#customer_commercial_input_container').addClass('hidden');
     $('#proposal_shared_input_container').addClass('hidden');
     if(lead_status_id == 16) {

@@ -43,7 +43,7 @@
 
 <div class="form-group row">
     <div class="col-md-4">
-    <input type="hidden" value="<?= $joined_candidates->joined_candidates; ?>" id="joined_candidates">
+    <input type="hidden" value="<?= ($joined_candidates->joined_candidates ?? 0); ?>" id="joined_candidates">
         <label for="no_of_position" class="label">Number of Vacancies:</label>
         <input type="tel" class="form-control" id="no_of_position" placeholder="Enter Number of Vacancies" name="no_of_position" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "3" value="<?php echo $fields['no_of_position']; ?>">
         <?php echo form_error('no_of_position'); ?>

@@ -262,7 +262,7 @@ class JobsController extends MY_Controller {
     $data['data']['countries_options'] = $this->candidate->getCountries();
     $data['data']['recruiters_options'] = $this->job->getRecruiters();
     $data['data']['placement_officer_options'] = $this->job->getPlacementOfficers();
-    $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
+    $data['data']['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
     return $data;
   }
 
