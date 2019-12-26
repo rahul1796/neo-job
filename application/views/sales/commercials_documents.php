@@ -40,9 +40,9 @@
       </div>
     </div>
   </div>
-    
-    
-    
+
+
+
   <div id="Personal" class="w3-container info" style="background: white;padding: 40px;margin-top: 45px; ">
   <form action="<?php echo base_url('salescontroller/commericals_store/').$id;?>" method="POST" id="commercial-form" enctype="multipart/form-data">
       <div class="row">
@@ -61,12 +61,12 @@
                                     <th>Remarks</th>
                                 </tr>
                                 </thead>
-                               
-                              
+
+
            <tbody>
         <?php foreach($commercials as $com ): ?>
                <tr>
-                   <td>  
+                   <td>
             <input type="hidden" id="customer_id" class="form-control" name="commercial[<?= $i; ?>][customer_id]" value="<?=$id?>">
             <input type="hidden" id="onboarding_fee" class="form-control" name="commercial[<?= $i; ?>][title]" value="<?= $com['title']?>">
 
@@ -74,8 +74,8 @@
               <h4 style="color:#333; font-weight:700;"><?= humanize($com['title'])?></h4>
             </div>
                    </td>
-            
-           
+
+
                 <td >
             <div class="col-md-12">
               <select class="form-control" name="commercial[<?= $i; ?>][fee_type]" id="fee_type_<?= $i; ?>" data-value="<?= $i; ?>" onchange="toggleRemark(this)">
@@ -87,7 +87,7 @@
               <br>
             </div>
             </td>
-            
+
             <td>
             <div class="col-md-12">
               <input type="text" id="onboarding_fee" data-toggle="tooltip" class="form-control" name="commercial[<?= $i; ?>][value]" value="<?= $com['value']?>">
@@ -130,8 +130,10 @@
         </div>
           <div class="col-md-12">
             <?php foreach($documents as $document): ?>
-              <a class="btn btn-success mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
-              <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+              <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
+              <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
+                <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+              <?php endif; ?>
               <?php endforeach; ?>
           </div>
           <input type="hidden" name="action" value="edit">
@@ -148,7 +150,9 @@
 
       <div class="col-md-12">
         <br>
+        <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
           <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
+          <?php endif;?>
         <br>
         <br>
       </div>
@@ -158,8 +162,12 @@
 <div class="row">
   <div class="col-md-12">
     <br><br>
-    <?php if($legal_verified): ?>
-      <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id); ?>" >Commercial & Documents Verified</a>
+    <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())): ?>
+      <?php if($legal_verified): ?>
+        <h5>Action needs to be taken by Legal Department</h5>
+        <a class="btn btn-success mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id.'?status=accept'); ?>" >Commercial & Documents Approved</a>
+        <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id.'?status=reject'); ?>" >Commercial & Documents Rejected</a>
+      <?php endif;?>
     <?php endif;?>
   </div>
 </div>

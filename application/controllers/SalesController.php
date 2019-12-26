@@ -144,9 +144,13 @@ class SalesController extends MY_Controller {
   }
 
   public function verify_documents_commercial($id) {
-
-    if ($this->sale->verfied_customer($id)) {
-      $this->msg = 'Documents Verified, Lead Converted to Customer';
+    $status = $this->input->get('status');
+    if ($this->sale->verfied_customer($id, $status)) {
+      if($status=='accept') {
+          $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+      } else {
+        $this->msg = 'Documents & Commercials Rejected. Status updated for Lead';
+      }
     } else {
       $this->msg = 'Error verifiying documents';
     }

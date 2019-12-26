@@ -182,45 +182,45 @@ class MY_Model extends CI_Model {
     $query = $this->db->get('neo_master.job_statuses');
     return $query->result();
   }
-  
+
   public function getJobTitle() {
     $query = $this->db->select("DISTINCT(job_title) ")->order_by('job_title')->get('neo_job.jobs');
     return $query->result();
   }
-  
+
   public function getJobCustomerNames($type="all") {
       $query='';
       if($type=='job'){
           $customer_id_array = $this->db->select('DISTINCT(customer_id) as customer_id')->get('neo_job.jobs')->result_array();
           if(count($customer_id_array)) {
-             $query = $this->db->where_in('id', array_column($customer_id_array, 'customer_id')); 
+             $query = $this->db->where_in('id', array_column($customer_id_array, 'customer_id'));
           }
       }
-    
+
     $query = $this->db->select("DISTINCT(customer_name) ")->order_by('customer_name')->get('neo_customer.customers');
     return $query->result();
   }
-  
-  public function getCustomerNames() {     
+
+  public function getCustomerNames() {
     $query = $this->db->select("DISTINCT(customer_name) ")->where('is_customer', TRUE)->order_by('customer_name')->get('neo_customer.customers');
     return $query->result();
   }
-  
-  public function getLeadCustomerNames() {     
+
+  public function getLeadCustomerNames() {
     $query = $this->db->select("DISTINCT(customer_name) ")->where('is_customer', FALSE)->order_by('customer_name')->get('neo_customer.customers');
     return $query->result();
   }
-  
+
   public function getPlacementOfficersNames() {
     $query = $this->db->select("DISTINCT(name) ")->where('user_role_id=', '14')->order_by('name')->get('neo_user.users');
     return $query->result();
   }
-  
+
   public function getRecruiterNames() {
     $query = $this->db->select("DISTINCT(name) ")->where('user_role_id=', '11')->order_by('name')->get('neo_user.users');
     return $query->result();
   }
-  
+
   public function getJobCode() {
     $query = $this->db->select("neo_job_code")->where('neo_job_code<>')->order_by('neo_job_code')->get('neo_job.jobs');
     return $query->result();
@@ -244,28 +244,28 @@ class MY_Model extends CI_Model {
     $query = $this->db->get('neo_master.lead_sources');
     return $query->result();
   }
-  
+
   public function getLeadManagedby() {
     $query = $this->db->select("DISTINCT(lead_managed_by) AS lead_managed_by")->where('is_customer', FALSE)->order_by('lead_managed_by')->get('neo_customer.customers');
     return $query->result();
   }
-  
+
   public function getSpocName() {
     $query = $this->db->select("DISTINCT(spoc_name) AS spoc_name")->where('spoc_name<>')->where_in('is_customer', FALSE)->order_by('spoc_name')->get('neo_customer.vw_spoc_details');
     return $query->result();
   }
-  
+
   public function getSpocEmail() {
     $query = $this->db->select("DISTINCT(spoc_email) AS spoc_email")->where('spoc_email<>')->where_in('is_customer', FALSE)->order_by('spoc_email')->get('neo_customer.vw_spoc_details');
     return $query->result();
   }
-  
+
   public function getSpocPhone() {
     $query = $this->db->select("DISTINCT(spoc_phone) AS spoc_phone")->where('spoc_phone<>')->where_in('is_customer', FALSE)->order_by('spoc_phone')->get('neo_customer.vw_spoc_details');
     return $query->result();
   }
 
-  
+
 
   public function getLearningTypes() {
     $query = $this->db->get('neo_master.learning_types');
@@ -303,7 +303,7 @@ class MY_Model extends CI_Model {
     $query = $this->db->get();
     return $query->result();
   }
-  
+
   public function getReligions() {
     return $this->db->get('neo_master.religions')->result();
   }
@@ -327,18 +327,18 @@ class MY_Model extends CI_Model {
     $query = $this->db->select("joined_candidates")->where('id', $id)->get('neo_job.vw_job_list');
     return $query->row();
   }
-  
-  
+
+
   public function getCustomerSpocName() {
     $query = $this->db->select("DISTINCT(spoc_name) AS spoc_name")->where('spoc_name<>')->where_in('is_customer', TRUE)->order_by('spoc_name')->get('neo_customer.vw_spoc_details');
     return $query->result();
   }
-  
+
   public function getCustomerSpocEmail() {
     $query = $this->db->select("DISTINCT(spoc_email) AS spoc_email")->where('spoc_email<>')->where_in('is_customer', TRUE)->order_by('spoc_email')->get('neo_customer.vw_spoc_details');
     return $query->result();
   }
-  
+
   public function getCustomerSpocPhone() {
     $query = $this->db->select("DISTINCT(spoc_phone) AS spoc_phone")->where('spoc_phone<>')->where_in('is_customer', TRUE)->order_by('spoc_phone')->get('neo_customer.vw_spoc_details');
     return $query->result();
@@ -381,12 +381,12 @@ class MY_Model extends CI_Model {
 
 
   function get_lead_data($requestData=array())
-  {     
+  {
     $order_by=" ";
     $search_type_id = isset($requestData['search_type_id']) ? intval($requestData['search_type_id']) : 0;
     $search_value = isset($requestData['search_value']) ? $requestData['search_value'] : '';
 
-    $data = array();   
+    $data = array();
 //    $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
     $TeamMemberIdList = implode(",",$this->session->userdata('user_hierarchy'));
     $columns = array(
@@ -448,6 +448,9 @@ class MY_Model extends CI_Model {
     else
     {
         $FilterCondition = "";
+        if($this->session->userdata['usr_authdet']['user_group_id']==17) {
+          $FilterCondition .= " AND lead_status_id=16";
+        }
         if ($search_type_id > 0)
         {
             switch($search_type_id)
@@ -469,10 +472,14 @@ class MY_Model extends CI_Model {
                     }
             }
 
+
+
             if (trim($FilterCondition) != "")
             {
                 $FilterCondition = " AND ($FilterCondition) ";
             }
+
+
         }
 
         $FilterQuery = "WITH R AS
@@ -482,9 +489,9 @@ class MY_Model extends CI_Model {
                                         C.business_vertical_id,
                                         C.lead_status_id,
                                         B.spoc_name
-                                        || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,                                        
+                                        || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
                                         B.spoc_email
-                                        || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,                                       
+                                        || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
                                         B.spoc_phone
                                         || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
                                         C.lead_managed_by,
@@ -520,11 +527,11 @@ class MY_Model extends CI_Model {
                         $HierarchyCondition";
 
       $totalFiltered = $this->db->query($FilterQuery)->row()->total_filtered;
-      
+
       if($columns[$requestData['order'][0]['column']]!='')
       {
           $order_by=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  ";
-      }     
+      }
       $FinalQuery = 	"WITH R AS
                         (
                             SELECT 	    C.id,
@@ -534,9 +541,9 @@ class MY_Model extends CI_Model {
                                         C.lead_status_id,
                                         LT.name AS lead_status_name,
                                         B.spoc_name
-                                        || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,                                        
+                                        || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
                                         B.spoc_email
-                                        || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,                                       
+                                        || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
                                         B.spoc_phone
                                         || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
                                         C.lead_managed_by,
@@ -581,17 +588,25 @@ class MY_Model extends CI_Model {
                     $order_by
                     LIMIT $limit
                     OFFSET $pg";
-    
+
       $result_recs=$this->db->query($FinalQuery);
-     
+
       $slno=$pg;
       $data = array();
       foreach ($result_recs->result() as $lead)
       {
-        $Actions = '<button class="btn btn-sm btn-warning" title="Update Lead Status" onclick="open_lead_popup(' . $lead->id . ',' . $lead->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
-        $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" onclick="edit_lead(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+        $Actions = '';
+        if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+          $Actions .= '<button class="btn btn-sm btn-warning" title="Update Lead Status" onclick="open_lead_popup(' . $lead->id . ',' . $lead->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+        }
+        if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+          $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" onclick="edit_lead(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+        }
         $Actions .= '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $lead->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
         $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';
+        if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())) {
+          $Actions .= '<a class="btn btn-sm btn-danger" title="Lead Commercials" href="'.base_url("/leads/commercials_documents/".$lead->id).'"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+        }
         if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
           $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
         }
