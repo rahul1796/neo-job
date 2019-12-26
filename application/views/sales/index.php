@@ -616,6 +616,7 @@ $('#name_input').bind('keypress', name_input);
   });
 
   function open_lead_popup(lead_id,lead_status_id) {
+    $('#customer_commercial_input').val('-1');
     $('#customer_commercial_input_container').addClass('hidden');
     $('#proposal_shared_input_container').addClass('hidden');
     if(lead_status_id == 16) {
@@ -1116,4 +1117,49 @@ $(document).ready(function () {
 //        $("#btn_search").click();
 //    }
 //});
+
+$(document).ready(function(){
+  
+    function proposaldocumentchecked(employer_id)
+    {
+        var proposal_shared=base_url+'SalesController/check_commercial_document/'+employer_id;
+        $.ajax({
+              url : proposal_shared,
+              type: "POST",
+              dataType: "JSON",
+              success: function(data)
+              {
+                  if (data.file_name.trim() == "")                  
+                  {  
+                      $('#customer_commercial_input').val('-1');
+                      swal(
+                          {
+                              title: "Proposal Document Missing!",
+                              text: "Please upload proposal Shared Document...",
+                              showCancelButton: false,
+                              confirmButtonText: "OK",
+                              closeOnConfirm: true
+                          },
+                          function(isConfirm) {
+                              if (isConfirm) {
+                                //$('#customer_commercial_input').val('-1');
+                              }
+                          }
+                      );
+                  }
+              },
+              error: function (jqXHR, textStatus, errorThrown)
+              {
+                  alert('Error get data from ajax');
+              }
+          });    
+    }
+   
+    $('#customer_commercial_input').on('change', function() 
+    {    
+        var employer_id = $('#employer_id').val();
+        if ( $('#customer_commercial_input').val() == '1' ) 
+        proposaldocumentchecked(employer_id);
+    });
+});
 </script>
