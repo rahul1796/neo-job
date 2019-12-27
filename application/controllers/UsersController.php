@@ -7,6 +7,7 @@ class UsersController extends MY_Controller {
 
   protected $redirectUrl = 'userscontroller/index';
 
+  protected $adminReportees = [2,18,19];
   protected $msg = '';
 
   public function __construct() {
@@ -38,7 +39,7 @@ class UsersController extends MY_Controller {
     $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
     $data['data']['fields']['updated_by'] = $data['data']['fields']['created_by'];
     if($this->validateRequest()){
-      $data['data']['fields']['reporting_manager_role_id'] = ($data['data']['fields']['user_role_id']=='2') ? 1 : $data['data']['fields']['reporting_manager_role_id'];
+      $data['data']['fields']['reporting_manager_role_id'] = (in_array((integer)$data['data']['fields']['user_role_id'], $this->adminReportees)) ? 1 : $data['data']['fields']['reporting_manager_role_id'];
       if($this->user->save($data['data']['fields'])) {
         $this->msg = 'User created successfully';
       } else {
@@ -75,7 +76,7 @@ class UsersController extends MY_Controller {
       // exit;
       $data['data']['fields']['updated_by'] = $this->session->userdata('usr_authdet')['id'];
       $data['data']['fields']['updated_at'] = date('Y-m-d H:i:s');
-      $data['data']['fields']['reporting_manager_role_id'] = ($data['data']['fields']['user_role_id']=='2') ? 1 : $data['data']['fields']['reporting_manager_role_id'];
+      $data['data']['fields']['reporting_manager_role_id'] = (in_array((integer)$data['data']['fields']['user_role_id'], $this->adminReportees)) ? 1 : $data['data']['fields']['reporting_manager_role_id'];
       if ($this->user->update($id, $data['data']['fields'])) {
         $this->msg = 'User updated successfully';
       } else {
@@ -121,10 +122,10 @@ class UsersController extends MY_Controller {
         $this->form_validation->set_rules('centers[]', 'Center Managers', 'required');
      }
     $this->form_validation->set_rules('user_role_id', 'User Role', 'required|is_natural_no_zero', ['is_natural_no_zero'=>'Select a Valid User Role']);
-    if($this->input->post('user_role_id')!=2) {
+    if(!in_array((integer)$this->input->post('user_role_id'), $this->adminReportees)) {
       $this->form_validation->set_rules('reporting_manager_role_id', 'Manager Role', 'required|is_natural_no_zero', ['is_natural_no_zero'=>'Select a Valid Manager Role']);
     } else {
-      $this->form_validation->set_rules('reporting_manager_role_id', 'Manager Role', 'is_natural_no_zero', ['is_natural_no_zero'=>'Select a Valid Manager Role']);
+      $this->form_validation->set_rules('reporting_manager_role_id', 'Manager Role', 'is_natural', ['is_natural_no_zero'=>'Select a Valid Manager Role']);
     }
     $this->form_validation->set_rules('reporting_manager_id', 'Reporting Manager', 'required|is_natural_no_zero', ['is_natural_no_zero'=>'Select Reporting Manager']);
     $this->form_validation->set_rules('email', 'Email', 'required|valid_email|callback_check_duplicate_email[neo_user.users]|max_length[50]');
@@ -234,7 +235,7 @@ class UsersController extends MY_Controller {
       $this->session->set_flashdata('message', $this->msg);
       redirect(base_url('pramaan/home'), 'refresh');
     }
-    
+
   public function generatePasswordResetLink($email) {
 
     $this->load->library('encryption');
@@ -268,11 +269,11 @@ class UsersController extends MY_Controller {
 
 
   }
-  
+
   /***** SUMIT****/
-   public function updateUserPassword() {         
-      $id = $this->session->userdata('usr_authdet')['id'];  
-      $confirmpassword = $this->input->post('confirmpassword'); 
+   public function updateUserPassword() {
+      $id = $this->session->userdata('usr_authdet')['id'];
+      $confirmpassword = $this->input->post('confirmpassword');
       if($this->user->updateUserPassword($id, $confirmpassword))
         {
 

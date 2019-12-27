@@ -100,25 +100,38 @@ class Sale extends MY_Model
   //   return $this->db->trans_status();
   // }
 
-  public function verfied_customer($id, $status) {
+  public function verfied_customer($id, $request) {
     $data['legally_verified'] = FALSE;
     $data['is_customer'] = FALSE;
     $data['updated_by'] = $this->session->userdata('usr_authdet')['id'];
     $data['updated_at'] = date('Y-m-d H:i:s');
 
-    $logs_data['lead_status_id'] = 21;
     $logs_data['customer_id'] = $id;
+    $logs_data['remarks'] = $request['remarks'];
     $logs_data['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
-    if($status=='accept') {
+    $this->db->trans_start();
+
+    if($request['status']=='accept') {
       $data['legally_verified'] = TRUE;
       $data['is_customer'] = TRUE;
       $logs_data['lead_status_id'] = 20;
     } else {
       $data['lead_status_id'] = 21;
-    }
-    $this->db->trans_start();
 
+      $this->db->where('id', $id);
+      $this->db->update($this->tableName, $data);
+      $this->db->reset_query();
+
+      $logs_data['lead_status_id'] = 21;
+
+      $this->db->insert('neo_customer.lead_logs', $logs_data);
+
+      $data['lead_status_id'] = 17;
+      $logs_data['lead_status_id'] = 17;
+    }
+
+    $this->db->reset_query();
     $this->db->where('id', $id);
     $this->db->update($this->tableName, $data);
 
@@ -291,6 +304,7 @@ class Sale extends MY_Model
     return $this->db->select('logs.* , status.name as status_name')->from('neo_customer.lead_logs as logs')
     ->join('neo_master.lead_statuses as status', 'logs.lead_status_id = status.id', 'LEFT')
     ->order_by('logs.created_at', 'DESC')
+    ->order_by('logs.id', 'DESC')
     ->where('logs.customer_id', $lead_id)->get()->result();
   }
 
