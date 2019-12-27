@@ -165,18 +165,19 @@
     <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())): ?>
       <?php if($legal_verified): ?>
         <h5>Action needs to be taken by Legal Department</h5>
-        <a class="btn btn-success mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id.'?status=accept'); ?>" >Commercial & Documents Approved</a>
-        <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id.'?status=reject'); ?>" >Commercial & Documents Rejected</a>
-      <?php endif;?>
+        <button type="button" class="btn btn-lg btn-danger" onclick="openCommercialStatusModal();">Update Commercial Status</button>
+        <?php endif;?>
     <?php endif;?>
   </div>
 </div>
   </div>
 </div>
 
+<?php $this->load->view('sales/commercial_approval_modal', ['customer_id'=>$id, 'commercial_options' => $commercial_options]); ?>
+
 <script type="text/javascript">
   $(document).ready(function() {
-    $('form#commercial-form').submit(function(){
+    $('#commercial-form').submit(function(){
       $(this).find(':input[type=submit]').prop('disabled', true);
     });
   });
@@ -211,4 +212,5 @@
       $('#remark_container_'+input_value).removeClass('hidden');
     }
   }
+
 </script>

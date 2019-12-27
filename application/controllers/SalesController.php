@@ -136,6 +136,7 @@ class SalesController extends MY_Controller {
     $data['fee_types_option'] = $this->fee_type;
     $data['remark_options'] = $this->sale->getCommercialRemarkTypes();
     $data['commercials'] = $this->commericalData($this->commercial_sub_fields, $id);
+    $data['commercial_options'] = $this->sale->getCommercialStatuses();
     $data['documents'] = $this->sale->findDocument($id);
     if (count($this->sale->getCommercials($id))==5 && count($data['documents'])==1) {
       $data['legal_verified'] = true;
@@ -143,19 +144,27 @@ class SalesController extends MY_Controller {
     return $data;
   }
 
-  public function verify_documents_commercial($id) {
-    $status = $this->input->get('status');
-    if ($this->sale->verfied_customer($id, $status)) {
-      if($status=='accept') {
+  public function verify_documents_commercial() {
+    $customer_id = $this->input->post('customer_id');
+    $request['status'] = $this->input->post('status');
+    $request['remarks'] = $this->input->post('remarks');
+    $data['status'] = false;
+    if ($this->sale->verfied_customer($customer_id, $request)) {
+      $data['status'] = true;
+      if($request['status']=='accept') {
           $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+          $data['message'] = $this->msg ;
       } else {
-        $this->msg = 'Documents & Commercials Rejected. Status updated for Lead';
+        $this->msg = 'Documents & Commercials Rejected. Status updated to ONHOLD for Lead';
+        $data['message'] = $this->msg ;
       }
     } else {
       $this->msg = 'Error verifiying documents';
+      $data['message'] = $this->msg ;
     }
     $this->session->set_flashdata('status', $this->msg);
-    redirect($this->redirectUrl, 'refresh');
+    echo json_encode($data);
+    exit;
   }
 
   public function commericals_store($id) {
@@ -549,7 +558,7 @@ class SalesController extends MY_Controller {
   }
 
   public function check_commercial_document($customer_id)
-  {	   
+  {
     //echo $customer_id;
       $result = array(
         "file_name" => ""
@@ -564,7 +573,7 @@ class SalesController extends MY_Controller {
       )
       SELECT 	COALESCE(RES.file_name,'') AS file_name
       FROM	RES
-      WHERE	RES.counter=1 ";  
+      WHERE	RES.counter=1 ";
 
       $response = $this->db->query($query);
       if ($response->num_rows() > 0)
