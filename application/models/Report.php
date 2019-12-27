@@ -186,8 +186,12 @@ class Report extends MY_Model {
   }
 
   private function adminCloneforReportViewer() {
-    if($this->session->userdata('usr_authdet')['user_group_id']==15 || $this->session->userdata('usr_authdet')['user_group_id']==16 || $this->session->userdata('usr_authdet')['user_group_id']==18){
+    if($this->session->userdata('usr_authdet')['user_group_id']==15
+      || $this->session->userdata('usr_authdet')['user_group_id']==16
+      || $this->session->userdata('usr_authdet')['user_group_id']==18) {
       return 1;
+    } else if ($this->session->userdata('usr_authdet')['user_group_id']==19) {
+      return $this->getSalesHeadId();
     }
     return $this->session->userdata('usr_authdet')['id'];
   }
