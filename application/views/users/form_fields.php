@@ -120,6 +120,7 @@
  var role_id = '<?= $fields['user_role_id'];?>' || '0';
  var updated_user_id = '<?= $user_id ?>';
  var reporting_manager_role_id = '<?= $fields['reporting_manager_role_id'] ?>' || '0';
+ var reporting_manager_is_admin_role= [2,18,19] ;
 
 
  $(document).ready(function() {
@@ -141,7 +142,7 @@
 
    if(parseInt(role_id)!=0) {
 
-    if(parseInt(role_id)!=2) {
+    if(!reporting_manager_is_admin_role.includes(parseInt(role_id))) {
       getReportingManagerRoles(role_id);
       if(parseInt(reporting_manager_role_id)!=0) {
         $('#reporting_manager_role_id').val(reporting_manager_role_id).change();
@@ -166,7 +167,7 @@
       }
     }
 
-    if(parseInt(role_id)==2) {
+    if(reporting_manager_is_admin_role.includes(parseInt(role_id))) {
       $('#reporting_manager_id_container').addClass('hidden');
       $('#reporting_manager_role_id_container').addClass('hidden');
     }
@@ -184,7 +185,7 @@
        $('#reporting_manager_id').html('');
        $('#reporting_manager_id').append($('<option>').text('Select Manager'));
      //}
-     if(selected_id==2) {
+     if(reporting_manager_is_admin_role.includes(parseInt(selected_id))) {
        $('#reporting_manager_id_container').addClass('hidden');
        $('#reporting_manager_role_id_container').addClass('hidden');
      } else {
@@ -197,7 +198,7 @@
        $('#center_user_select').addClass('hidden');
      }
      if(selected_id!=0) {
-        if(selected_id==2) {
+        if(reporting_manager_is_admin_role.includes(parseInt(selected_id))) {
           getReportingManagers(c_id);
           $('#reporting_manager_id').val(1).change();
         } else {

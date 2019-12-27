@@ -9,6 +9,10 @@ class MY_Model extends CI_Model {
     return $this->db->query('select * from neo_user.fn_get_recursive_team_data(?)', $user_id)->result_array();
   }
 
+  public function getSalesHeadId() {
+    return $this->db->where('email', 'manish.tiwari@labournet.in')->get('neo_user.users')->row_array()['id'];
+  }
+
   public function findReportiesByManager($manager_id){
     return $this->db->where('reporting_manager_id', $manager_id)->get('neo_user.users')->result_array();
   }
