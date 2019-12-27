@@ -16,7 +16,12 @@ class Reports extends MY_Controller {
     if($this->input->get('slug')=='getUserLogInReport' || $this->input->get('slug')=='getUsabilityReport') {
         $this->authorize(admin_only_reports());
     } else {
-        $this->authorize(reports());
+        if($this->input->get('slug')=='getPlacementDetailReport') {
+          $this->authorize(reports_falcon_user());
+        }
+        else {
+          $this->authorize(reports_falcon_user());;
+        }
     }
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Report', 'report');

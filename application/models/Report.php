@@ -113,13 +113,13 @@ class Report extends MY_Model {
       $select_column = "region_name AS \"REGION\", batch_code AS \"BATCH CODE\", batch_start_date AS \"BATCH START DATE\",
                         batch_end_date AS \"BATCH END DATE\", center_name AS \"CENTER NAME\", batch_customer_name AS \"IGS CUSTOMER NAME\",
                         batch_contract_id AS \"IGS CONTRACT ID\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NO#\", date_of_birth AS \"DATE OF BIRTH\",
-                        candidate_current_status AS \"CANDIDATE STATUS\", contact_no AS \"CONTACT NO\", interview_date AS \"INTERVIEWED DATE\",
+                        candidate_current_status AS \"CANDIDATE STATUS\", current_status_changed_on AS \"STATUS CHANGED ON\", contact_no AS \"CONTACT NO\", interview_date AS \"INTERVIEWED DATE\",
                         date_of_join AS \"DATE OF JOINING\", customer_name AS \"CUSTOMER NAME\", job_location AS \"JOB LOCATION\",
                         job_title AS \"JOB TITLE\",
                         job_qualification_pack AS \"JOB QP\", business_vertical AS \"BUSINESS VERTICAL\",
                         job_created_by AS \"JOB CREATED BY\", job_created_by_user_role AS \"USER ROLE\",
                         employment_type AS \"EMPLOYMENT TYPE\", salary AS \"SALARY (INR)\", state_name AS \"STATE\",
-                        district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LATER UPLOADED DATE\", certification_status AS \"CERTIFICATION STATUS\"";
+                        district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\", certification_status AS \"CERTIFICATION STATUS\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_placement_detail_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
@@ -129,10 +129,10 @@ class Report extends MY_Model {
                                   $data['gender_id'],
                                   $data['center_name'],
                                   $data['customer_id'],
-                                  $this->getDateWithMonthName($data['batch_start_from_date']),
-                                  $this->getDateWithMonthName($data['batch_start_to_date']),
-                                  $this->getDateWithMonthName($data['batch_end_from_date']),
-                                  $this->getDateWithMonthName($data['batch_end_to_date']),
+                                  $data['batch_start_from_date'],
+                                  $data['batch_start_to_date'],
+                                  $data['batch_end_from_date'],
+                                  $data['batch_end_to_date'],
                                   $data['qp_id'],
                                   $data['bv_id'],
                                   $data['state_id'],
@@ -186,7 +186,7 @@ class Report extends MY_Model {
   }
 
   private function adminCloneforReportViewer() {
-    if($this->session->userdata('usr_authdet')['user_group_id']==15) {
+    if($this->session->userdata('usr_authdet')['user_group_id']==15 || $this->session->userdata('usr_authdet')['user_group_id']==16 || $this->session->userdata('usr_authdet')['user_group_id']==18){
       return 1;
     }
     return $this->session->userdata('usr_authdet')['id'];
