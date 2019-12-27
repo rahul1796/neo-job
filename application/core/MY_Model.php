@@ -70,6 +70,10 @@ class MY_Model extends CI_Model {
       return $this->db->select('id, name')->get('neo_master.commercial_remark_types')->result();
   }
 
+  public function getCommercialStatuses() {
+    return $this->db->select('*')->where_in('id', [20,21])->get('neo_master.lead_statuses')->result();
+  }
+
   public function getRecruiters() {
     return $this->db->where('user_role_id', 11)->where('is_active', TRUE)->get('neo_user.users')->result();
   }

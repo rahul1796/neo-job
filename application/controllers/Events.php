@@ -7,6 +7,8 @@ class Events extends MY_Controller {
     parent::__construct();
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Calender', 'calender');
+    $this->load->helper('role_helper');
+    $this->authorize(calender_view_event_roles());
   }
 
   public function index() {
