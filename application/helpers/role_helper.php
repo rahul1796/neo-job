@@ -33,11 +33,11 @@ function lead_commercial_view_roles() {
 }
 
 function lead_commercial_update_roles() {
-    return [0,1,2,3,4,5,7,8,14,18];
+    return [0,1,2,3,4,5,7,8,14];
 }
 
 function lead_commercial_approve_roles() {
-    return [0,1,17,18];
+    return [0,1,17];
 }
 
 function lead_status_update_roles() {
@@ -174,11 +174,11 @@ function bulk_upload_clcs_roles() {
 }
 
 function add_edit_view_user_roles() {
-  return [0,1,18];
+  return [0,1];
 }
 
 function add_edit_view_center_roles() {
-  return [0,1,18];
+  return [0,1];
 }
 
 function center_active_deactive_roles() {
