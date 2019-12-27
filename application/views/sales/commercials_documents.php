@@ -125,9 +125,11 @@
         <br>
       </div>
       <?php if(count($documents)!=0): ?>
-        <div class="col-md-12">
-          <h5>To change the document file, delete existing document and upload again</h5>
-        </div>
+        <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
+          <div class="col-md-12">
+            <h5>To change the document file, delete existing document and upload again</h5>
+          </div>
+        <?php endif; ?>
           <div class="col-md-12">
             <?php foreach($documents as $document): ?>
               <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
