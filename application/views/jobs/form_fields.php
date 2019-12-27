@@ -59,12 +59,12 @@
     <div class="col-md-4">
       <label for="client_manager_name" class="label">Client Manager:</label>
       <select class="form-control neo-select2" name="client_manager_name" id="client_manager_name">
-          <option value="">Select Client Manager</option> 
-        
+          <option value="">Select Client Manager</option>
+
       </select>
       <?php echo form_error('client_manager_name'); ?>
   </div>
-    
+
 </div>
 
  <div class="form-group row">
@@ -78,7 +78,7 @@
       <input type="text" class="form-control" id="client_manager_phone" placeholder="" name="client_manager_phone" value="<?php echo $fields['client_manager_phone']; ?>" readonly>
    </div>
 
-</div> 
+</div>
 
 <div class="form-group row">
 <!--    <div class="col-md-3" style="display:none;">
@@ -455,13 +455,13 @@
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
   var customer_id = <?= (!empty($fields['customer_id'])) ? $fields['customer_id'] : 0 ?>;
   var client_manager_name = "<?= (!empty($fields['client_manager_name'])) ? $fields['client_manager_name'] : '' ?>";
- 
+
  $(document).ready(function() {
 
-   
+
     if(customer_id!=0){
-        getSpocName(customer_id); 
-   }  
+        getSpocName(customer_id);
+   }
 
    if(country_id!=0){
      getStates(country_id);
@@ -505,7 +505,7 @@
    $('#client_manager_name').on('change', function() {
      $('#client_manager_email').val($(this).find(":selected").attr('data-spocemail'));
      $('#client_manager_phone').val( $(this).find(":selected").attr('data-spocphone'));
-    
+
    });
 
 
@@ -581,12 +581,20 @@
  }
 </script>
 
-<script> 
+<script>
+
+  $(document).ready(function() {
+    $('#no_of_position').val(function (index, value) {
+      // If the element has a value, return it, else return "0"
+      return value || "0";
+    });
+  });
+
   $("form").submit(function() {
   var no_of_position = $('#no_of_position').val();
   var joined = $('#joined_candidates').val();
   //alert(joined);
-  
+
   if (parseInt(no_of_position) >= parseInt(joined))
   {
      //alert('Matching!');
