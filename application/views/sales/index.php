@@ -260,8 +260,8 @@
              <input type="hidden" name="lead_status_id" id="proposal_lead_status_id" value="">
              <div class="col-md-12">
                <br>
-               <label for="" class="label">Choose a file <span class="danger">(max size 3 MB & ppt, pptx, doc, docx, jpg, png, pdf files only)</span> </label>
-               <input type="file" name="file_name" id="proposal_shared_file_input" value="">
+               <label for="" class="label">Choose a file <span class="danger">(max size 3 MB & doc, docx, jpg, png, pdf files only)</span> </label>
+               <input type="file" name="file_name" id="proposal_shared_file_input" value="" onchange="return fileValidation()">
              </div>
            </form>
 
@@ -1013,4 +1013,35 @@ $(document).ready(function () {
 //        $("#btn_search").click();
 //    }
 //});
+$('#leadModel').on('hidden.bs.modal', function () {
+    $(this).find('form').trigger('reset');
+})
+function fileValidation(){
+    var fileInput = document.getElementById('proposal_shared_file_input');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.doc|\.docx|\.jpeg|\.jpg|\.png|\.pdf)$/i;
+    if(!allowedExtensions.exec(filePath)){
+      swal(
+            {
+                title: "Invalid File Type!",
+                text: "Please upload file having extensions .doc, .docx, .jpeg, .jpg, .png, .pdf only.",
+                showCancelButton: false,
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            })        
+        fileInput.value = '';
+        return false;
+    }
+}
+
+$("#potential_number").on("keypress keyup",function(){
+    if($(this).val() == '0'){
+      $(this).val('');  
+    }
+});
+$("#potential_order_value_per_month").on("keypress keyup",function(){
+    if($(this).val() == '0'){
+      $(this).val('');  
+    }
+});
 </script>
