@@ -457,7 +457,7 @@ class MY_Model extends CI_Model {
     {
         $FilterCondition = "";
         if($this->session->userdata['usr_authdet']['user_group_id']==17) {
-          $FilterCondition .= " AND lead_status_id=16";
+          $FilterCondition .= " AND lead_status_id IN (16,21)";
         }
         if ($search_type_id > 0)
         {
@@ -612,13 +612,13 @@ class MY_Model extends CI_Model {
         }
         $Actions .= '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $lead->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
         $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';
-        if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())) {
+        if( $lead->lead_status_id==16 || $lead->lead_status_id ==21) {
           $Actions .= '<a class="btn btn-sm " title="Lead Commercials" href="'.base_url("/leads/commercials_documents/".$lead->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
         }
         if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
           $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $lead->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
         }
-
+        //in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles()) ||
 
         $row=array();
         $slno++;
