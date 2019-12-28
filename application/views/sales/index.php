@@ -642,6 +642,8 @@ $('#name_input').bind('keypress', name_input);
 
         if(lead_status_id==19 && op.id!=1) {
           options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
+        } else if(lead_status_id==21 && op.id==18) {
+          options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
         } else {
           if(!(lead_status_id==18 && op.id ==1) && !(lead_status_id!=18 && op.id ==19)) {
             if(lead_status_id <= op.id) {
@@ -1028,7 +1030,7 @@ function fileValidation(){
                 showCancelButton: false,
                 confirmButtonText: "OK",
                 closeOnConfirm: true
-            })        
+            })
         fileInput.value = '';
         return false;
     }
@@ -1036,12 +1038,12 @@ function fileValidation(){
 
 $("#potential_number").on("keypress keyup",function(){
     if($(this).val() == '0'){
-      $(this).val('');  
+      $(this).val('');
     }
 });
 $("#potential_order_value_per_month").on("keypress keyup",function(){
     if($(this).val() == '0'){
-      $(this).val('');  
+      $(this).val('');
     }
 });
 </script>

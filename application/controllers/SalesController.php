@@ -155,7 +155,7 @@ class SalesController extends MY_Controller {
           $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
           $data['message'] = $this->msg ;
       } else {
-        $this->msg = 'Documents & Commercials Rejected. Status updated to ONHOLD for Lead';
+        $this->msg = 'Documents & Commercials Rejected. Resubmission of commercial required';
         $data['message'] = $this->msg ;
       }
     } else {
