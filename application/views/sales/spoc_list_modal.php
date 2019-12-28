@@ -100,7 +100,7 @@ function proposaldocumentchecked(employer_id)
                       swal(
                           {
                               title: "Proposal Document Missing!",
-                              text: "Please upload proposal Shared Document...",
+                              text: "Please upload proposal Document.",
                               showCancelButton: false,
                               confirmButtonText: "OK",
                               closeOnConfirm: true
