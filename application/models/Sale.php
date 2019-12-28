@@ -63,7 +63,11 @@ class Sale extends MY_Model
   }
 
   public function saveCommercials($id, $data, $data_document) {
+    $customer_old_data = $this->db->where('id', $id)->get('neo_customer.customers')->row_array();
+    $this->db->reset_query();
     $customer_data['has_commercial'] = TRUE;
+    $customer_data['is_customer'] = FALSE;
+    $customer_data['lead_status_id'] = 16;
     $this->db->trans_start();
     if($this->db->where('customer_id', $id)->get('neo_customer.customer_commercials')->num_rows()>0){
       $this->db->reset_query();
@@ -72,7 +76,16 @@ class Sale extends MY_Model
     $this->db->reset_query();
     $this->db->insert_batch('neo_customer.customer_commercials', $data);
     $this->db->reset_query();
-    $this->db->update('neo_customer.customers', $customer_data);
+    $this->db->where('id', $id)->update('neo_customer.customers', $customer_data);
+
+    if($customer_old_data['lead_status_id']!=16) {
+      $lead_logs_data['lead_status_id'] = 16;
+      $lead_logs_data['customer_id'] = $customer_old_data['id'];
+      $lead_logs_data['remarks'] = 'Commercials & Document Updated';
+      $lead_logs_data['created_by'] = $this->session->userdata('usr_authdet')['id'];
+      $this->db->reset_query();
+      $this->db->insert('neo_customer.lead_logs',$lead_logs_data);
+    }
 
     if(!empty($data_document['file_name'])){
         $this->saveDocument($id, $data_document);
@@ -119,16 +132,19 @@ class Sale extends MY_Model
     } else {
       $data['lead_status_id'] = 21;
 
-      $this->db->where('id', $id);
-      $this->db->update($this->tableName, $data);
-      $this->db->reset_query();
+      //this one is puuting it on hold
+      // $this->db->where('id', $id);
+      // $this->db->update($this->tableName, $data);
+      // $this->db->reset_query();
 
       $logs_data['lead_status_id'] = 21;
 
-      $this->db->insert('neo_customer.lead_logs', $logs_data);
+      //this one is puuting it on hold
+      // $this->db->insert('neo_customer.lead_logs', $logs_data);
 
-      $data['lead_status_id'] = 17;
-      $logs_data['lead_status_id'] = 17;
+      //this one is puuting it on hold
+      // $data['lead_status_id'] = 17;
+      // $logs_data['lead_status_id'] = 17;
     }
 
     $this->db->reset_query();
