@@ -42,6 +42,8 @@
 <script type="text/javascript">
 
 function openCommercialStatusModal() {
+  $("#commercial_form")[0].reset();
+  $('#commercial_status_selector').val(0);
   $('#commercial_form_container').addClass('hidden');
   $('#commercial-approve-modal').modal();
   $('#commercial-form-error-validation').addClass('hidden');
@@ -65,7 +67,15 @@ $('#commercial_status_selector').change(function() {
     $('#status').val('reject');
 
   } else {
-    alert('Select a Valid Status');
+    swal(
+            {
+                title: "Select a Valid Status!",
+                text: "",
+                showCancelButton: false,
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            })
+    //alert('Select a Valid Status');
     $('#update-status').prop('disabled', true);
   }
 });
@@ -90,7 +100,5 @@ function updateCommercialStatusLegalUser() {
     alert('something went wrong, try again later');
   });
 }
-
-
 
 </script>
