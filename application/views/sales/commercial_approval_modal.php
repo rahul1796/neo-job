@@ -23,7 +23,7 @@
                <input type="hidden" name="lead_status_id" id="lead_status_id" value="">
                <input type="hidden" name="status" id="status" value="">
                <input type="hidden" id="customer_id" name="customer_id" value="<?= $customer_id?>">
-               <input type="text" id="commercial-remarks" name="remarks" max="150" class="form-control" placeholder="Enter remarks"  value="">
+               <input type="text" id="commercial-remarks" name="remarks" maxlength="150" class="form-control" placeholder="Enter remarks"  value="">
                <span class="text-danger hidden" id="commercial-form-error-validation">Remark Field is mandatory</span>
              </div>
            </form>

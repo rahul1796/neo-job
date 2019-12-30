@@ -147,19 +147,19 @@
 
     <div class="col-md-4">
         <label for="domain_skills" class="label">Domain Skills:</label>
-        <input type="text" class="form-control" id="domain_skills" placeholder="Enter Domain Skills" name="domain_skills"  value="<?php echo $fields['domain_skills']; ?>">
+        <input type="text" class="form-control" id="domain_skills" maxlength="500" placeholder="Enter Domain Skills" name="domain_skills"  value="<?php echo $fields['domain_skills']; ?>">
         <?php echo form_error('domain_skills'); ?>
     </div>
 
     <div class="col-md-4">
         <label for="soft_skills" class="label">Soft Skills:</label>
-        <input type="text" class="form-control" id="soft_skills" placeholder="Enter Soft Skills" name="soft_skills"  value="<?php echo $fields['soft_skills']; ?>">
+        <input type="text" class="form-control" id="soft_skills" maxlength="500" placeholder="Enter Soft Skills" name="soft_skills"  value="<?php echo $fields['soft_skills']; ?>">
         <?php echo form_error('soft_skills'); ?>
     </div>
 
     <div class="col-md-4">
         <label for="type_of_workplace" class="label">Type of Workplace:</label>
-        <input type="text" class="form-control" id="type_of_workplace" placeholder="Enter Type of Workplace" name="type_of_workplace"  value="<?php echo $fields['type_of_workplace']; ?>">
+        <input type="text" class="form-control" id="type_of_workplace" maxlength="500" placeholder="Enter Type of Workplace" name="type_of_workplace"  value="<?php echo $fields['type_of_workplace']; ?>">
         <?php echo form_error('type_of_workplace'); ?>
     </div>
 </div>

@@ -136,9 +136,9 @@ class JobsController extends MY_Controller {
     $this->form_validation->set_rules('offered_ctc_from', 'Minimum CTC per Month', 'required|is_natural|greater_than_equal_to[10]');
     $this->form_validation->set_rules('offered_ctc_to', 'Maximum CTC per Month', 'required|is_natural|less_than_equal_to[50000000]|callback_compare_number[offered_ctc_from]');
     //$this->form_validation->set_rules('key_skills', 'Key Skills', 'required');
-    $this->form_validation->set_rules('domain_skills', 'Domain Skills', 'required');
-    $this->form_validation->set_rules('soft_skills', 'Soft Skills', 'required');
-    $this->form_validation->set_rules('type_of_workplace', 'Type of Workplace', 'required');
+    $this->form_validation->set_rules('domain_skills', 'Domain Skills', 'required|max_length[500]');
+    $this->form_validation->set_rules('soft_skills', 'Soft Skills', 'required|max_length[500]');
+    $this->form_validation->set_rules('type_of_workplace', 'Type of Workplace', 'required|max_length[500]');
     $this->form_validation->set_rules('education_id', 'Education', 'required|is_natural');
     $this->form_validation->set_rules('qualification_pack_id', 'Qualification Pack', 'required|is_natural');
     //$this->form_validation->set_rules('job_location', 'Job Location', 'required');
