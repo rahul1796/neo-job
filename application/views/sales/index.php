@@ -33,7 +33,10 @@
 
   </div>
 
+  <?php if (in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_add_roles())): ?>
     <a class="btn btn-success btn-min-width mr-1 mb-1" href="<?php echo base_url("leads/create")?>" style="float: right;"><i class="icon-android-add"></i>Add Lead</a>
+  <?php endif; ?>
+
 
     <!-- File export table -->
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
@@ -613,6 +616,9 @@ $('#name_input').bind('keypress', name_input);
     } else {
       $('.lead_schedule_input_container').addClass('hidden');
     }
+    if(value==0){
+      $('#update-status').prop('disabled', true);
+    }
   });
 
   function open_lead_popup(lead_id,lead_status_id) {
@@ -643,6 +649,8 @@ $('#name_input').bind('keypress', name_input);
         if(lead_status_id==19 && op.id!=1) {
           options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
         } else if(lead_status_id==21 && op.id==18) {
+          options = $('<option>').attr('value', 0).text('Select an Option');
+          $('#lead_status_selector').append(options);
           options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
         } else {
           if(!(lead_status_id==18 && op.id ==1) && !(lead_status_id!=18 && op.id ==19)) {
@@ -656,7 +664,12 @@ $('#name_input').bind('keypress', name_input);
     });
 
     //$('#lead_status_selector').append(options);
-    $('#lead_status_selector').val(lead_status_id).change();
+    if(lead_status_id!=21) {
+        $('#lead_status_selector').val(lead_status_id).change();
+    } else {
+      $('#lead_status_selector').val(0).change();
+    }
+
     //$('#lead_status_selector').val($('#lead_status_cell_'+lead_id).attr('data-value')).change();
 
   }
@@ -730,6 +743,10 @@ $('#name_input').bind('keypress', name_input);
     if(lead_status_id==16){
       lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
     }
+    if(lead_status_id==0){
+      alert('Select a Valid Value');
+    }
+
   }
 
   function lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id) {

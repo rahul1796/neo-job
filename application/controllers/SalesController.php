@@ -138,6 +138,7 @@ class SalesController extends MY_Controller {
     $data['commercials'] = $this->commericalData($this->commercial_sub_fields, $id);
     $data['commercial_options'] = $this->sale->getCommercialStatuses();
     $data['documents'] = $this->sale->findDocument($id);
+    $data['customer'] = $this->sale->find($id);
     if (count($this->sale->getCommercials($id))==5 && count($data['documents'])==1) {
       $data['legal_verified'] = true;
     }
