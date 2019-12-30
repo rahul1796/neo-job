@@ -127,14 +127,20 @@
       <?php if(count($documents)!=0): ?>
         <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
           <div class="col-md-12">
+          <?php if(($customer['lead_status_id']==16 && $customer['has_commercial']==false) || $customer['lead_status_id']==21):?>
             <h5>To change the document file, delete existing document and upload again</h5>
+          <?php else: ?>
+              <h5>Until Legal Team Action. These Items are locked for editing.</h5>
+          <?php endif;?>
           </div>
         <?php endif; ?>
           <div class="col-md-12">
             <?php foreach($documents as $document): ?>
               <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
               <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
-                <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+                <?php if($customer['lead_status_id']==21):?>
+                  <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+                <?php endif; ?>
               <?php endif; ?>
               <?php endforeach; ?>
           </div>
@@ -153,8 +159,10 @@
       <div class="col-md-12">
         <br>
         <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
-          <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
-          <?php endif;?>
+            <?php if(($customer['lead_status_id']==16 && $customer['has_commercial']==false) || $customer['lead_status_id']==21): ?>
+              <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
+            <?php endif;?>
+        <?php endif;?>
         <br>
         <br>
       </div>
@@ -165,9 +173,9 @@
   <div class="col-md-12">
     <br><br>
     <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())): ?>
-      <?php if($legal_verified): ?>
+      <?php if($legal_verified && $customer['lead_status_id']==16): ?>
         <h5>Action needs to be taken by Legal Department</h5>
-        <button type="button" class="btn btn-lg btn-danger" onclick="openCommercialStatusModal();">Update Commercial Status</button>
+        <button type="button" class="btn btn-danger" onclick="openCommercialStatusModal();">Update Commercial Status</button>
         <?php endif;?>
     <?php endif;?>
   </div>
