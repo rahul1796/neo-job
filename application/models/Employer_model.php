@@ -351,11 +351,12 @@ class Employer_model extends CI_Model
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 15;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 
@@ -390,11 +391,12 @@ class Employer_model extends CI_Model
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 12;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 		$this->db->reset_query();
@@ -433,11 +435,12 @@ class Employer_model extends CI_Model
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 17;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 
