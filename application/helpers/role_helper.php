@@ -13,7 +13,7 @@ function calender_add_event_roles() {
 }
 
 function lead_add_roles() {
-  return [0,1,2,3,4,5,7,8,14,18,19];
+  return [0,1,2,3,4,5,7,8,14,17,18,19];
 }
 
 function lead_update_roles() {

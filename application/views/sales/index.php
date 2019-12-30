@@ -33,7 +33,10 @@
 
   </div>
 
+  <?php if (isset($user_group_id)&& in_array($user_group_id, lead_add_roles())): ?>
     <a class="btn btn-success btn-min-width mr-1 mb-1" href="<?php echo base_url("leads/create")?>" style="float: right;"><i class="icon-android-add"></i>Add Lead</a>
+  <?php endif; ?>
+    
 
     <!-- File export table -->
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
