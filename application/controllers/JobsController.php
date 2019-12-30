@@ -130,7 +130,7 @@ class JobsController extends MY_Controller {
     $this->form_validation->set_error_delimiters('<span class="text text-danger">', '</span>');
     $this->form_validation->set_rules('job_title', 'Job Title', 'required');
     $this->form_validation->set_rules('job_description', 'Job Description', 'required');
-    $this->form_validation->set_rules('no_of_position', 'No of Position', 'required|is_natural');
+    $this->form_validation->set_rules('no_of_position', 'No of Position', 'required|is_natural_no_zero');
     $this->form_validation->set_rules('customer_id', 'Client', 'required|is_natural');
     $this->form_validation->set_rules('job_expiry_date', 'Job Expiry Date', 'required');
     $this->form_validation->set_rules('offered_ctc_from', 'Minimum CTC per Month', 'required|is_natural|greater_than_equal_to[10]');
