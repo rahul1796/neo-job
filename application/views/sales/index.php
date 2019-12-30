@@ -621,6 +621,17 @@ $('#name_input').bind('keypress', name_input);
     }
   });
 
+  $(document).ready(function () {
+        $('#customer_commercial_input').change(function () {
+          if($(this).val()==0){
+            $('#update-status').prop('disabled', false);
+          }
+          else {
+            $('#update-status').prop('disabled', true);
+          }
+        });
+    });
+
   function open_lead_popup(lead_id,lead_status_id) {
     $('#customer_commercial_input').val('-1');
     $('#customer_commercial_input_container').addClass('hidden');
