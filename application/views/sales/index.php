@@ -625,7 +625,7 @@ $('#name_input').bind('keypress', name_input);
         $('#customer_commercial_input').change(function () {
           if($(this).val()==0){
             $('#update-status').prop('disabled', false);
-          }         
+          }
         });
     });
 
@@ -762,7 +762,7 @@ $('#name_input').bind('keypress', name_input);
       swal(
           {
               title: "",
-              text: "Sure about commercial of this item? You Selected "+commercial_text ,
+              text: 'Are you sure on changing the commercial type for this lead to "'+commercial_text+'" !' ,
               showCancelButton: true,
               confirmButtonText: "Yes",
               cancelButtonText: "No, Cancel!",
