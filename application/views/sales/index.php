@@ -625,10 +625,7 @@ $('#name_input').bind('keypress', name_input);
         $('#customer_commercial_input').change(function () {
           if($(this).val()==0){
             $('#update-status').prop('disabled', false);
-          }
-          else {
-            $('#update-status').prop('disabled', true);
-          }
+          }         
         });
     });
 
