@@ -125,8 +125,10 @@ class SalesController extends MY_Controller {
 
 
   public function commercials_documents($id) {
+    $customer = $this->sale->find($id);
+    $this->commercial_redirect($customer);
     $data = $this->set_commercial_document_data($id);
-    //$data['commercials_base'] = $this->commercials_fields;
+    $data['customer'] = $customer;
     $this->loadFormViews('commercials_documents',$data);
   }
 
@@ -138,11 +140,23 @@ class SalesController extends MY_Controller {
     $data['commercials'] = $this->commericalData($this->commercial_sub_fields, $id);
     $data['commercial_options'] = $this->sale->getCommercialStatuses();
     $data['documents'] = $this->sale->findDocument($id);
-    $data['customer'] = $this->sale->find($id);
     if (count($this->sale->getCommercials($id))==5 && count($data['documents'])==1) {
       $data['legal_verified'] = true;
     }
     return $data;
+  }
+
+  public function commercial_redirect($customer) {
+    if($customer['is_customer'] == true) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    } else if (!(in_array($customer['lead_status_id'], [20,21,16]))) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    } else if (!(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_view_roles()))) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    }
   }
 
   public function verify_documents_commercial() {
@@ -172,7 +186,12 @@ class SalesController extends MY_Controller {
     //echo var_dump($this->input->post());
   //  $data = $this->input->post('commercial');
     //
+
+    $customer = $this->sale->find($id);
+    $this->commercial_redirect($customer);
     $data = $this->set_commercial_document_data($id);
+    $data['customer'] = $customer;
+
     if($this->validateCommercial()){
       $data_document['customer_id'] = $id;
       $data_document['created_by'] = $this->session->userdata('usr_authdet')['id'];
