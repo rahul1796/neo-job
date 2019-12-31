@@ -137,7 +137,7 @@
           <?php if(($customer['lead_status_id']==16 && $customer['has_commercial']==false) || $customer['lead_status_id']==21):?>
             <h5 class="text-black">To change the document file, delete existing document and upload again</h5>
           <?php else: ?>
-              <h5 class="text-black">Until Legal Team Action. These Items are locked for editing.</h5>
+              <h5 class="text-black">Editing or Re-submitting document is locked until it is not verified by Legal !</h5>
           <?php endif;?>
           </div>
         <?php endif; ?>
@@ -170,7 +170,7 @@
               <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
             <?php endif;?>
         <?php endif;?>
-       
+
       </div>
     </div>
 </form>
@@ -180,7 +180,7 @@
     <br>
     <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())): ?>
       <?php if($legal_verified && $customer['lead_status_id']==16): ?>
-        <h5 class="text-black">Action needs to be taken by Legal Department</h5>
+        <h5 class="text-black">Click the below button to provide Legal Approval</h5>
         <button type="button" class="btn btn-danger" onclick="openCommercialStatusModal();">Update Commercial Status</button>
         <?php endif;?>
     <?php endif;?>
