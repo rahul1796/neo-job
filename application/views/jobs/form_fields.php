@@ -13,12 +13,14 @@
     }
 
 </style>
+
+
 <?php $this->load->view('layouts\soft_error'); ?>
 <div class="form-group row" style="margin-top: 20px;">
      <div class="col-md-4">
         <label for="customer_id" class="label">Client:</label>
-        <select class="form-control select2-neo" name="customer_id">
-            <option value="">Select Client</option>
+        <select class="form-control neo-select2" name="customer_id" id="customer_id">
+        <option value="">Select Client</option>
             <?php foreach($customer_options as $customer):?>
                 <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->customer_name; ?></option>
             <?php endforeach; ?>
@@ -41,10 +43,12 @@
 
 <div class="form-group row">
     <div class="col-md-4">
+    <input type="hidden" value="<?= ($joined_candidates->joined_candidates ?? 0); ?>" id="joined_candidates">
         <label for="no_of_position" class="label">Number of Vacancies:</label>
         <input type="tel" class="form-control" id="no_of_position" placeholder="Enter Number of Vacancies" name="no_of_position" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "3" value="<?php echo $fields['no_of_position']; ?>">
         <?php echo form_error('no_of_position'); ?>
     </div>
+
 
     <div class="col-md-4">
         <label for="job_expiry_date" class="label">Job Expiry Date:</label>
@@ -53,10 +57,27 @@
     </div>
 
     <div class="col-md-4">
-        <label for="customer_manager" class="">Client Manager:</label>
-        <input type="text" class="form-control" id="customer_manager" placeholder="Enter Client Manager" name="customer_manager" value="<?php echo $fields['customer_manager']; ?>">
-        <?php echo form_error('customer_manager'); ?>
-    </div>
+      <label for="client_manager_name" class="label">Client Manager:</label>
+      <select class="form-control neo-select2" name="client_manager_name" id="client_manager_name">
+          <option value="">Select Client Manager</option>
+
+      </select>
+      <?php echo form_error('client_manager_name'); ?>
+  </div>
+
+</div>
+
+ <div class="form-group row">
+    <div class="col-md-6">
+      <label for="spoc_email" class="">Client Manager Email:</label>
+      <input type="text" class="form-control" id="client_manager_email" placeholder="" name="client_manager_email" value="<?php echo $fields['client_manager_email']; ?>" readonly>
+  </div>
+
+  <div class="col-md-6">
+      <label for="district_id" class="">Client Manager Phone:</label>
+      <input type="text" class="form-control" id="client_manager_phone" placeholder="" name="client_manager_phone" value="<?php echo $fields['client_manager_phone']; ?>" readonly>
+   </div>
+
 </div>
 
 <div class="form-group row">
@@ -118,10 +139,28 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
         <label for="key_skills" class="label">Key Skills:</label>
         <textarea class="form-control" name="key_skills" placeholder="Enter Key Skill eg: (Java, Plumbing, PHP, hardware)" maxlength="255" title="key_skills" id="key_skills" value=""><?php echo $fields['key_skills']; ?></textarea>
-        <?php echo form_error('key_skills'); ?>
+        <?php //echo form_error('key_skills'); ?>
+    </div> -->
+
+    <div class="col-md-4">
+        <label for="domain_skills" class="label">Domain Skills:</label>
+        <input type="text" class="form-control" id="domain_skills" maxlength="500" placeholder="Enter Domain Skills" name="domain_skills"  value="<?php echo $fields['domain_skills']; ?>">
+        <?php echo form_error('domain_skills'); ?>
+    </div>
+
+    <div class="col-md-4">
+        <label for="soft_skills" class="label">Soft Skills:</label>
+        <input type="text" class="form-control" id="soft_skills" maxlength="500" placeholder="Enter Soft Skills" name="soft_skills"  value="<?php echo $fields['soft_skills']; ?>">
+        <?php echo form_error('soft_skills'); ?>
+    </div>
+
+    <div class="col-md-4">
+        <label for="type_of_workplace" class="label">Type of Workplace:</label>
+        <input type="text" class="form-control" id="type_of_workplace" maxlength="500" placeholder="Enter Type of Workplace" name="type_of_workplace"  value="<?php echo $fields['type_of_workplace']; ?>">
+        <?php echo form_error('type_of_workplace'); ?>
     </div>
 </div>
 
@@ -192,7 +231,7 @@
 
     <div class="col-md-6">
       <label for="district_id" class="label">Assign Recruiter:</label>
-      <select class="select2-neo form-control" multiple name="recruiters[]">
+      <select class="neo-select2 form-control" multiple name="recruiters[]">
         <option value="">Select Recruiters</option>
         <?php foreach($recruiters_options as $option): ?>
             <option value="<?php echo $option->id; ?>" <?= (in_array($option->id, $fields['recruiters'])) ? 'selected':'' ?> ><?php echo $option->name; ?></option>
@@ -203,7 +242,7 @@
 
     <div class="col-md-6">
       <label for="district_id" class="label">Assign Placement Manager:</label>
-      <select class="select2-neo form-control" multiple name="placement_officers[]">
+      <select class="neo-select2 form-control" multiple name="placement_officers[]">
         <option value="">Select Placement Officers</option>
         <?php foreach($placement_officer_options as $option): ?>
             <option value="<?php echo $option->id; ?>" <?= (in_array($option->id, $fields['placement_officers'])) ? 'selected':'' ?> ><?php echo $option->name; ?></option>
@@ -396,59 +435,13 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
 <script type="text/javascript">
- $(document).ready(function() {
-   $('#country_id').on('change', function() {
-     var c_id = $(this).val();
-     var request = $.ajax({
-       url: "<?php echo base_url(); ?>CandidatesController/getStates/"+c_id,
-       type: "GET",
-     });
 
-     request.done(function(msg) {
-       var response = JSON.parse(msg);
-       // alert(response);
-       $('#state_id').html('');
-       $('#state_id').append($('<option>').text('Select State').attr('value', 0));
-       response.forEach(function(state) {
-          $('#state_id').append($('<option>').text(state.name).attr('value', state.id));
-       })
-       console.log(response);
-     });
-
-     request.fail(function(jqXHR, textStatus) {
-       alert( "Request failed: " + textStatus );
-     });
-   });
-
-   $('#state_id').on('change', function() {
-     $('#district_id').html('');
-     $('#district_id').append($('<option>').text('Select District').attr('value', 0));
-     var s_id = $(this).val();
-     var request = $.ajax({
-       url: "<?php echo base_url(); ?>CandidatesController/getDistricts/"+s_id,
-       type: "GET",
-     });
-
-     request.done(function(msg) {
-       var response = JSON.parse(msg);
-       // alert(response);
-
-       response.forEach(function(district) {
-          $('#district_id').append($('<option>').text(district.name).attr('value', district.id));
-       })
-       console.log(response);
-     });
-
-     request.fail(function(jqXHR, textStatus) {
-       alert( "Request failed: " + textStatus );
-     });
-   });
-
- });
 
  $(document).ready(function() {
-
-   $('.select2-neo').select2();
+   $('.neo-select2').select2({
+       placeholder: 'Select an option',
+       allowClear: true
+   });
  });
 
  $('#job_expiry_date').on('changeDate', function(ev){
@@ -460,9 +453,15 @@
   var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 0 ?>;
   var state_id = <?= (!empty($fields['state_id'])) ? $fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
-
+  var customer_id = <?= (!empty($fields['customer_id'])) ? $fields['customer_id'] : 0 ?>;
+  var client_manager_name = "<?= (!empty($fields['client_manager_name'])) ? $fields['client_manager_name'] : '' ?>";
 
  $(document).ready(function() {
+
+
+    if(customer_id!=0){
+        getSpocName(customer_id);
+   }
 
    if(country_id!=0){
      getStates(country_id);
@@ -493,6 +492,22 @@
         getDistricts(state_id);
      }
    });
+
+   $('#customer_id').on('change', function() {
+    let customer_id = $(this).val();
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0).prop('selected', true).change());
+     if(customer_id!=0) {
+        getSpocName(customer_id);
+     }
+   });
+
+   $('#client_manager_name').on('change', function() {
+     $('#client_manager_email').val($(this).find(":selected").attr('data-spocemail'));
+     $('#client_manager_phone').val( $(this).find(":selected").attr('data-spocphone'));
+
+   });
+
 
  });
 
@@ -540,4 +555,64 @@
      alert( "Select Valid Value for the Country" );
    });
  }
+
+
+ function getSpocName(id) {
+   var request = $.ajax({
+     url: "<?php echo base_url(); ?>Jobscontroller/getSpocDetails/"+id,
+     type: "GET",
+     async: false,
+   });
+   request.done(function(msg) {
+     var response = JSON.parse(msg);
+      //alert(response);
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('').attr('value', 0).prop('selected', true));
+     response.forEach(function(spoc) {
+        $('#client_manager_name').append($('<option>').text(spoc.spoc_name).attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
+     });
+     $('#client_manager_name').val(client_manager_name).change();
+   });
+
+   request.fail(function(jqXHR, textStatus) {
+     alert( "Select Valid Value for the Customer" );
+   });
+
+ }
+</script>
+
+<script>
+
+  $(document).ready(function() {
+    $('#no_of_position').val(function (index, value) {
+      // If the element has a value, return it, else return "0"
+      return value || "0";
+    });
+  });
+
+  $("form").submit(function() {
+  var no_of_position = $('#no_of_position').val();
+  var joined = $('#joined_candidates').val();
+  //alert(joined);
+
+  if (parseInt(no_of_position) >= parseInt(joined))
+  {
+     //alert('Matching!');
+     return true;
+  }
+  else
+  {
+    swal({
+            title: 'No of openings cant be less than joined count.',
+            text: 'it must be equal or greater than joined count!',
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+            buttons: ['yes, forsure', 'no, thanks']
+        });
+    //alert('No of openings cant be less than joined count. it must be equal or greater than joined count!');
+    return false;
+  }
+});
+
 </script>

@@ -441,16 +441,21 @@
 					          <li class=" nav-item"><a href="<?php echo base_url('qualificationpackscontroller/csv_form/');?>"><i class="fa fa-certificate"></i><span data-i18n="nav.dash.main" class="menu-title">Batch</span></a></li>
 					        <?php endif; ?>
 
-						<?php if (in_array($user['user_group_id'], reports())): ?>
-					          <li class=" nav-item" style="margin-bottom: 50px;"><a href="#"><i class="fa fa-file"></i><span data-i18n="nav.dash.main" class="menu-title">Reports</span></a>
-											<ul><li><a href="<?= base_url('reports?slug=getUserLogInReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">User Login Activity Report</span></a></li></ul>
-											<ul><li><a href="<?= base_url('reports?slug=getUsabilityReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">User Usability Report</span></a></li></ul>
-											<ul><li><a href="<?= base_url('reports?slug=getLeadDetailsReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Lead Details Report</span></a></li></ul>
-											<ul><li><a href="<?= base_url('reports?slug=getClientTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Tracker Report</span></a></li></ul>
-											<ul><li><a href="<?= base_url('reports?slug=getPlacementDetailReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Placement Detail Report</span></a></li></ul>
-											<ul><li><a href="<?= base_url('reports?slug=getJobDetailedReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Job Detailed Report</span></a></li></ul>
-                                                </li>
-					        <?php endif; ?>
+									<?php if (in_array($user['user_group_id'], reports_falcon_user())): ?>
+	                    <li class=" nav-item" style="margin-bottom: 50px;"><a href="#"><i class="fa fa-file"></i><span data-i18n="nav.dash.main" class="menu-title">Reports</span></a>
+	                            <?php if (in_array($user['user_group_id'], admin_only_reports())): ?>
+	                      <ul><li><a href="<?= base_url('reports?slug=getUserLogInReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">User Login Activity Report</span></a></li></ul>
+	                      <ul><li><a href="<?= base_url('reports?slug=getUsabilityReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">User Usability Report</span></a></li></ul>
+	                      <?php endif; ?>
+	                      <?php if (in_array($user['user_group_id'], reports())): ?>
+	                      <ul><li><a href="<?= base_url('reports?slug=getLeadDetailsReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Lead Details Report</span></a></li></ul>
+	                      <ul><li><a href="<?= base_url('reports?slug=getClientTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Tracker Report</span></a></li></ul>
+	                      <ul><li><a href="<?= base_url('reports?slug=getJobDetailedReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Job Detailed Report</span></a></li></ul>
+	                      <?php endif; ?>
+	                      <ul><li><a href="<?= base_url('reports?slug=getPlacementDetailReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Placement Detail Report</span></a></li></ul>
+
+	                                </li>
+	                  <?php endif; ?>
 
 
 					      </ul>
@@ -751,10 +756,10 @@
 		    }, 10000);*/
 
                       function update_password() {
-                    $('#modal_update_password').modal('show'); 
+                    $('#modal_update_password').modal('show');
                     $('#modal_update_password').on('hidden.bs.modal', function () {
                         location.reload();
-                       })                    
+                       })
                       }
         function checkPass()
         {
@@ -794,8 +799,8 @@
                 message.style.color = "red";
                 message.innerHTML = " These passwords don't match"
             }
-        }  
-  
+        }
+
   $(document).on('submit', '#frmUpdatePassword', function(event){
         event.preventDefault();
 
@@ -805,7 +810,7 @@
 
         var varReturnValue = true, varFocus = false;
 
-        
+
 //        if($("#old_password").val().trim() == '')
 //        {
 //            $("#lblOldPassword").show();
@@ -926,15 +931,15 @@
                             <input type="password" class="form-control" id="confirmpassword" placeholder="Enter Confirm Password" name="confirmpassword"  onkeyup="checkPass(); return false;" value="" min="8"   maxlength = "16">
                             <label id="lblConfirmPassword" style="color:red;display: none;">* Please Enter Confirm Password</label>
                         </div>
-                    </div>                   
+                    </div>
                       <div id="error-nwl"></div>
-                    <hr>                    
+                    <hr>
                       <div class="form-group" style="float: right">
                           <button type="submit" class="btn btn-primary" name="button" id="BtnSubmit" disabled>Update Password</button>
                       </div>
                 </div>
 
-                
+
         </div>
     </div>
 </div>

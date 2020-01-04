@@ -33,7 +33,10 @@
 
   </div>
 
+  <?php if (in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_add_roles())): ?>
     <a class="btn btn-success btn-min-width mr-1 mb-1" href="<?php echo base_url("leads/create")?>" style="float: right;"><i class="icon-android-add"></i>Add Lead</a>
+  <?php endif; ?>
+
 
     <!-- File export table -->
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
@@ -83,7 +86,7 @@
                                                 <option value="4">Managed By</option>
                                                 <option value="5">Spoc Name</option>
                                                 <option value="6">Spoc Email</option>
-                                                <option value="7">Spoc Phone</option>                                        
+                                                <option value="7">Spoc Phone</option>
                                                 <option value="8">State</option>
                                                 <option value="9">Source</option>
                                             </select>
@@ -128,7 +131,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                              <div class="hidden" id="spoc_name_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_name_list" name="spoc_name_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Name</option>
@@ -137,7 +140,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <div class="hidden" id="spoc_email_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_email_list" name="spoc_email_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Email</option>
@@ -146,7 +149,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <div class="hidden" id="spoc_phone_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="spoc_phone_list" name="spoc_phone_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Spoc Phone</option>
@@ -155,13 +158,13 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                            
+
                                             <label id="lblsearchbox" style="color:red; display: none;margin-left: 12%;">* Please Enter Search Value</label>
 
                                            </div>
                                       </div>
                                     <label id="lblSearchError" style="color:red;display:block ;margin-left: 120px;  float: left; margin-top: 63px;"></label>
-                                </div>                            
+                                </div>
                                 <div class="text-center hidden" style="margin-bottom: 18px;  margin-left: 670px;  margin-top: -55px;" name="search_btn" id="search_btn">
                                         <a class="btn btn-primary btn-md" id="btn_search" onclick="btnSearch_OnClick()" style="color: white; cursor: pointer;"><i class="fa fa-search "></i> Search</a>
                                         <Button type="button" onclick="window.location.reload();" class="btn btn-secondary btn-md "> Clear Search</Button>
@@ -182,7 +185,7 @@
                                     <th>Managed By</th>
 				    <th>SPOC Name</th>
                                     <th>SPOC Email</th>
-                                    <th>SPOC Phone</th>                                    
+                                    <th>SPOC Phone</th>
                                     <th>State</th>
                                     <th>District</th>
                                     <th>Business Probability (%)</th>
@@ -248,12 +251,20 @@
                <label for="" class="label">Proposal Shared to</label>
                <input type="text" class="form-control" name="remarks" id="proposal_shared_to_input" value="" >
              </div>
+             <div class="col-md-6">
+               <label for="" class="label">Potential Numbers</label>
+               <input type="text" pattern="^[1-9]*" maxlength="8" id="potential_number" name="potential_number" class="form-control"  value="">
+             </div>
+             <div class="col-md-6">
+               <label for="" class="label">Potential Order Value Per Month</label>
+               <input type="text" pattern="^[1-9]*" maxlength="8" class="form-control" name="potential_order_value_per_month" id="potential_order_value_per_month" value="" >
+             </div>
              <input type="hidden" id="proposal_customer_id" name="customer_id" value="">
              <input type="hidden" name="lead_status_id" id="proposal_lead_status_id" value="">
              <div class="col-md-12">
                <br>
-               <label for="" class="label">Choose a file <span class="danger">(max size 3 MB & ppt, pptx, doc, docx, jpg, png, pdf files only)</span> </label>
-               <input type="file" name="file_name" id="proposal_shared_file_input" value="">
+               <label for="" class="label">Choose a file <span class="danger">(max size 3 MB & doc, docx, jpg, png, pdf files only)</span> </label>
+               <input type="file" name="file_name" id="proposal_shared_file_input" value="" onchange="return fileValidation()">
              </div>
            </form>
 
@@ -310,12 +321,12 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('adm-assets/datetimepicker/css/bootstrap-datetimepicker.css')?>">
 <script src="<?php echo base_url().'adm-assets/datetimepicker/js/bootstrap-datetimepicker.js'?>" type="text/javascript"></script>
 <script>
-    $(document).ready(function(){        
+    $(document).ready(function(){
         $('#search_by').on('change', function(){
             $('#lblSearchError').html('');
         });
     });
-    var varTable;    
+    var varTable;
     function searchby_onchange(varSearchByValue)
     {
         if (varSearchByValue=='0')
@@ -326,21 +337,21 @@
         //lert(varSearchByValue);
         $("#business_vertical_id").val('0');
         $("#customer_list").selectedIndex = "0";
-        $("#lead_managed_by_id").selectedIndex = "0"; 
+        $("#lead_managed_by_id").selectedIndex = "0";
         $("#spoc_name_list").selectedIndex = "0";
         $("#spoc_email_list").selectedIndex = "0";
         $("#spoc_phone_list").selectedIndex = "0";
         $("#status_id").val('0');
         $("#state_id").val('0');
         $("#source_id").val('0');
-        $("#searchbox").val('');  
+        $("#searchbox").val('');
     }
-    
+
     function LoadTableData()
     {
         var varSearchTypeId = $("#search_by").val(),
-            varSearchValue = $("#searchbox").val();  
-    
+            varSearchValue = $("#searchbox").val();
+
         switch(varSearchTypeId)
         {
             case "1":
@@ -349,41 +360,41 @@
             case "2":
                 varSearchValue = $("#business_vertical_id").val();
                 break;
-                
+
             case "3":
                 varSearchValue = $("#status_id").val();
                 break;
-                
+
             case "4":
                 varSearchValue = $("#lead_managed_by_id option:selected").text();
                 break;
-                
+
             case "5":
             varSearchValue = $("#spoc_name_list option:selected").text();
             break;
-            
+
              case "6":
             varSearchValue = $("#spoc_email_list option:selected").text();
             break;
-            
+
              case "7":
             varSearchValue = $("#spoc_phone_list option:selected").text();
             break;
-                
+
             case "8":
             varSearchValue = $("#state_id").val();
             break;
-                
+
             case "9":
                 varSearchValue = $("#source_id").val();
                 break;
         }
-        
+
         if (varTable != undefined && varTable != null)
         {
             varTable.clear().destroy();
         }
-        
+
         varTable = $("#tblList").DataTable({
             "serverSide": true,
             "paging": true,
@@ -414,13 +425,13 @@
             buttons: []
         });
     }
-    
+
     function btnSearch_OnClick()
     {
         $("#lblSearchError").hide();
         var varSearchTypeId = $("#search_by").val(),
-            varSearchValue = $("#searchbox").val();  
-    
+            varSearchValue = $("#searchbox").val();
+
         switch(varSearchTypeId)
         {
             case "1":
@@ -430,8 +441,8 @@
                     $("#lblSearchError").show();
                     return;
                 }
-                break;           
-            
+                break;
+
             case "2":
                 if ($("#business_vertical_id").val() == '0')
                 {
@@ -440,7 +451,7 @@
                     return;
                 }
                 break;
-                
+
             case "3":
                 if ($("#status_id").val() == '0')
                 {
@@ -449,7 +460,7 @@
                     return;
                 }
                 break;
-                
+
                 case "4":
                 if ($("#lead_managed_by_id option:selected").index() < 1)
                   {
@@ -458,7 +469,7 @@
                     return;
                 }
                 break;
-                
+
                  case "5":
                 if ($("#spoc_name_list option:selected").index() < 1)
                   {
@@ -467,7 +478,7 @@
                     return;
                 }
                 break;
-                
+
                  case "6":
                 if ($("#spoc_email_list option:selected").index() < 1)
                   {
@@ -476,7 +487,7 @@
                     return;
                 }
                 break;
-                
+
                  case "7":
                 if ($("#spoc_phone_list option:selected").index() < 1)
                   {
@@ -485,7 +496,7 @@
                     return;
                 }
                 break;
-                
+
                case "8":
                 if ($("#state_id").val() == '0')
                 {
@@ -493,8 +504,8 @@
                     $("#lblSearchError").show();
                     return;
                 }
-                break;  
-                
+                break;
+
             case "9":
                 if ($("#source_id").val() == '0')
                 {
@@ -503,7 +514,7 @@
                     return;
                 }
                 break;
-                
+
             default:
                 if (varSearchValue.trim() == '')
                 {
@@ -528,13 +539,13 @@
 //                        $("#lblSearchError").text('* Please input Location!');
 //                        break;
                     }
-                    
+
                     $("#lblSearchError").show();
                     return;
                 }
                 break;
         }
-        
+
         LoadTableData();
     }
 
@@ -553,9 +564,10 @@
         forceParse: 0,
         showMeridian: 1
       });
-      $('.numbers').keyup(function () {
+
+  $('.numbers, #potential_order_value_per_month, #potential_number').keyup(function () {
     this.value = this.value.replace(/[^0-9\.]/g,'');
-});
+  });
 
 
 function name_input(event) {
@@ -604,9 +616,21 @@ $('#name_input').bind('keypress', name_input);
     } else {
       $('.lead_schedule_input_container').addClass('hidden');
     }
+    if(value==0){
+      $('#update-status').prop('disabled', true);
+    }
   });
 
+  $(document).ready(function () {
+        $('#customer_commercial_input').change(function () {
+          if($(this).val()==0){
+            $('#update-status').prop('disabled', false);
+          }
+        });
+    });
+
   function open_lead_popup(lead_id,lead_status_id) {
+    $('#customer_commercial_input').val('-1');
     $('#customer_commercial_input_container').addClass('hidden');
     $('#proposal_shared_input_container').addClass('hidden');
     if(lead_status_id == 16) {
@@ -630,16 +654,11 @@ $('#name_input').bind('keypress', name_input);
     $.each(statusOptions, function(index, op){
         let options ='';
 
-        // if(!(lead_status_id==18 && op.id ==1) && !(lead_status_id!=18 && op.id ==19)) {
-        //   if(lead_status_id!=19) {
-        //     if(lead_status_id <= op.id) {
-        //         options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
-        //     }
-        //   } else {
-        //     options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
-        //   }
-        // }
         if(lead_status_id==19 && op.id!=1) {
+          options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
+        } else if(lead_status_id==21 && op.id==18) {
+          options = $('<option>').attr('value', 0).text('Select an Option');
+          $('#lead_status_selector').append(options);
           options = $('<option>').attr('value', op.id).attr('data-svalue', op.value).attr('data-notification', op.notification_status).text(op.name);
         } else {
           if(!(lead_status_id==18 && op.id ==1) && !(lead_status_id!=18 && op.id ==19)) {
@@ -653,7 +672,12 @@ $('#name_input').bind('keypress', name_input);
     });
 
     //$('#lead_status_selector').append(options);
-    $('#lead_status_selector').val(lead_status_id).change();
+    if(lead_status_id!=21) {
+        $('#lead_status_selector').val(lead_status_id).change();
+    } else {
+      $('#lead_status_selector').val(0).change();
+    }
+
     //$('#lead_status_selector').val($('#lead_status_cell_'+lead_id).attr('data-value')).change();
 
   }
@@ -681,6 +705,8 @@ $('#name_input').bind('keypress', name_input);
     var customer_commercial_type = $('#customer_commercial_input').find(':selected').val();
     var proposal_date_input = $('#proposal_date_input').val();
     var proposal_shared_to_input = $('#proposal_shared_to_input').val();
+    var potential_order_value_per_month = $('#potential_order_value_per_month').val();
+    var potential_number = $('#potential_number').val();
     var form_data;
     if(lead_status_id==8){
       form_data = new FormData(document.getElementById('proposal_form'));
@@ -693,26 +719,65 @@ $('#name_input').bind('keypress', name_input);
       $('#alert-box').removeClass('hidden');
       return;
     }
-    if(lead_status_id == 8 && (proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0)) {
-      $('#alert-box').removeClass('hidden');
-      console.log('inside2');
-      return;
-    }
-    if($('#lead_status_selector').find(':selected').attr('data-notification')==1 && (name=='' || schedule_date=='' || phone=='' || remark.trim()=="")) {
-      $('#alert-box').removeClass('hidden');
-      console.log('inside2');
-      return;
-    }
-    if($('#lead_status_selector').find(':selected').attr('data-svalue')<0 && remark.trim()=="") {
-      $('#alert-box').removeClass('hidden');
-      return;
-    }
-    if(lead_status_id==16){
-      let result = confirm("Sure about commercial of this item?");
-      if(!result) {
+    if(lead_status_id == 8 ) {
+      if(proposal_shared_to_input.trim()=='' || proposal_date_input=='' || proposal_shared_file_input.files.length==0 || potential_order_value_per_month=='' || potential_number=='') {
+        $('#alert-box').removeClass('hidden');
+        console.log('inside2');
         return;
+      } else {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
       }
     }
+    if($('#lead_status_selector').find(':selected').attr('data-notification')==1) {
+      if(name=='' || schedule_date=='' || phone=='' || remark.trim()=="") {
+        $('#alert-box').removeClass('hidden');
+        console.log('inside2');
+        return;
+      } else {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      }
+    }
+    if($('#lead_status_selector').find(':selected').attr('data-svalue')<0) {
+      if(remark.trim()=="") {
+        $('#alert-box').removeClass('hidden');
+        return;
+      } else{
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      }
+    }
+    if(lead_status_id==11 || lead_status_id==12 || lead_status_id==19) {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+    }
+    if(lead_status_id==16){
+      lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    }
+    if(lead_status_id==0){
+      alert('Select a Valid Value');
+    }
+
+  }
+
+  function lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id) {
+      let commercial_text = customer_commercial_type==0 ? 'Free' : 'Commercial';
+      swal(
+          {
+              title: "",
+              text: 'Are you sure on changing the commercial type for this lead to "'+commercial_text+'" !' ,
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No, Cancel!",
+              closeOnConfirm: false,
+              closeOnCancel: true
+          },
+          function(isConfirm) {
+              if (isConfirm) {
+                updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+              }
+          }
+      );
+  }
+
+  function updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id) {
     var request = $.ajax({
       url: "<?php echo base_url(); ?>salesController/leadStatusUpdate",
       type: "POST",
@@ -745,58 +810,6 @@ $('#name_input').bind('keypress', name_input);
       }
       //location.reload();
     });
-  }
-  function lead_history(lead_id)
-  {
-      $('.form-group').removeClass('has-error'); // clear error class
-      $('.error_label').empty(); // clear error string
-      $('#modal_form_upload').modal('show'); // show bootstrap modal
-      //$('.modal-title').text('Lead History'); // Set Title to Bootstrap modal title
-      getLeadHistory(lead_id);
-  }
-
-  function getLeadHistory(lead_id) {
-      $('#historytblBody').html('');
-      $.ajax({
-      url: "<?= base_url('salescontroller/getLeadHistory/')?>"+lead_id,
-      dataType: 'script',
-      type: "GET",
-      success: function(response) {
-        var leadHistories  = JSON.parse(response);
-        console.log(leadHistories);
-        if(leadHistories.length>0) {
-          $.each(leadHistories, function(index, history) {
-            $('#historytblBody').append('<tr>');
-            $('#historytblBody').append('<td>'+history.status_name+'</td>');
-            if(history.lead_status_id == 8){
-              $('#historytblBody').append('<td>'+('Proposal Shared Date: '+history.schedule_date)+'</td>');
-              $('#historytblBody').append('<td>'+('Proposal Shared To: '+history.remarks)+'</td>');
-            } else {
-              $('#historytblBody').append('<td>'+((history.schedule_date!=null && history.schedule_date!='')? 'Meeting Date: '+history.schedule_date : 'N/A')+'</td>');
-              $('#historytblBody').append('<td>'+((history.remarks!='')? 'Remarks: '+history.remarks : 'N/A')+'</td>');
-            }
-            $('#historytblBody').append('<td>'+((history.name!=null && history.name!='')? history.name : 'N/A')+'</td>');
-            $('#historytblBody').append('<td>'+((history.phone!=null && history.phone!='')? history.phone : 'N/A')+'</td>');
-            $('#historytblBody').append('<td>'+((history.address!=null && history.address!='')? history.address : 'N/A')+'</td>');
-            $('#historytblBody').append('<td>'+((history.city!=null && history.city!='')? history.city : 'N/A')+'</td>');
-
-            if(history.file_name!=null && history.file_name!='') {
-              $('#historytblBody').append('<td><a class="btn btn-success mr-1 mb-1" href="<?= base_url('documents/');?>'+history.file_name+'" target="_blank"><i class="fa fa-download"></i></a></td>');
-            } else {
-              $('#historytblBody').append('<td>N/A</td>');
-            }
-            $('#historytblBody').append('<td>'+moment(history.created_at).format('YYYY-MM-DD HH:mm:ss')+'</td>');
-            $('#historytblBody').append('</tr>');
-          });
-        } else {
-            $('#historytblBody').append('<br><h3><strong>No data available</strong></h3><br>');
-        }
-      },
-      error: function(jqXHR, textStatus, error) {
-        $('#historytblBody').append('<h3><strong>Could not fetch data, please try again</strong></h3>');
-      }
-    });
-
   }
 
 function secondary_spoc_count(lead_id)
@@ -860,54 +873,7 @@ function secondary_spoc_count(lead_id)
         </div>
     </div>
 </div>
-
-<!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form_upload" role="dialog">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lead History</h3>
-            </div>
-            <div class="modal-body form">
-                <div id="msgDisplay"></div>
-
-                    <div class="form-body">
-                       <!-- <input type="hidden" id="associate_id" name="associate_id" value="<?php /*echo $associate_id;*/?>"/>-->
-
-
-                            <table id="tblSec" class="table table-striped table-bordered display responsive nowrap" style="width:100% !important;">
-                                <thead>
-                                <tr>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                    <th>Note</th>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>Attachment</th>
-                                    <th>Status Updated Date</th>
-                                    <!--<th>Action </th>-->
-                                </tr>
-                                </thead>
-                                <tbody id="historytblBody">
-                                </tbody>
-                            </table>
-
-
-                        <div style="clear: both;"></div>
-
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <!--<button type="button" id="btnSave" onclick="bulk_upload_save()" class="btn btn-primary">Upload Candidate list</button>-->
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+<?php $this->load->view('sales/lead_history_modal'); ?>
 <?php $this->load->view('sales/spoc_list_modal'); ?>
 <?php $this->load->view('sales/placement_officer_select_modal', $data); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/datatables.min.css'?>">
@@ -927,7 +893,7 @@ $(document).ready(function () {
             }
             else {
                 $('#searchbox').removeClass('hidden');
-                $('#searchbox').focus();               
+                $('#searchbox').focus();
             }
         });
     });
@@ -938,10 +904,10 @@ $(document).ready(function () {
             }
             else {
                 $('#status_id').removeClass('hidden');
-                $('#status_id').focus();               
+                $('#status_id').focus();
             }
         });
-    }); 
+    });
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8') {
@@ -949,11 +915,11 @@ $(document).ready(function () {
             }
             else {
                 $('#source_id').removeClass('hidden');
-                $('#source_id').focus();               
+                $('#source_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8'|| $('#search_by').val() == '9') {
@@ -961,11 +927,11 @@ $(document).ready(function () {
             }
             else {
                 $('#lead_managed_by_id').removeClass('hidden');
-                $('#lead_managed_by_id').focus();               
+                $('#lead_managed_by_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -973,7 +939,7 @@ $(document).ready(function () {
             }
             else {
                 $('#search_btn').removeClass('hidden');
-                $('#search_btn').focus();               
+                $('#search_btn').focus();
             }
         });
     });
@@ -986,11 +952,11 @@ $(document).ready(function () {
             }
             else {
                 $('#business_vertical_id').removeClass('hidden');
-                $('#business_vertical_id').focus();               
+                $('#business_vertical_id').focus();
             }
         });
-    }); 
-    
+    });
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '9') {
@@ -998,11 +964,11 @@ $(document).ready(function () {
             }
             else {
                 $('#state_id').removeClass('hidden');
-                $('#state_id').focus();               
+                $('#state_id').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1010,11 +976,11 @@ $(document).ready(function () {
             }
             else {
                 $('#customer_list_container').removeClass('hidden');
-                $('#customer_list_container').focus();               
+                $('#customer_list_container').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1022,12 +988,12 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_name_list_container').removeClass('hidden');
-                $('#spoc_name_list_container').focus();               
+                $('#spoc_name_list_container').focus();
             }
         });
     });
-    
-    
+
+
      $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '5' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1035,11 +1001,11 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_email_list_container').removeClass('hidden');
-                $('#spoc_email_list_container').focus();               
+                $('#spoc_email_list_container').focus();
             }
         });
     });
-    
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' ||  $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
@@ -1047,12 +1013,12 @@ $(document).ready(function () {
             }
             else {
                 $('#spoc_phone_list_container').removeClass('hidden');
-                $('#spoc_phone_list_container').focus();               
+                $('#spoc_phone_list_container').focus();
             }
         });
     });
-    
-    
+
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -1060,18 +1026,49 @@ $(document).ready(function () {
             }
             else {
                 $('#lblSearchError').removeClass('hidden');
-                $('#lblSearchError').focus();               
+                $('#lblSearchError').focus();
             }
         });
     });
-    
+
      $(document).ready(function() {
         $('.select2-neo').select2();
       });
- 
+
 // $(document).keypress(function(e){
 //    if (e.which == 13){
 //        $("#btn_search").click();
 //    }
 //});
+$('#leadModel').on('hidden.bs.modal', function () {
+    $(this).find('form').trigger('reset');
+})
+function fileValidation(){
+    var fileInput = document.getElementById('proposal_shared_file_input');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.doc|\.docx|\.jpeg|\.jpg|\.png|\.pdf)$/i;
+    if(!allowedExtensions.exec(filePath)){
+      swal(
+            {
+                title: "Invalid File Type!",
+                text: "Please upload file having extensions .doc, .docx, .jpeg, .jpg, .png, .pdf only.",
+                showCancelButton: false,
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            })
+        fileInput.value = '';
+        return false;
+    }
+}
+
+$("#potential_number").on("keypress keyup",function(){
+    if($(this).val() == '0'){
+      $(this).val('');
+    }
+});
+$("#potential_order_value_per_month").on("keypress keyup",function(){
+    if($(this).val() == '0'){
+      $(this).val('');
+    }
+});
 </script>

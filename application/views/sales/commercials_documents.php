@@ -15,6 +15,13 @@
     {
         max-width: 80px !important;
     }
+    .font-color{
+      color:#000;
+      background:#e0dfde;
+       }
+       .text-black{
+         color:#000;
+       }
 
 </style>
 <div class="content-body" style="padding: 0px 10px 60px 10px;">
@@ -40,42 +47,42 @@
       </div>
     </div>
   </div>
-    
-    
-    
+
+
+
   <div id="Personal" class="w3-container info" style="background: white;padding: 40px;margin-top: 45px; ">
   <form action="<?php echo base_url('salescontroller/commericals_store/').$id;?>" method="POST" id="commercial-form" enctype="multipart/form-data">
       <div class="row">
         <?php $i=0; ?>
         <div class="col-md-12">
-          <h3>Commercial Information</h3>
+          <h3 class="text-black">Commercial Information</h3>
           <hr>
           <br>
         </div>
-           <table id="tblMain" class="table table-striped table-bordered display responsive nowrap" style="width:100% !important;">
+           <table id="tblMain" class="table table-bordered display responsive nowrap" style="width:100% !important;">
                                 <thead>
-                                <tr>
+                                <tr class="font-color">
                                     <th>Fee</th>
                                     <th>Fee Type</th>
                                     <th>Price/Rate</th>
                                     <th>Remarks</th>
                                 </tr>
                                 </thead>
-                               
-                              
+
+
            <tbody>
         <?php foreach($commercials as $com ): ?>
                <tr>
-                   <td>  
+                   <td>
             <input type="hidden" id="customer_id" class="form-control" name="commercial[<?= $i; ?>][customer_id]" value="<?=$id?>">
             <input type="hidden" id="onboarding_fee" class="form-control" name="commercial[<?= $i; ?>][title]" value="<?= $com['title']?>">
 
             <div class="col-md-12">
-              <h4 style="color:#333; font-weight:700;"><?= humanize($com['title'])?></h4>
+              <h6 style="color:#333; "><?= humanize($com['title'])?></h6>
             </div>
                    </td>
-            
-           
+
+
                 <td >
             <div class="col-md-12">
               <select class="form-control" name="commercial[<?= $i; ?>][fee_type]" id="fee_type_<?= $i; ?>" data-value="<?= $i; ?>" onchange="toggleRemark(this)">
@@ -87,7 +94,7 @@
               <br>
             </div>
             </td>
-            
+
             <td>
             <div class="col-md-12">
               <input type="text" id="onboarding_fee" data-toggle="tooltip" class="form-control" name="commercial[<?= $i; ?>][value]" value="<?= $com['value']?>">
@@ -120,18 +127,28 @@
                             </table>
       <div class="col-md-12">
         <br>
-        <h3>Document Upload</h3>
+        <h3 class="text-black">Document Upload</h3>
         <hr>
         <br>
       </div>
       <?php if(count($documents)!=0): ?>
-        <div class="col-md-12">
-          <h5>To change the document file, delete existing document and upload again</h5>
-        </div>
+        <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
+          <div class="col-md-12">
+          <?php if(($customer['lead_status_id']==16 && $customer['has_commercial']==false) || $customer['lead_status_id']==21):?>
+            <h5 class="text-black">To change the document file, delete existing document and upload again</h5>
+          <?php else: ?>
+              <h5 class="text-black">Editing or Re-submitting document is locked until it is not verified by Legal !</h5>
+          <?php endif;?>
+          </div>
+        <?php endif; ?>
           <div class="col-md-12">
             <?php foreach($documents as $document): ?>
-              <a class="btn btn-success mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
-              <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+              <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('documents/').$document->file_name; ?>" target="_blank"><i class="fa fa-download"></i> Download <?= $document->file_name?></a>
+              <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
+                <?php if($customer['lead_status_id']==21):?>
+                  <a class="btn btn-danger mr-1 mb-1" href="<?= base_url('salescontroller/document_delete/'.$id.'/'.$document->id); ?>" onclick="confirmDelete(event);"><i class="fa fa-trash"></i></a>
+                <?php endif; ?>
+              <?php endif; ?>
               <?php endforeach; ?>
           </div>
           <input type="hidden" name="action" value="edit">
@@ -148,27 +165,35 @@
 
       <div class="col-md-12">
         <br>
-          <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
-        <br>
-        <br>
+        <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
+            <?php if(($customer['lead_status_id']==16 && $customer['has_commercial']==false) || $customer['lead_status_id']==21): ?>
+              <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
+            <?php endif;?>
+        <?php endif;?>
+
       </div>
     </div>
 </form>
 
 <div class="row">
   <div class="col-md-12">
-    <br><br>
-    <?php if($legal_verified): ?>
-      <a class="btn btn-warning mr-1 mb-1" href="<?= base_url('salescontroller/verify_documents_commercial/'.$id); ?>" >Commercial & Documents Verified</a>
+    <br>
+    <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_approve_roles())): ?>
+      <?php if($legal_verified && $customer['lead_status_id']==16): ?>
+        <h5 class="text-black">Click the below button to provide Legal Approval</h5>
+        <button type="button" class="btn btn-danger" onclick="openCommercialStatusModal();">Update Commercial Status</button>
+        <?php endif;?>
     <?php endif;?>
   </div>
 </div>
   </div>
 </div>
 
+<?php $this->load->view('sales/commercial_approval_modal', ['customer_id'=>$id, 'commercial_options' => $commercial_options]); ?>
+
 <script type="text/javascript">
   $(document).ready(function() {
-    $('form#commercial-form').submit(function(){
+    $('#commercial-form').submit(function(){
       $(this).find(':input[type=submit]').prop('disabled', true);
     });
   });
@@ -203,4 +228,5 @@
       $('#remark_container_'+input_value).removeClass('hidden');
     }
   }
+
 </script>

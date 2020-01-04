@@ -58,3 +58,66 @@
         }
     </script>
   </div><!-- /.modal-dialog -->
+  <script>
+  
+$(document).ready(function(){
+  $('#lead_status_selector').on('change', function() 
+    {    
+        var employer_id = $('#employer_id').val();
+        if ( $('#lead_status_selector').val() == '11' ) 
+        proposaldocumentchecked(employer_id);
+    });
+    $('#lead_status_selector').on('change', function() 
+    {    
+        var employer_id = $('#employer_id').val();
+        if ( $('#lead_status_selector').val() == '12' ) 
+        proposaldocumentchecked(employer_id);
+    });
+    $('#customer_commercial_input').on('change', function() 
+    {    
+        var employer_id = $('#employer_id').val();
+        if ( $('#customer_commercial_input').val() == '1' ) 
+        proposaldocumentchecked(employer_id);
+    });
+    
+
+});
+
+function proposaldocumentchecked(employer_id)
+    {
+        var proposal_shared=base_url+'SalesController/check_commercial_document/'+employer_id;
+        $.ajax({
+              url : proposal_shared,
+              type: "POST",
+              dataType: "JSON",
+              success: function(data)
+              {
+                  if (data.file_name.trim() == "")                  
+                  {  
+                     $('#update-status').attr("disabled", true);
+                      $('#customer_commercial_input').val('-1');
+                     
+                      swal(
+                          {
+                              title: "Proposal Document Missing!",
+                              text: "Please upload proposal Document.",
+                              showCancelButton: false,
+                              confirmButtonText: "OK",
+                              closeOnConfirm: true
+                          },
+                          function(isConfirm) {
+                              if (isConfirm) {
+                                //$('#customer_commercial_input').val('-1');
+                              }
+                          }
+                      );
+                  }
+              },
+              error: function (jqXHR, textStatus, errorThrown)
+              {
+                  alert('Error get data from ajax');
+              }
+          });    
+    }
+   
+  </script>
