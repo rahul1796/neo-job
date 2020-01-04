@@ -43,40 +43,55 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
-                                <div class="col-md-6 form-group">
-                                    <label for="" class="label">Start Date</label>
-                                    <input type='text' class="form-control" readonly id='start_date_input'>
+                            <div class="card" style="margin-top: 5px; padding: 16px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Placement</h5>
+                                    <div class="row">
+                                        <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
+                                        <div class="col-md-6 form-group">
+                                            <label for="" class="label">From</label>
+                                            <input type='text' class="form-control" readonly id='start_date_input'>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label for="" class="label">To</label>
+                                            <input type='text' class="form-control" readonly id='end_date_input' />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="" class="label">End Date</label>
-                                    <input type='text' class="form-control" readonly id='end_date_input' />
-                                </div>
-                            </div>
+                            </div> 
 
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label for="batch_start_from_date" class="">Batch Start From Date</label>
-                                    <input type='text' class="form-control" readonly id='batch_start_from_date'>
+                            <div class="card" style="margin-top: 5px; padding: 16px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Batch Start</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="batch_start_from_date" class="">From</label>
+                                                <input type='text' class="form-control" readonly id='batch_start_from_date'>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="batch_start_to_date" class="">To</label>
+                                                <input type='text' class="form-control" readonly id='batch_start_to_date' />
+                                            </div>
+                                        </div>
                                 </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="batch_start_to_date" class="">Batch Start To Date</label>
-                                    <input type='text' class="form-control" readonly id='batch_start_to_date' />
-                                </div>
-                            </div>
+                            </div> 
 
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label for="batch_end_from_date" class="">Batch End From Date</label>
-                                    <input type='text' class="form-control" readonly id='batch_end_from_date'>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="batch_end_to_date" class="">Batch End To Date</label>
-                                    <input type='text' class="form-control" readonly id='batch_end_to_date' />
-                                </div>
-                            </div>
 
+                            <div class="card" style="margin-top: 5px; padding: 16px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Batch End</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="batch_end_from_date" class="">From</label>
+                                                <input type='text' class="form-control" readonly id='batch_end_from_date'>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="batch_end_to_date" class="">To</label>
+                                                <input type='text' class="form-control" readonly id='batch_end_to_date' />
+                                            </div>
+                                        </div>
+                                 </div>
+                            </div>
 
                             <div class="row">
                               <div class="col-md-6 form-group">

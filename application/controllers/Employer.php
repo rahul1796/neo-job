@@ -442,7 +442,8 @@ class Employer extends Pramaan
 				'placement_location'=>$PlacementLocation,
 				'ctc'=>$CTC,
 				'date_of_join'=>$Dateofjoin,
-				'offer_letter_date_of_join'=>$Offerletterdate
+				'offer_letter_date_of_join'=>$Offerletterdate,
+				'created_by' => $this->session->userdata('usr_authdet')['id']
 			);  
                         
                         $EmployeeTypeName = $this->db->query("SELECT name AS employee_type_name FROM neo_master.employment_type WHERE id=$EmploymentType")->row()->employee_type_name;
@@ -458,7 +459,8 @@ class Employer extends Pramaan
 				'ctc'=>$CTC,
 				'from'=>$this->buildDate($Dateofjoin),
 				'current_employer'=>TRUE,
-                                'skilling_type_id'=>1
+								'skilling_type_id'=>1,
+								'created_by' => $this->session->userdata('usr_authdet')['id']
                             
 			);    
 //                       print_r($data2);
@@ -511,7 +513,7 @@ class Employer extends Pramaan
                                 $this->db->update('neo.candidate_employment_details', $data2);
                                 $this->db->reset_query();
                                 $this->db->where('job_id', $JobId)->where('candidate_id', $CandidateId)
-                                ->set('candidate_status_id', 15) ->update('neo_job.candidates_jobs');
+                                ->set('candidate_status_id', 15) ->set('created_by', $this->session->userdata('usr_authdet')['id'])->update('neo_job.candidates_jobs');
                                 $this->db->trans_complete();
 				if($this->db->trans_status())
 				{
@@ -572,7 +574,8 @@ class Employer extends Pramaan
 				'placement_location'=>$PlacementLocation,
 				'ctc'=>$CTC,
 				'date_of_join'=>$Dateofjoin,
-				'offer_letter_date_of_join'=>$Offerletterdate
+				'offer_letter_date_of_join'=>$Offerletterdate,
+				'created_by' => $this->session->userdata('usr_authdet')['id']
 			);   
                         
                         $EmployeeTypeName = $this->db->query("SELECT name AS employee_type_name FROM neo_master.employment_type WHERE id=$EmploymentTypeId")->row()->employee_type_name;
@@ -587,7 +590,8 @@ class Employer extends Pramaan
 				'ctc'=>$CTC,
 				'from'=>$this->buildDate($Dateofjoin),
 				'current_employer'=>TRUE,
-                                'skilling_type_id'=>1
+								'skilling_type_id'=>1,
+								'created_by' => $this->session->userdata('usr_authdet')['id']
                             
 			);    
 //                        print_r($data2);
@@ -640,7 +644,7 @@ class Employer extends Pramaan
                                 $this->db->update('neo.candidate_employment_details', $data2);
                                 $this->db->reset_query();
                                 $this->db->where('job_id', $JobId)->where('candidate_id', $CandidateId)
-                                ->set('candidate_status_id', 15) ->update('neo_job.candidates_jobs');
+                                ->set('candidate_status_id', 15) ->set('created_by', $this->session->userdata('usr_authdet')['id'])->update('neo_job.candidates_jobs');
                                 $this->db->trans_complete();
 				if($this->db->trans_status())
 				{
@@ -700,8 +704,10 @@ class Employer extends Pramaan
 				'placement_location'=>$PlacementLocation,
 				'ctc'=>$CTC,
 				'date_of_join'=>$Dateofjoin,
-				'offer_letter_date_of_join'=>$Offerletterdate
+				'offer_letter_date_of_join'=>$Offerletterdate,
+				'created_by' => $this->session->userdata('usr_authdet')['id']
 			);  
+			
                         
                         $EmployeeTypeName = $this->db->query("SELECT name AS employee_type_name FROM neo_master.employment_type WHERE id=$EmploymentType")->row()->employee_type_name;
                        
@@ -716,7 +722,8 @@ class Employer extends Pramaan
 				'ctc'=>$CTC,
 				'from'=>$this->buildDate($Dateofjoin),
 				'current_employer'=>TRUE,
-                                'skilling_type_id'=>1
+								'skilling_type_id'=>1,
+								'created_by' => $this->session->userdata('usr_authdet')['id']
                             
 			);    
 //                       print_r($data2);
@@ -769,7 +776,7 @@ class Employer extends Pramaan
                                 $this->db->update('neo.candidate_employment_details', $data2);
                                 $this->db->reset_query();
                                 $this->db->where('job_id', $JobId)->where('candidate_id', $CandidateId)
-                                ->set('candidate_status_id', 15) ->update('neo_job.candidates_jobs');
+                                ->set('candidate_status_id', 15) ->set('created_by', $this->session->userdata('usr_authdet')['id'])->update('neo_job.candidates_jobs');
                                 $this->db->trans_complete();
 				if($this->db->trans_status())
 				{
@@ -814,7 +821,8 @@ class Employer extends Pramaan
 				'candidate_id'=>$CandidateId,
 				'job_id'=>$JobId,				
 				'reason_to_leave'=>$Reasontoleave,
-				'resigned_date'=>$ResignedDate
+				'resigned_date'=>$ResignedDate,
+				'created_by' => $this->session->userdata('usr_authdet')['id']
 			);  
 //                        print_r($data);
 //                        die;
@@ -844,7 +852,7 @@ class Employer extends Pramaan
                                 $data2['placement_id']=$this->db->insert_id();
                                 $this->db->reset_query();                               
                                 $this->db->where('job_id', $JobId)->where('candidate_id', $CandidateId)
-                                ->set('candidate_status_id', 17) ->update('neo_job.candidates_jobs');
+                                ->set('candidate_status_id', 17) ->set('created_by', $this->session->userdata('usr_authdet')['id'])->update('neo_job.candidates_jobs');
                                 $this->db->trans_complete();
 				if($this->db->trans_status())
 				{
@@ -975,7 +983,8 @@ class Employer extends Pramaan
 				'job_id'=>$JobId,
 				'offer_letter_date_of_join'=>$Offerletterdate,
                                 'offered_remarks'=>$Offeredremarks,
-                                'offered_ctc'=>$Offeredctc
+								'offered_ctc'=>$Offeredctc,
+								'created_by' => $this->session->userdata('usr_authdet')['id']
 			);
                                   
                        
@@ -1018,11 +1027,12 @@ class Employer extends Pramaan
 			{
                                 $mdata['candidate_id'] = $data['candidate_id'];
                                 $mdata['job_id'] = $data['job_id'];
-                                $mdata['candidate_status_id'] = 12;
+								$mdata['candidate_status_id'] = 12;
+								$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
                                 $this->db->trans_start();
 				$this->db->insert('neo_job.candidate_placement', $data);
                                  $this->db->where('job_id', $JobId)->where('candidate_id', $CandidateId)
-                                ->set('candidate_status_id', 12) ->update('neo_job.candidates_jobs');
+                                ->set('candidate_status_id', 12)->set('created_by', $this->session->userdata('usr_authdet')['id']) ->update('neo_job.candidates_jobs');
                                 $this->db->insert('neo_job.candidates_jobs_logs', $mdata);
                                 $this->db->trans_complete();
 				if($this->db->trans_status())

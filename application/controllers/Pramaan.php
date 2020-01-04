@@ -58,8 +58,10 @@ class Pramaan extends CI_Controller
 
         if(!isset($_SESSION['user_hierarchy'])) {
           $hierarchy_data=[];
-          if($this->session->userdata['usr_authdet']['user_group_id']==15) {
+          if($this->session->userdata['usr_authdet']['user_group_id']==15 || $this->session->userdata['usr_authdet']['user_group_id']==17 || $this->session->userdata['usr_authdet']['user_group_id']==18) {
               $hierarchy_data = $this->dashboard->getUserHierarchy(1);
+          } else if ($this->session->userdata['usr_authdet']['user_group_id']==19) {
+              $hierarchy_data = $this->dashboard->getUserHierarchy($this->dashboard->getSalesHeadId());
           } else {
               $hierarchy_data = $this->dashboard->getUserHierarchy($this->session->userdata['usr_authdet']['id']);
           }
@@ -7814,7 +7816,7 @@ die;*/
         $data['employer_type_list'] = $this->db->query("SELECT id,name FROM neo_master.employment_type WHERE is_active=TRUE AND name!='Self Employed'  ORDER BY name")->result_array();
         $data['page']      = 'candidate_joined_jobwise';
         $data['title']     = 'Joined Candidates';
-
+        $data['is_filled']=$this->candidate->getJobVacancyDetail($job_id);
         $job_details;
 
         $Query = "SELECT    J.job_title,

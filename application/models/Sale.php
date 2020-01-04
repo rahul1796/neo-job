@@ -37,15 +37,6 @@ class Sale extends MY_Model
   }
 
 
-  public function getSpocsByCustomerID($id) {
-    $spocs = $this->db->select('spoc_detail')->where('customer_id', $id)->get('neo_customer.customer_branches')->row_array();
-    $hr = $this->db->select('hr_name as spoc_name, hr_email as spoc_email, hr_phone as spoc_phone, hr_designation as spoc_designation')
-          ->where('id', $id)->get('neo_customer.customers')->row();
-    $spoc_array = json_decode($spocs['spoc_detail']);
-    array_push($spoc_array, $hr);
-    return $spoc_array;
-  }
-
   public function getCommercialsByCustomerID($id) {
     return $this->db->where('customer_id', $id)->get('neo_customer.customer_commercials')->result();
   }
@@ -72,7 +63,11 @@ class Sale extends MY_Model
   }
 
   public function saveCommercials($id, $data, $data_document) {
+    $customer_old_data = $this->db->where('id', $id)->get('neo_customer.customers')->row_array();
+    $this->db->reset_query();
     $customer_data['has_commercial'] = TRUE;
+    $customer_data['is_customer'] = FALSE;
+    $customer_data['lead_status_id'] = 16;
     $this->db->trans_start();
     if($this->db->where('customer_id', $id)->get('neo_customer.customer_commercials')->num_rows()>0){
       $this->db->reset_query();
@@ -81,7 +76,16 @@ class Sale extends MY_Model
     $this->db->reset_query();
     $this->db->insert_batch('neo_customer.customer_commercials', $data);
     $this->db->reset_query();
-    $this->db->update('neo_customer.customers', $customer_data);
+    $this->db->where('id', $id)->update('neo_customer.customers', $customer_data);
+
+    if($customer_old_data['lead_status_id']!=16) {
+      $lead_logs_data['lead_status_id'] = 16;
+      $lead_logs_data['customer_id'] = $customer_old_data['id'];
+      $lead_logs_data['remarks'] = 'Commercials & Document Updated';
+      $lead_logs_data['created_by'] = $this->session->userdata('usr_authdet')['id'];
+      $this->db->reset_query();
+      $this->db->insert('neo_customer.lead_logs',$lead_logs_data);
+    }
 
     if(!empty($data_document['file_name'])){
         $this->saveDocument($id, $data_document);
@@ -109,12 +113,47 @@ class Sale extends MY_Model
   //   return $this->db->trans_status();
   // }
 
-  public function verfied_customer($id) {
-    $data['legally_verified'] = TRUE;
-    $data['is_customer'] = TRUE;
+  public function verfied_customer($id, $request) {
+    $data['legally_verified'] = FALSE;
+    $data['is_customer'] = FALSE;
+    $data['updated_by'] = $this->session->userdata('usr_authdet')['id'];
+    $data['updated_at'] = date('Y-m-d H:i:s');
+
+    $logs_data['customer_id'] = $id;
+    $logs_data['remarks'] = $request['remarks'];
+    $logs_data['created_by'] = $this->session->userdata('usr_authdet')['id'];
+
     $this->db->trans_start();
+
+    if($request['status']=='accept') {
+      $data['legally_verified'] = TRUE;
+      $data['is_customer'] = TRUE;
+      $logs_data['lead_status_id'] = 20;
+    } else {
+      $data['lead_status_id'] = 21;
+
+      //this one is puuting it on hold
+      // $this->db->where('id', $id);
+      // $this->db->update($this->tableName, $data);
+      // $this->db->reset_query();
+
+      $logs_data['lead_status_id'] = 21;
+
+      //this one is puuting it on hold
+      // $this->db->insert('neo_customer.lead_logs', $logs_data);
+
+      //this one is puuting it on hold
+      // $data['lead_status_id'] = 17;
+      // $logs_data['lead_status_id'] = 17;
+    }
+
+    $this->db->reset_query();
     $this->db->where('id', $id);
     $this->db->update($this->tableName, $data);
+
+    $this->db->reset_query();
+    $this->db->insert('neo_customer.lead_logs', $logs_data);
+
     $this->db->trans_complete();
     return $this->db->trans_status();
   }
@@ -281,6 +320,7 @@ class Sale extends MY_Model
     return $this->db->select('logs.* , status.name as status_name')->from('neo_customer.lead_logs as logs')
     ->join('neo_master.lead_statuses as status', 'logs.lead_status_id = status.id', 'LEFT')
     ->order_by('logs.created_at', 'DESC')
+    ->order_by('logs.id', 'DESC')
     ->where('logs.customer_id', $lead_id)->get()->result();
   }
 

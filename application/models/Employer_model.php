@@ -10,6 +10,7 @@ class Employer_model extends CI_Model
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->helper('role_helper');
 	}
 
 	/**
@@ -350,11 +351,12 @@ class Employer_model extends CI_Model
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 15;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 
@@ -389,11 +391,12 @@ class Employer_model extends CI_Model
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 12;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 		$this->db->reset_query();
@@ -415,8 +418,8 @@ class Employer_model extends CI_Model
 		// }
 	  // 	return false;
 	}
-        
-        
+
+
         function do_update_resigned_status($data)
 	{
 		$this->db->trans_start();
@@ -427,16 +430,17 @@ class Employer_model extends CI_Model
                 $this->db->where('candidate_id', $data['candidate_id']);
 		$this->db->where('job_id', $data['job_id']);
                 $data2['placement_id']=$this->db->get('neo_job.candidate_placement')->row_array()['id'];
-                $this->db->reset_query();             
+                $this->db->reset_query();
 
 		$mdata['candidate_id'] = $data['candidate_id'];
 		$mdata['job_id'] = $data['job_id'];
 		$mdata['candidate_status_id'] = 17;
+		$mdata['created_by'] = $this->session->userdata('usr_authdet')['id'];
 
 		$this->db->reset_query();
 
 		$this->db->where('job_id', $data['job_id'])->where('candidate_id', $data['candidate_id'])
-		->set('candidate_status_id', 	$mdata['candidate_status_id'])
+		->set('candidate_status_id', 	$mdata['candidate_status_id'])->set('created_by', $this->session->userdata('usr_authdet')['id'])
 		->update('neo_job.candidates_jobs');
 
 
@@ -678,11 +682,12 @@ class Employer_model extends CI_Model
 				$row=array();
 				$slno++;
                                  $ActionColumn='';
-                                if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17) 
-				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';                                
+                                if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17)
+				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
 				if (trim($candidate_status->offer_letter_file)!='')
 					$ActionColumn .= '<a class="btn btn-primary btn-sm" href="'. base_url(). OFFER_LETTER_PATH .$candidate_status->offer_letter_file.'" title="Download Offer Letter"><i class="fa fa-download"></i></a>';
-                                        $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
+					if (trim($candidate_status->resigned_date)=='')
+					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
 				$row[] = $slno;
 				$row[] = $ActionColumn;
                                 $row[] = '<center><span style="border-radius:4px;color:white;padding:5px;background-color:'. $CandidateStatusColors[$candidate_status->candidate_status_id] .'">' . $candidate_status->candidate_status . '</span></center>';
@@ -847,11 +852,12 @@ class Employer_model extends CI_Model
 				$row=array();
 				$slno++;
                                 $ActionColumn='';
-                                if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17) 
-				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';                                
+                                if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17)
+				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
 				if (trim($candidate_status->offer_letter_file)!='')
 					$ActionColumn .= '<a class="btn btn-primary btn-sm" href="'. base_url(). OFFER_LETTER_PATH .$candidate_status->offer_letter_file.'" title="Download Offer Letter" ><i class="fa fa-download"></i></a>';
-                                        $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
+					if (trim($candidate_status->resigned_date)=='')
+					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
 				$row[] = $slno;
 				$row[] = $ActionColumn;
                                 $row[] = '<center><span style="border-radius:4px;color:white;padding:5px;background-color:'. $CandidateStatusColors[$candidate_status->candidate_status_id] .'">' . $candidate_status->candidate_status . '</span></center>';
@@ -866,10 +872,10 @@ class Employer_model extends CI_Model
 				$row[] = $candidate_status->employment_type;
 				$row[] = $candidate_status->ctc;
 				$row[] = $candidate_status->offer_letter_uploaded_on ?? 'N/A';
-				$row[] = $candidate_status->placement_location;                               
+				$row[] = $candidate_status->placement_location;
                                 $row[] = $candidate_status->resigned_date ?? 'N/A';
 				$data[] = $row;
-			}                       
+			}
 
 			$response_data = array(
 				"draw"            => intval( $requestData['draw'] ),
@@ -960,13 +966,13 @@ class Employer_model extends CI_Model
 			return array('sEcho' => '1', "iTotalRecords" => "0", "iTotalDisplayRecords" => "0", 'aaData' => array());
 		else
                 {
-                    $FilterCondition = "";      
+                    $FilterCondition = "";
                         if ($search_type_id > 0)
-                        {      
+                        {
                             switch($search_type_id)
                             {
                                 case 2:
-                                case 3:                               
+                                case 3:
                                 case 7:
                                 case 8:
                                 case 9:
@@ -998,9 +1004,9 @@ class Employer_model extends CI_Model
                                                                     c.created_at,
                                                                     c.lead_source_id,
                                                                      B.spoc_name
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,                                        
+                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
                                                                     B.spoc_email
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,                                       
+                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
                                                                     B.spoc_phone
                                                                     || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
                                                                     d.name AS location,
@@ -1035,7 +1041,7 @@ class Employer_model extends CI_Model
                                                         )
                                                         SELECT COUNT(R.id)::bigint AS total_filtered
                                                         FROM R
-                                                        WHERE TRUE                                                        
+                                                        WHERE TRUE
                                                         $FilterCondition
                                                         $HierarchyCondition")->row()->total_filtered;
 
@@ -1046,11 +1052,11 @@ class Employer_model extends CI_Model
                                                                 C.is_paid,
                                                                 C.created_by,
                                                                 c.created_at,
-                                                                CD.file_name,  
+                                                                CD.file_name,
                                                                 B.spoc_name
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,                                        
+                                                                || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
                                                                 B.spoc_email
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,                                       
+                                                                || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
                                                                 B.spoc_phone
                                                                 || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
                                                                 d.name AS location,
@@ -1078,7 +1084,7 @@ class Employer_model extends CI_Model
                                                         LEFT JOIN   neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
                                                         LEFT JOIN neo_master.industries AS i on i.id=c.industry_id
                                                         LEFT JOIN neo_master.functional_areas AS fa ON fa.id=c.functional_area_id
-                                                        LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id                                                       
+                                                        LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
                                                         LEFT JOIN
                                                         (
                                                         SELECT 	CB.customer_id,
@@ -1105,19 +1111,34 @@ class Employer_model extends CI_Model
                     foreach ($result_recs->result() as $customer) {
                             $row = array();
                             $slno++;
-							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a><a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
-								if (trim($customer->file_name)!='')
-									$ActionColumn .= '<a class="btn btn-warning btn-sm" href="'. base_url(). CUSTOMER_DOCUMENT_PATH .$customer->file_name.'" target="_blank" title="Download Commercial Document" style="margin-left:5px;"><i class="fa fa-download" ></i></a>';
-									if($customer->is_paid){
-											$ActionColumn .= "<button class='btn btn-warning btn-sm' onclick='showCommercialModal({$customer->id})' title='View Commercials' style='margin-left:5px;'><i class='fa fa-rupee' ></i></button>";
+							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a>';
+							 if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
+							{
+							 $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
+							}
+
+							$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+
+							 if (trim($customer->file_name)!='')
+							{
+								$ActionColumn .= '<a class="btn btn-warning btn-sm" href="'. base_url(). CUSTOMER_DOCUMENT_PATH .$customer->file_name.'" target="_blank" title="Download Commercial Document" style="margin-left:5px;"><i class="fa fa-download" ></i></a>';
+							}
+
+							if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_commercial_view_roles()))
+							{
+								if($customer->is_paid)
+									{
+									  $ActionColumn .= "<button class='btn btn-warning btn-sm' onclick='showCommercialModal({$customer->id})' title='View Commercials' style='margin-left:5px;'><i class='fa fa-rupee' ></i></button>";
 									}
+							}
+
 
 
                             $row[] = $slno;
                             $row[] = $ActionColumn;
                             $row[] = $customer->customer_name ?? 'N/A';
                             $row[] = $customer->lead_type_name ?? 'N/A';
-                            $row[] = $customer->source_name ?? 'N/A';                            
+                            $row[] = $customer->source_name ?? 'N/A';
                             $row[] = $customer->spoc_name ?? 'N/A';
                             $row[] = $customer->spoc_email ?? 'N/A';
                             $row[] = $customer->spoc_phone ?? 'N/A';

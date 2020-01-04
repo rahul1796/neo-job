@@ -98,7 +98,7 @@
             </ol>
         </div>
     </div>
-     <?php $this->load->view('jobs/job_details', ['job_id' => $job_id, 'job'=> $job_details]); ?>
+     <?php $this->load->view('jobs/job_details', ['job_id' => $job_id, 'job'=> $job_details, 'is_filled'=> $is_filled]); ?>
     
     <section id="configuration">
         <div class="row">

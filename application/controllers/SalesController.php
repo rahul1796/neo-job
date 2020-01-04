@@ -125,8 +125,10 @@ class SalesController extends MY_Controller {
 
 
   public function commercials_documents($id) {
+    $customer = $this->sale->find($id);
+    $this->commercial_redirect($customer);
     $data = $this->set_commercial_document_data($id);
-    //$data['commercials_base'] = $this->commercials_fields;
+    $data['customer'] = $customer;
     $this->loadFormViews('commercials_documents',$data);
   }
 
@@ -136,6 +138,7 @@ class SalesController extends MY_Controller {
     $data['fee_types_option'] = $this->fee_type;
     $data['remark_options'] = $this->sale->getCommercialRemarkTypes();
     $data['commercials'] = $this->commericalData($this->commercial_sub_fields, $id);
+    $data['commercial_options'] = $this->sale->getCommercialStatuses();
     $data['documents'] = $this->sale->findDocument($id);
     if (count($this->sale->getCommercials($id))==5 && count($data['documents'])==1) {
       $data['legal_verified'] = true;
@@ -143,22 +146,52 @@ class SalesController extends MY_Controller {
     return $data;
   }
 
-  public function verify_documents_commercial($id) {
+  public function commercial_redirect($customer) {
+    if($customer['is_customer'] == true) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    } else if (!(in_array($customer['lead_status_id'], [20,21,16]))) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    } else if (!(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_view_roles()))) {
+      $this->session->set_flashdata('status', 'You are not authorised to access that page');
+      redirect('/pramaan/dashboard', 'refresh');
+    }
+  }
 
-    if ($this->sale->verfied_customer($id)) {
-      $this->msg = 'Documents Verified, Lead Converted to Customer';
+  public function verify_documents_commercial() {
+    $customer_id = $this->input->post('customer_id');
+    $request['status'] = $this->input->post('status');
+    $request['remarks'] = $this->input->post('remarks');
+    $data['status'] = false;
+    if ($this->sale->verfied_customer($customer_id, $request)) {
+      $data['status'] = true;
+      if($request['status']=='accept') {
+          $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+          $data['message'] = $this->msg ;
+      } else {
+        $this->msg = 'Documents & Commercials Rejected. Resubmission of commercial required';
+        $data['message'] = $this->msg ;
+      }
     } else {
       $this->msg = 'Error verifiying documents';
+      $data['message'] = $this->msg ;
     }
     $this->session->set_flashdata('status', $this->msg);
-    redirect($this->redirectUrl, 'refresh');
+    echo json_encode($data);
+    exit;
   }
 
   public function commericals_store($id) {
     //echo var_dump($this->input->post());
   //  $data = $this->input->post('commercial');
     //
+
+    $customer = $this->sale->find($id);
+    $this->commercial_redirect($customer);
     $data = $this->set_commercial_document_data($id);
+    $data['customer'] = $customer;
+
     if($this->validateCommercial()){
       $data_document['customer_id'] = $id;
       $data_document['created_by'] = $this->session->userdata('usr_authdet')['id'];
@@ -266,6 +299,8 @@ class SalesController extends MY_Controller {
     } else {
       $data['remarks'] = $this->input->post('remarks');
       $data['schedule_date'] = $this->input->post('schedule_date');
+      $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
+      $data['potential_number'] = $this->input->post('potential_number');
       $data = $this->addFileInfo($data);
     }
     $status = $this->sale->updateLeadStatus($data);
@@ -540,6 +575,38 @@ class SalesController extends MY_Controller {
     $response['msg'] = $this->msg;
     echo json_encode($response);
     exit;
+  }
+
+  public function check_commercial_document($customer_id)
+  {
+    //echo $customer_id;
+      $result = array(
+        "file_name" => ""
+      );
+      $query = "WITH RES AS
+      (
+          SELECT 	LL.file_name,
+                  ROW_NUMBER() OVER(PARTITION BY LL.customer_id,LL.lead_status_id ORDER BY id DESC) AS counter
+          FROM 	neo_customer.lead_logs AS LL
+          WHERE	LL.customer_id= $customer_id
+          AND		LL.lead_status_id=8
+      )
+      SELECT 	COALESCE(RES.file_name,'') AS file_name
+      FROM	RES
+      WHERE	RES.counter=1 ";
+
+      $response = $this->db->query($query);
+      if ($response->num_rows() > 0)
+      {
+          //echo json_encode($response->row());
+          $result["file_name"] = $response->row()->file_name;
+      }
+      else
+      {
+          $result["file_name"] = "";
+      }
+
+      echo json_encode($result);
   }
 
 }

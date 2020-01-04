@@ -271,6 +271,7 @@ class CandidatesController extends MY_Controller {
   public function appliedCandidates($id, $page=0) {
       $this->authorize(job_board_applied_roles());
       $this->validateIDs($this->job->find($id));
+      $data['is_filled']=$this->candidate->getJobVacancyDetail($id);
   if($page<0) {
     $page = 0;
   }
@@ -305,6 +306,7 @@ class CandidatesController extends MY_Controller {
 public function suggestedCandidates($id, $page=0) {
   $this->authorize(job_board_recommanded_roles());
   $this->validateIDs($this->job->find($id));
+  $data['is_filled']=$this->candidate->getJobVacancyDetail($id);
   if($page<0) {
     $page = 0;
   }
@@ -346,6 +348,7 @@ public function suggestedCandidates($id, $page=0) {
 public function mtoCandidates($id, $page=0) {
   $this->authorize(job_board_all_candidates_roles());
   $this->validateIDs($this->job->find($id));
+  $data['is_filled']=$this->candidate->getJobVacancyDetail($id);
   if($page<0) {
     $page = 0;
   }
@@ -399,6 +402,7 @@ public function mtoCandidates($id, $page=0) {
 public function allCandidates($id, $page=0) {
   $this->authorize(job_board_all_candidates_roles());
   $this->validateIDs($this->job->find($id));
+  $data['is_filled']=$this->candidate->getJobVacancyDetail($id);
   if($page<0) {
     $page = 0;
   }
