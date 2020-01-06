@@ -40,7 +40,7 @@ class JobsController extends MY_Controller {
 
      $data['qualification_pack_options'] = $this->job->getQualificationPacks();
      $data['education_options'] = $this->job->getEducations();
-     $data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
+     //$data['joined_candidates'] = $this->job->getJoinedCandidateCount($id);
      $data['jobs'] = $this->job->searchJob(1);
      $data['job_list'] = $this->load->view('jobs/job', $data, TRUE);
      $this->load->view('layouts/header');
