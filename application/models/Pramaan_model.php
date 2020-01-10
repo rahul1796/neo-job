@@ -7946,7 +7946,12 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
    function get_jobs_list_new($requestData = array(), $user_id = 0)
     {
         $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
-        $TeamMemberIdList = implode(",",$this->session->userdata('user_hierarchy'));
+        $HierarchyIds= $this->session->userdata('user_hierarchy');
+        // array_push($HierarchyIds, $user_id);
+        $TeamMemberIdList = implode(",",$HierarchyIds);
+        // var_dump($TeamMemberIdList);
+        // exit;
+        
 
         $order_by = " ORDER BY id DESC ";
         $search_type_id = isset($requestData['search_type_id']) ? intval($requestData['search_type_id']) : 0;
@@ -7996,7 +8001,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
 
         if ($active_user_role_id == 14 || $active_user_role_id == 11)
         {
-            $sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
+           $sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
         }
 
         $sSearchVal = $_POST['search']['value'];
@@ -8012,7 +8017,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
 
         $HierarchyCondition = "";
         if ($TeamMemberIdList != '')
-            $HierarchyCondition = " AND (assigned_user_ids && ARRAY[$TeamMemberIdList]) ";
+            $HierarchyCondition = " AND ((assigned_user_ids||created_user_id) && ARRAY[$TeamMemberIdList]) ";
 
         $total_records = $this->db->query("SELECT Count(VW.*) AS total_recs FROM neo_job.vw_job_list AS VW WHERE TRUE $HierarchyCondition")->row()->total_recs;
 
