@@ -120,7 +120,7 @@
  var role_id = '<?= $fields['user_role_id'];?>' || '0';
  var updated_user_id = '<?= $user_id ?>';
  var reporting_manager_role_id = '<?= $fields['reporting_manager_role_id'] ?>' || '0';
- var reporting_manager_is_admin_role= [2,18,19] ;
+ var reporting_manager_is_admin_role= [2,18] ;
 
 
  $(document).ready(function() {
