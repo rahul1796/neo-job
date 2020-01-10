@@ -7,7 +7,7 @@ class UsersController extends MY_Controller {
 
   protected $redirectUrl = 'userscontroller/index';
 
-  protected $adminReportees = [2,18,19];
+  protected $adminReportees = [2,18];
   protected $msg = '';
 
   public function __construct() {
