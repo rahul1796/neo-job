@@ -65,7 +65,15 @@ class Pramaan extends CI_Controller
           } else {
               $hierarchy_data = $this->dashboard->getUserHierarchy($this->session->userdata['usr_authdet']['id']);
           }
-          $this->session->userdata['user_hierarchy'] = array_column($hierarchy_data, 'user_id');
+          if ($this->session->userdata['usr_authdet']['user_group_id']==19) {
+            $this->session->userdata['user_hierarchy'] = array_column($hierarchy_data, 'user_id');
+            array_push($this->session->userdata['user_hierarchy'],$this->session->userdata['usr_authdet']['id']);
+         }
+         else {
+            $this->session->userdata['user_hierarchy'] = array_column($hierarchy_data, 'user_id');
+         }
+        
+          
         }
 
         // echo print_r($this->session->user_hierarchy);
