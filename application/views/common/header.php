@@ -215,7 +215,7 @@ header,
 
               <li class="dropdown dropdown-user nav-item"><a style="padding: 6px 7px;" href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link"><span class="avatar avatar-online"><img src="<?php echo base_url('adm-assets/images/portrait/small/avatar-s-1.png');?>" alt="avatar"><i></i></span><span><?php echo $user_det['email'];?></span><br><small style="margin-left: 37px; font-size: small;"><?php echo $user_det['role_name'];?></small></a>
 
-                  <div class="dropdown-menu dropdown-menu-right"><a onclick="update_password()"  class="dropdown-item"><i class="icon-lock"></i> Change Password</a>
+                  <div class="dropdown-menu dropdown-menu-right"><a href="<?php echo base_url('pramaan/changepassword/');?>"  class="dropdown-item"><i class="icon-lock"></i> Change Password</a>
                   <!--<div class="dropdown-divider"></div>--><a href="<?php echo base_url('pramaan/logout/');?>" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                 </div>
               </li>

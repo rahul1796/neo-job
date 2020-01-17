@@ -311,13 +311,17 @@
 			$this->load->view(PRAMAAN_VIEW_PAGES.'job_applicants');
 			break;
                     
-                case 'application_tracker_region_state_center':
-                    $this->load->view(PRAMAAN_VIEW_PAGES.'application_tracker_region_state_center');
-                    break;
+		case 'application_tracker_region_state_center':
+			$this->load->view(PRAMAAN_VIEW_PAGES.'application_tracker_region_state_center');
+			break;
                 
-                case 'reports':
+		case 'reports':
 			$this->load->view(PRAMAAN_VIEW_PAGES.'reports');
 			break;
+
+		case 'changepassword':
+			$this->load->view(PRAMAAN_VIEW_PAGES.'changepassword');
+			break;	
 
 		default:
 			$this->load->view($module.'/'.$page);

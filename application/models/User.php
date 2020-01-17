@@ -22,13 +22,13 @@ class User extends MY_Model
     return false;
   }
   
-  public function updateUserPassword($id,$confirmpassword) {   
-    $this->db->query("UPDATE neo_user.users SET pwd = ? WHERE	id=?", [$confirmpassword, $id]);
-    if($this->db->affected_rows() == 1 ) {
-      return true;
-    }
-    return false;
-  }
+  // public function updateUserPassword($id,$confirmpassword) {   
+  //   $this->db->query("UPDATE neo_user.users SET pwd = ? WHERE	id=?", [$confirmpassword, $id]);
+  //   if($this->db->affected_rows() == 1 ) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   public function getReportingManager($id) {
     $this->db->reset_query();
@@ -128,5 +128,30 @@ class User extends MY_Model
     $query = $this->db->where('user_id', $id)->get('neo_user.centers_users')->result_array();
     return array_column($query, 'center_id');
   }
+
+  public function getUserCurrentPassword($id)
+  {
+      $this->db->where('id', $id);
+      $query = $this->db->get('neo_user.users');       
+      return $query->row();
+  }
+ 
+
+  public function checkOldPassword($id,$oldpass)
+  { 
+     $query= $this->db->query("SELECT * FROM neo_user.fn_check_password_validity(?,?) AS counter", [$id, $oldpass])->row_array();
+     return $query;
+  }
+ 
+
+   public function updateUserPassword($id, $userdata)
+   {
+       $this->db->where('id', $id);
+       $this->db->update('neo_user.users', $userdata);
+      if($this->db->affected_rows() == 1 ) {
+        return true;
+      }
+      return false;
+   }
 
 }
