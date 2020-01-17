@@ -406,10 +406,14 @@
 					          <li class=" nav-item"><a href="<?php echo base_url('Events/index/'.date('Y').'/'.date('m').'/'.date('d'));?>"><i class="fa fa-calendar"></i><span data-i18n="nav.dash.main" class="menu-title">Calendar</span></a></li>
 					        <?php endif; ?>
 
-					        <li class=" navigation-header"><span data-i18n="nav.category.layouts">Content</span><i  class="icon-ellipsis icon-ellipsis"></i></li>
+					        <li class=" navigation-header"><span data-i18n="nav.category.layouts">Content</span><i  class="icon-ellipsis"></i></li>
 
 					        <?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
 					          <li class=" nav-item"><a href="<?php echo base_url('leads/index/1');?>"><i class="icon-line-chart"></i><span data-i18n="nav.dash.main" class="menu-title">Leads</span></a></li>
+					        <?php endif; ?>
+
+									<?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
+					          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="icon-industry"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
 					        <?php endif; ?>
 
 					        <?php if (in_array($user['user_group_id'], customer_view_roles())): ?>

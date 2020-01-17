@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Model extends CI_Model {
 
   protected $tableName = '';
+  public $fillable = [];
 
   public function getUserHierarchy($user_id){
     return $this->db->query('select * from neo_user.fn_get_recursive_team_data(?)', $user_id)->result_array();
@@ -21,6 +22,29 @@ class MY_Model extends CI_Model {
     return $this->db->where('id', $id)->get($this->tableName)->row_array();
   }
 
+  public function findBy($data) {
+    if(!empty($data)) {
+      foreach($data as $key => $value) {
+          $this->db->where($key, $value);
+      }
+    }
+    return $this->db->get($this->tableName)->result_array();
+  }
+
+  public function findFirst($data) {
+    if(!empty($data)) {
+      foreach($data as $key => $value) {
+          $this->db->where($key, $value);
+      }
+    }
+    return $this->db->get($this->tableName)->row_array();
+  }
+
+  public function getFillable($data) {
+    // print_r(array_intersect_key(array_filter($data, array($this, 'nonZeroFilter')), array_flip($this->fillable)));
+    // exit;
+    return array_intersect_key(array_filter($data, array($this, 'nonZeroFilter')), array_flip($this->fillable));
+  }
 
   public function allByCandidate($candidate_id) {
     return $this->db->where('candidate_id', $candidate_id)->get($this->tableName)->result();
