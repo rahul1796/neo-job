@@ -24,6 +24,9 @@ class Pramaan extends CI_Controller
         $this->load->model("availablejobs_model", "available");
         $this->load->model('Sale', 'sale');
         $this->load->model('Candidate', 'candidate');
+        $this->load->model("User", "user");
+        $this->load->helper('form');
+        $this->load->library('form_validation');
     }
 
     /**
@@ -7911,5 +7914,62 @@ die;*/
           redirect('/pramaan/dashboard', 'refresh');
         }
       }
+      
+
+      public function changepassword($parent_id = 0)
+    {       
+        $user              = $this->pramaan->_check_module_task_auth(true);
+        $data['page']      = 'changepassword';
+        $data['title']     = 'Change Password'; 
+        $this->load->view('index', $data);
+
+    }
+    
+    
+    public function update_user_password()
+    {
+       
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('oldpass', 'old password', 'trim|required|min_length[8]|max_length[30]|callback_password_check');
+        $this->form_validation->set_rules('newpass', 'new password', 'trim|required|min_length[8]|max_length[30]|callback_last_passwords');
+        $this->form_validation->set_rules('passconf', 'confirm password', 'trim|required|min_length[8]|max_length[30]|matches[newpass]');       
+
+        if($this->form_validation->run() == false) {
+            $this->changepassword();
+        }
+        else {
+            $id = $this->session->userdata('usr_authdet')['id']; 
+
+            $newpass = $this->input->post('newpass');
+
+            $this->user->updateUserPassword($id, array('pwd' => $newpass));               
+            $this->session->set_flashdata('status', 'You have successfully changed your password');
+            redirect('/pramaan/dashboard', 'refresh');               
+            
+        }
+    }
+
+    public function password_check($oldpass)
+    {
+        $id = $this->session->userdata('usr_authdet')['id'];
+        $user = $this->user->getUserCurrentPassword($id);
+        if($user->pwd !== $oldpass){              
+            $this->form_validation->set_message('password_check', 'The {field} does not match');
+            return false;
+        } 
+        return true;
+    }
+    
+    
+    public function last_passwords($oldpass)
+    {
+        $id = $this->session->userdata('usr_authdet')['id'];
+        $current = $this->user->checkOldPassword($id,$oldpass);
+        if($current['counter'] > 0) {
+            $this->form_validation->set_message('last_passwords', 'The {field} should not match last 3 password');
+            return false;
+        }      
+        return true;
+    }
 
 }
