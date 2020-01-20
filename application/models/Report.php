@@ -120,7 +120,7 @@ class Report extends MY_Model {
                         job_created_by AS \"JOB CREATED BY\", job_created_by_user_role AS \"USER ROLE\",
                         employment_type AS \"EMPLOYMENT TYPE\", salary AS \"SALARY (INR)\", state_name AS \"STATE\",
                         district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\",
-                        (CASE WHEN TRIM(offer_letter_file)='' THEN 'NA' ELSE CONCAT('{$file_url}', TRIM(offer_letter_file)) END ) AS \"OFFER LETTER FILE\", certification_status AS \"CERTIFICATION STATUS\"";
+                        (CASE WHEN TRIM(COALESCE(offer_letter_file, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(offer_letter_file), '\",\"View Document\")') END ) AS \"OFFER LETTER FILE\", certification_status AS \"CERTIFICATION STATUS\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_placement_detail_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
