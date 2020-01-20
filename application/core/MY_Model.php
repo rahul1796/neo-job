@@ -238,10 +238,17 @@ class MY_Model extends CI_Model {
     return $query->result();
   }
 
+  public function getLabournetEntities() {
+    $query = $this->db->get('neo_master.labournet_entities');
+    return $query->result();
+  }
+
   public function getLeadCustomerNames() {
     $query = $this->db->select("DISTINCT(customer_name) ")->where('is_customer', FALSE)->order_by('customer_name')->get('neo_customer.customers');
     return $query->result();
   }
+
+
 
   public function getPlacementOfficersNames() {
     $query = $this->db->select("DISTINCT(name) ")->where('user_role_id=', '14')->order_by('name')->get('neo_user.users');
@@ -408,7 +415,7 @@ class MY_Model extends CI_Model {
   // }
 
   function nonZeroFilter($var){
-    return ($var !== NULL && $var !== FALSE && $var !== '');
+    return ($var !== NULL && $var !== '');
   }
 
 

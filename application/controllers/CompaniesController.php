@@ -57,8 +57,8 @@ class CompaniesController extends MY_Controller {
       $this->session->set_flashdata('status', $this->msg);
       redirect($this->redirectUrl, 'refresh');
     } else {
-      $data = $this->setData($id);
-      $data['id'] = $id;
+      $data = $this->setData($company_id);
+      $data['id'] = $company_id;
       $this->loadFormViews('edit', $data);
     }
   }

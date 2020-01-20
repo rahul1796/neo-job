@@ -416,6 +416,10 @@
 					          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="icon-industry"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
 					        <?php endif; ?>
 
+									<?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
+					          <li class=" nav-item"><a href="<?php echo base_url('opportunitiescontroller/index');?>"><i class="icon-industry"></i><span data-i18n="nav.dash.main" class="menu-title">Opportunities</span></a></li>
+					        <?php endif; ?>
+
 					        <?php if (in_array($user['user_group_id'], customer_view_roles())): ?>
 					          <li class=" nav-item"><a href="<?php echo base_url('pramaan/customers');?>"><i class="icon-android-people"></i><span data-i18n="nav.dash.main" class="menu-title">Customers</span></a></li>
 					        <?php endif; ?>
