@@ -341,15 +341,15 @@ $options_orgTypes=array(''=>'-Select Org type-');
               <div role="tabpanel" class="tab-pane" id="selfemployed">
               <form id="form-filter" style="margin-top: -22px;">
               <div class="form-row col-md-12">
-                    <div class="form-group col-md-3">
+                    <!-- <div class="form-group col-md-3">
                     <label for="employment_start_date">From</label>
                     <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="employment_start_date" placeholder="Select From Date" name="employment_start_date" value="">
                     </div>
                     <div class="form-group col-md-3">
                     <label for="employment_end_date">To</label>
                     <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="employment_end_date" placeholder="Select From Date" name="employment_end_date" value="">
-                    </div>
-                    <div class="form-group col-md-6">
+                    </div> -->
+                    <div class="form-group col-md-12">
                     <label for="center_name">Center Name</label>
                     <select class="form-control select2-neo" name="center_name" id="center_name">
                     <option value="0">Select Center Name</option>
