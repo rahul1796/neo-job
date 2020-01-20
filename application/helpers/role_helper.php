@@ -157,6 +157,10 @@ function application_tracker_region_roles() {
   return [0,1,2,3,4,5,6,7,8,11,14,18,19];
 }
 
+function application_tracker_self_employed_roles() {
+  return [0,1,2,3,4,5,6,7,8,11,14,18,19];
+}
+
 function address_view_roles() {
   return [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,18,19];
 }
