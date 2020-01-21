@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Model extends CI_Model {
 
   protected $tableName = '';
+  public $fillable = [];
 
   public function getUserHierarchy($user_id){
     return $this->db->query('select * from neo_user.fn_get_recursive_team_data(?)', $user_id)->result_array();
@@ -21,6 +22,29 @@ class MY_Model extends CI_Model {
     return $this->db->where('id', $id)->get($this->tableName)->row_array();
   }
 
+  public function findBy($data) {
+    if(!empty($data)) {
+      foreach($data as $key => $value) {
+          $this->db->where($key, $value);
+      }
+    }
+    return $this->db->get($this->tableName)->result_array();
+  }
+
+  public function findFirst($data) {
+    if(!empty($data)) {
+      foreach($data as $key => $value) {
+          $this->db->where($key, $value);
+      }
+    }
+    return $this->db->get($this->tableName)->row_array();
+  }
+
+  public function getFillable($data) {
+    // print_r(array_intersect_key(array_filter($data, array($this, 'nonZeroFilter')), array_flip($this->fillable)));
+    // exit;
+    return array_intersect_key(array_filter($data, array($this, 'nonZeroFilter')), array_flip($this->fillable));
+  }
 
   public function allByCandidate($candidate_id) {
     return $this->db->where('candidate_id', $candidate_id)->get($this->tableName)->result();
@@ -214,10 +238,17 @@ class MY_Model extends CI_Model {
     return $query->result();
   }
 
+  public function getLabournetEntities() {
+    $query = $this->db->get('neo_master.labournet_entities');
+    return $query->result();
+  }
+
   public function getLeadCustomerNames() {
     $query = $this->db->select("DISTINCT(customer_name) ")->where('is_customer', FALSE)->order_by('customer_name')->get('neo_customer.customers');
     return $query->result();
   }
+
+
 
   public function getPlacementOfficersNames() {
     $query = $this->db->select("DISTINCT(name) ")->where('user_role_id=', '14')->order_by('name')->get('neo_user.users');
@@ -384,7 +415,7 @@ class MY_Model extends CI_Model {
   // }
 
   function nonZeroFilter($var){
-    return ($var !== NULL && $var !== FALSE && $var !== '');
+    return ($var !== NULL && $var !== '');
   }
 
 
