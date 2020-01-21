@@ -109,17 +109,18 @@ class Report extends MY_Model {
 
 
     public function getPlacementDetailReport($data) {
-
+      $file_url = base_url("uploads/candidate/offer_letters/");
       $select_column = "region_name AS \"REGION\", batch_code AS \"BATCH CODE\", batch_start_date AS \"BATCH START DATE\",
                         batch_end_date AS \"BATCH END DATE\", center_name AS \"CENTER NAME\", batch_customer_name AS \"IGS CUSTOMER NAME\",
                         batch_contract_id AS \"IGS CONTRACT ID\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NO#\", date_of_birth AS \"DATE OF BIRTH\",
                         candidate_current_status AS \"CANDIDATE STATUS\", current_status_changed_on AS \"STATUS CHANGED ON\", contact_no AS \"CONTACT NO\", interview_date AS \"INTERVIEWED DATE\",
                         date_of_join AS \"DATE OF JOINING\", customer_name AS \"CUSTOMER NAME\", job_location AS \"JOB LOCATION\",
-                        job_title AS \"JOB TITLE\",
+                        job_title AS \"JOB TITLE\", job_created_date AS \"JOB POSTED DATE\",
                         job_qualification_pack AS \"JOB QP\", business_vertical AS \"BUSINESS VERTICAL\",
                         job_created_by AS \"JOB CREATED BY\", job_created_by_user_role AS \"USER ROLE\",
                         employment_type AS \"EMPLOYMENT TYPE\", salary AS \"SALARY (INR)\", state_name AS \"STATE\",
-                        district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\", certification_status AS \"CERTIFICATION STATUS\"";
+                        district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\",
+                        (CASE WHEN TRIM(COALESCE(offer_letter_file, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(offer_letter_file), '\",\"View Document\")') END ) AS \"OFFER LETTER FILE\", certification_status AS \"CERTIFICATION STATUS\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_placement_detail_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
