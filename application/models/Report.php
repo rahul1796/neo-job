@@ -155,7 +155,8 @@ class Report extends MY_Model {
                         job_location AS \"JOB LOCATION\", pin_code AS \"PINCODE\", no_of_vacancies AS \"#NO VACANCIES\", min_salary AS \"MIN SALARY PA\",
                         max_salary AS \"MAX SALARY PA\", education AS \"QUALIFICATION\",
                         min_age AS \"MIN AGE\", max_age AS \"MAX AGE\", min_experience AS \"MIN EXP\",
-                        max_experience AS \"MAX EXP\", customer_name AS \"CUSTOMER\", key_skills AS \"KEY SKILLS\" ";
+                        max_experience AS \"MAX EXP\", customer_name AS \"CUSTOMER\", key_skills AS \"KEY SKILLS\"";
+                        
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_job_detailed_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
@@ -178,15 +179,16 @@ class Report extends MY_Model {
 
     //sumit function to work on
     public function getSelfEmployedCandidatesReport($data) {
+      $file_url = base_url("documents/");
+      $select_column = "region_name AS \"REGION\" , batch_code AS \"BATCH CODE\", batch_start_date AS \"BATCH START DATE\",
+      batch_end_date AS \"BATCH END DATE\", center_name AS \"CENTER\", batch_customer_name AS \"BATCH CUSTOMER NAME\",
+      batch_contract_id AS \"BATCH CONTRACT ID\", qualification_pack AS \"QUALIFICATION PACK\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NUMBER\",
+      date_of_birth AS \"DATE OF BIRTH\", gender AS \"GENDER\",
+      state AS \"STATE\", district AS \"DISTRICT\", certification_status AS \"CERTIFICATION STATUS\",
+      employment_type AS \"EMPLOYMENT TYPE\", self_employment_start_date AS \"SELF EMPLOYMENT START DATE\", skilling_type AS \"SKILLING TYPE\",
+      (CASE WHEN TRIM(COALESCE(file_name, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(file_name), '\",\"View Document\")') END ) AS \"DOCUMENT\"";
 
-      $select_column = "industry AS \"INDUSTRY\" , job_qp AS \"JOB QP\", job_posted_by AS \"JOB POSTED BY\",
-                        user_role AS \"USER ROLE\", job_title AS \"JOB TITLE\", business_vertical AS \"BUSINESS VERTICAL\",
-                        job_location AS \"JOB LOCATION\", pin_code AS \"PINCODE\", no_of_vacancies AS \"#NO VACANCIES\", min_salary AS \"MIN SALARY PA\",
-                        max_salary AS \"MAX SALARY PA\", education AS \"QUALIFICATION\",
-                        min_age AS \"MIN AGE\", max_age AS \"MAX AGE\", min_experience AS \"MIN EXP\",
-                        max_experience AS \"MAX EXP\", customer_name AS \"CUSTOMER\", key_skills AS \"KEY SKILLS\" ";
-
-      $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_lead_detail_report_data(?,?,?)",
+      $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_selfemployed_detail_report_data(?,?,?)",
                 [
                   $this->getDateWithMonthName($data['start_date']),
                   $this->getDateWithMonthName($data['end_date']),
