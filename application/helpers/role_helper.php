@@ -33,11 +33,11 @@ function lead_commercial_view_roles() {
 }
 
 function lead_commercial_update_roles() {
-    return [0,1,2,3,4,5,7,8,14];
+    return [0,1,2,3,4,5,7,8,14,19];
 }
 
 function lead_commercial_approve_roles() {
-    return [0,1,17];
+    return [0,1,17,19];
 }
 
 function lead_status_update_roles() {
