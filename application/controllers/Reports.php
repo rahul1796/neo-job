@@ -8,7 +8,8 @@ class Reports extends MY_Controller {
                       'getLeadDetailsReport' => 'Lead Details Report',
                       'getClientTrackerReport'=>'Client Tracker Report',
                       'getPlacementDetailReport' => 'Placement Detail Report',
-                      'getJobDetailedReport' => 'Job Detailed Report'];
+                      'getJobDetailedReport' => 'Job Detailed Report',
+                      'getSelfEmployedCandidatesReport' => 'Self Employed Candidates Report'];
 
   public function __construct() {
     parent::__construct();
@@ -73,6 +74,11 @@ class Reports extends MY_Controller {
   public function getJobDetailedReport() {
     $data = $this->report->getJobDetailedReport($this->searchFiltersJobDetailedReport());
     $this->downloadRequest('JobDetailedReport', $data);
+  }
+
+  public function getSelfEmployedCandidatesReport() {
+    $data = $this->report->getSelfEmployedCandidatesReport($this->searchFilters());
+    $this->downloadRequest('SelfEmployedCandidatesReport', $data);
   }
 
   private function downloadRequest($file_name, $data) {
