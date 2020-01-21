@@ -87,4 +87,126 @@ class Opportunity extends MY_Model
       $data['contract_id'] = 'CON-'.strtoupper(substr($result['company_name'], 0, (strlen($result['company_name'])>3 ? 4 : 3))).'-'.$data['opportunity_id'];;
       return $data;
     }
+
+
+    function getOppurunityList($PageRequestData = array(),$user_id=0)
+    {
+        $user = $this->pramaan->_check_module_task_auth(true);
+        $strOrderBy = "";
+        $SearchCondition = "";
+        $Data = array();
+
+        //Searching columns
+        $arrColumnsToBeSearched = array("company_name", "lead_status_name" ,"opportunity_code","contract_id", "business_vertical_name", "industry_name", "labournet_entity_name" );
+
+        //Sorting columns
+        $arrSortByColumns = array(
+            0 => null,
+            1 => null,
+            2 => 'company_name',
+            3 => 'lead_status_name',
+            4 => 'opportunity_code',
+            5 => 'contract_id',
+            6 => 'business_vertical_name',
+            7 => 'industry_name',
+            8 => 'labournet_entity_name'
+        );
+
+        //Change query here for total record
+        $strQuery = "SELECT COUNT(s.id)::BIGINT AS total_record_count
+                     FROM   neo_customer.vw_oppurtunity AS s WHERE TRUE ";
+        $strTotalRecordCount = $this->db->query($strQuery)->row()->total_record_count;
+        $intTotalRecordCount = $strTotalRecordCount * 1;
+
+        $intTotalFilteredCount = $intTotalRecordCount;
+
+        if ($arrSortByColumns[$PageRequestData['order'][0]['column']] != '') {
+            $strOrderBy = " ORDER BY " . $arrSortByColumns[$PageRequestData['order'][0]['column']] . " " . $PageRequestData['order'][0]['dir'] . "  ";
+        }
+
+        $StartIndex = $PageRequestData['start'];
+        $PageLength = $PageRequestData['length'];
+        if ($PageLength < 0) $PageLength = 'all';
+
+        if (!$intTotalRecordCount) {
+            return array('sEcho' => '1', "iTotalRecords" => "0", "iTotalDisplayRecords" => "0", 'aaData' => array());
+        } else {
+            $SearchCondition = "";
+            $sSearchVal = $_POST['search']['value'];
+            if (isset($sSearchVal) && $sSearchVal != '') {
+                $SearchCondition = " AND (";
+                for ($i = 0; $i < count($arrColumnsToBeSearched); $i++) {
+                    $SearchCondition .= $arrColumnsToBeSearched[$i] . " ILIKE '%" . $this->db->escape_like_str($sSearchVal) . "%' OR ";
+                }
+
+                $SearchCondition = substr_replace($SearchCondition, "", -3);
+                $SearchCondition .= ')';
+            }
+
+
+            //Change query here for filtered rows
+            $strQuery = "SELECT     COUNT(s.id)::BIGINT AS total_filtered_count
+                         FROM       neo_customer.vw_oppurtunity AS s
+                         WHERE      TRUE ";
+
+            $strQuery .= $SearchCondition;
+
+            $intTotalFilteredCount = $this->db->query($strQuery)->row()->total_filtered_count;
+
+            $strQuery = "select * from neo_customer.vw_oppurtunity AS s WHERE TRUE ";
+            //Main Query here for fetching details
+
+            $strQuery .= $SearchCondition;
+            $strQuery .= $strOrderBy . " LIMIT " . $PageLength . " OFFSET " . $StartIndex;
+
+            $QueryData = $this->db->query($strQuery);
+
+            $SerialNumber = $StartIndex;
+            //$intActiveStatus = 1;
+            foreach ($QueryData->result() as $QueryRow) {
+              $Actions = '';
+                  if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+                    $Actions .= '<button class="btn btn-sm btn-warning" title="Update Lead Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                  }
+                  if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+                    $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" onclick="edit_lead(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+                  }
+                  $Actions .= '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+                  $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';
+                  if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
+                    $Actions .= '<a class="btn btn-sm " title="Lead Commercials" href="'.base_url("/leads/commercials_documents/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
+                  }
+                  if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
+                    $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+                  }
+               // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
+                $ResponseRow = array();
+                $SerialNumber++;
+                $ResponseRow[] = $SerialNumber;
+                $ResponseRow[] = $Actions;
+                $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
+                $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
+                $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
+                $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->business_vertical_name ?? 'N/A';
+                $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->labournet_entity_name ?? 'N/A';
+                
+                $Data[] = $ResponseRow;
+            }
+
+            $ResponseData = array(
+                "draw" => intval($PageRequestData['draw']),
+                "recordsTotal" => intval($intTotalRecordCount),
+                "recordsFiltered" => intval($intTotalFilteredCount),
+                "data" => $Data
+            );
+
+
+            return $ResponseData;
+        }
+
+    }
+
+
 }
