@@ -185,7 +185,7 @@ class Report extends MY_Model {
       batch_contract_id AS \"BATCH CONTRACT ID\", qualification_pack AS \"QUALIFICATION PACK\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NUMBER\",
       date_of_birth AS \"DATE OF BIRTH\", gender AS \"GENDER\",
       state AS \"STATE\", district AS \"DISTRICT\", certification_status AS \"CERTIFICATION STATUS\",
-      employment_type AS \"EMPLOYMENT TYPE\", self_employment_start_date AS \"SELF EMPLOYMENT START DATE\", skilling_type AS \"SKILLING TYPE\",
+      employment_type AS \"EMPLOYMENT TYPE\", self_employment_start_date AS \"SELF EMPLOYMENT START DATE\", skilling_type AS \"SKILLING TYPE\",document_uploaded_on AS \"DOCUMENT UPLOADED ON\",
       (CASE WHEN TRIM(COALESCE(file_name, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(file_name), '\",\"View Document\")') END ) AS \"DOCUMENT\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_selfemployed_detail_report_data(?,?,?)",
