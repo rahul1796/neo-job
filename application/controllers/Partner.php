@@ -811,6 +811,10 @@ class Partner extends Pramaan
 		$data['page']='application_tracker';
 		$data['title']='Application  Tracker';
 		$data['module']="pramaan";
+		$data['center_name'] = $this->partner->getCenterName();
+		$data['batch_code'] = $this->partner->getBatchCode();
+		$data['qualification_pack'] = $this->partner->getQualificationPack();
+		$data['enrollment_no'] = $this->partner->getEnrollmentId();
 		$this->load->view('index',$data);
 	}
 
@@ -2343,7 +2347,8 @@ return false;
           $this->session->set_flashdata('status', 'You are not authorised to access that page');
           redirect('/pramaan/dashboard', 'refresh');
         }
-     }
+	 }	 
+	 
     
 }
 
