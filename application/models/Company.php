@@ -149,14 +149,16 @@ class Company extends MY_Model
             $SerialNumber = $StartIndex;
             //$intActiveStatus = 1;
             foreach ($QueryData->result() as $QueryRow) {
-              $Actions = '';                  
+              $Actions = '';
+                  $action_com_url = base_url("companiescontroller/edit/").$QueryRow->id;
                   if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                    $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" onclick="edit_lead(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+                    $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" href="'.$action_com_url.'"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
                   }
-                  $Actions .= '<a class="btn btn-sm btn-success" title="Create Opportunity" onclick="create_opportunity(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-magic"></i></a>';
-                  
-                  
-                  
+                  $action_opp_url = base_url("opportunitiescontroller/create/").$QueryRow->id;
+                  $Actions .= '<a class="btn btn-sm btn-success" title="Create Opportunity" href="'.$action_opp_url.'"  style="margin-left: 2px;"><i class="fa fa-magic"></i></a>';
+
+
+
                // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
                 $ResponseRow = array();
                 $SerialNumber++;
@@ -166,15 +168,15 @@ class Company extends MY_Model
                 $ResponseRow[] = $QueryRow->opportunity_count ?? 'N/A';
                 $ResponseRow[] = $QueryRow->company_description ?? 'N/A';
                 $ResponseRow[] = $QueryRow->industry ?? 'N/A';
-                $ResponseRow[] = $QueryRow->functional_area ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->functional_area ?? 'N/A';
                 $ResponseRow[] = $QueryRow->spoc_name ?? 'N/A';
-                $ResponseRow[] = $QueryRow->spoc_email ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->spoc_email ?? 'N/A';
                 $ResponseRow[] = $QueryRow->spoc_phone ?? 'N/A';
                 $ResponseRow[] = $QueryRow->state ?? 'N/A';
-                $ResponseRow[] = $QueryRow->district ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->district ?? 'N/A';
                 $ResponseRow[] = $QueryRow->lead_source ?? 'N/A';
                 $ResponseRow[] = $QueryRow->remarks ?? 'N/A';
-                
+
                 $Data[] = $ResponseRow;
             }
 
