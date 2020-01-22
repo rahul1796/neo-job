@@ -2,10 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
  
 class SelfEmployedCandidate extends MY_Model {
- 
+    
     var $table = 'neo.vw_self_employed_candidate_list';
     var $column_order = array(null, 'region_name','batch_code','center_name','enrollment_no','batch_customer_name','candidate_name','qualification_pack','self_employment_start_date','document_uploaded_on'); //set column field database for datatable orderable
-    var $column_search = array('employment_start_date','center_name','batch_code','qualification_pack','enrollment_no'); //set column field database for datatable searchable 
+    var $column_search = array('employment_start_date','employment_end_date','center_name','batch_code','qualification_pack','enrollment_no'); //set column field database for datatable searchable 
     var $order = array('employment_start_date'); // default order 
  
     public function __construct()
@@ -13,6 +13,7 @@ class SelfEmployedCandidate extends MY_Model {
         parent::__construct();
         $this->load->database();
     }
+    
  
     private function _get_datatables_query()
     {
