@@ -175,4 +175,13 @@ class CompaniesController extends MY_Controller {
       return $this->form_validation->run();
     }
 
+    ///////////////////////SUMIT//////////////////////////
+
+    public function getCompanyList()
+  {
+    $requestData= $_REQUEST;
+    $resp_data=$this->company->getCompanyList($requestData);
+    echo json_encode($resp_data);
+  }
+
 }

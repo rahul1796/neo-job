@@ -173,4 +173,11 @@ class OpportunitiesController extends MY_Controller {
       return $this->form_validation->run();
     }
 
+    public function getOpporunityList()
+  {
+    $requestData= $_REQUEST;
+    $resp_data=$this->opportunity->getOppurunityList($requestData);
+    echo json_encode($resp_data);
+  }
+
 }
