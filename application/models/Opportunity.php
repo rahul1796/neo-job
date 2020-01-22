@@ -88,6 +88,34 @@ class Opportunity extends MY_Model
       return $data;
     }
 
+    public function updateLeadStatus($data) {
+      $this->db->trans_start();
+      $this->db->where('id', $data['customer_id']);
+      $maindata['lead_status_id'] = $data['lead_status_id'];
+      if($data['is_paid']!=-1){
+        $maindata['is_paid'] = $data['is_paid'];
+        if($data['lead_status_id']==16 && $maindata['is_paid']==0) {
+           $maindata['is_contract'] = true;
+        }
+      }
+      unset($data['is_paid']);
+      $this->db->update($this->tableName, $maindata);
+
+      $this->db->reset_query();
+      $this->createLeadLog($data, $data['remarks']);
+
+      $this->db->trans_complete();
+      return $this->db->trans_status();
+    }
+
+    public function createLeadLog($data, $remark='') {
+      $data['remarks'] = $remark;
+      return $this->db->insert('neo_customer.lead_logs', $data);
+    }
+
+
+    //sumit's code
+
 
     function getOppurunityList($PageRequestData = array(),$user_id=0)
     {
@@ -166,15 +194,15 @@ class Opportunity extends MY_Model
             foreach ($QueryData->result() as $QueryRow) {
               $Actions = '';
                   if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                    $Actions .= '<button class="btn btn-sm btn-warning" title="Update Lead Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                    $Actions .= '<button class="btn btn-sm btn-warning" title="Update Opportunity Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
                   }
                   if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                    $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" onclick="edit_lead(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+                    $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Opportunity" onclick="edit_lead(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
                   }
-                  $Actions .= '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+                  $Actions .= '<a class="btn btn-sm btn-success" title="Opportunity History" onclick="lead_history(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
                   $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';
                   if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
-                    $Actions .= '<a class="btn btn-sm " title="Lead Commercials" href="'.base_url("/leads/commercials_documents/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
+                    $Actions .= '<a class="btn btn-sm " title="Opportunity Commercials" href="'.base_url("/CommercialVerificationController/commericalsStore/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
                   }
                   if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
                     $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
@@ -187,11 +215,11 @@ class Opportunity extends MY_Model
                 $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
-                $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
                 $ResponseRow[] = $QueryRow->business_vertical_name ?? 'N/A';
-                $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';                
+                $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->labournet_entity_name ?? 'N/A';
-                
+
                 $Data[] = $ResponseRow;
             }
 

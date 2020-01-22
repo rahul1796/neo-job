@@ -1,14 +1,16 @@
 <?php $user=$this->pramaan->_check_module_task_auth(true); ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/1.0.7/css/responsive.dataTables.min.css">
+<script>
+  var statusOptions = JSON.parse('<?= json_encode($lead_status_options); ?>');
+  console.log(statusOptions);
+</script>
 <div class="content-body" style="padding: 30px; margin-top: 10px;">
   <div class="row">
     <div class="col-md-12">
     <?php $this->load->view('layouts/errors'); ?>
     </div>
-
+    <br><br>
   </div>
-
-
 
     <!-- File export table -->
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
@@ -42,7 +44,7 @@
                                 <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
                             </ul>
                         </div>
-                    </div>                    
+                    </div>
                     <div class="card-body collapse in" style="font-size:0.90rem;">
                         <div class="card-block card-dashboard">
                             <table id="tblList" class="table table-striped table-bordered display responsive nowrap" style="margin-left: 0px!important; ">
@@ -57,7 +59,7 @@
                                     <th>Buisness Vertical</th>
                                     <th>Industry</th>
 				                            <th>Labournet Entity</th>
-                                   
+
                                 </tr>
                                 </thead>
                                 <tbody id="tblBody">
@@ -90,6 +92,9 @@
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/datatables.min.js'?>"></script>
 <script src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js" type="text/javascript"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/js/extensions/moment.min.js'?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('adm-assets/datetimepicker/css/bootstrap-datetimepicker.css')?>">
+<script src="<?php echo base_url().'adm-assets/datetimepicker/js/bootstrap-datetimepicker.js'?>" type="text/javascript"></script>
   <script>
     var save_method; //for save method string
   var table;
@@ -119,7 +124,7 @@
               }
           },
           "columnDefs": [
-                          { 
+                          {
                               "targets": [0], //last column
                               "orderable": false, //set not orderable
                           },
@@ -127,13 +132,18 @@
             "dom":  "<'row'<'col-md-4'l><'col-md-8 searchprint'Bfr>>" +
                     "<'row'<'col-md-12't>><'row'<'col-md-4'i><'col-md-8'p>>",
              buttons: []
-      }); 
+      });
 
        /*$(' <button class="btn btn-sm btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>').appendTo('div#table_length');*/
   });
   function reload_table()
   {
-      table.ajax.reload(null,false); //reload datatable ajax 
+      table.ajax.reload(null,false); //reload datatable ajax
   }
 
 </script>
+
+<?php $this->load->view('opportunities/lead_history_modal'); ?>
+<?php $this->load->view('opportunities/spoc_list_modal'); ?>
+<?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options]); ?>
+<?php// $this->load->view('sales/placement_officer_select_modal', $data); ?>
