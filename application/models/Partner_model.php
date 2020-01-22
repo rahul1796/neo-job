@@ -1922,7 +1922,7 @@ class Partner_model extends CI_Model
 		$columns = array(
 			0 => null,
 			1 => 'C.center_name',
-                        2 => 'C.interested_count',
+            2 => 'C.interested_count',
 			3 => 'C.profile_submitted_count',
 			4 => 'C.pending_customer_feedback_count',
 			5 => 'C.profile_accepted_count',
@@ -2143,6 +2143,29 @@ class Partner_model extends CI_Model
 		return $output;
 	}
 
+
+
+	 public function getCenterName() {
+		$query = $this->db->select("DISTINCT(center_name)")->order_by('center_name')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
+	
+
+	public function getBatchCode() {
+	$query = $this->db->select("DISTINCT(batch_code)")->order_by('batch_code')->get('neo.vw_self_employed_candidate_list');
+	return $query->result();
+	}
+
+	public function getQualificationPack() {
+		$query = $this->db->select("DISTINCT(qualification_pack)")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
+
+
+	public function getEnrollmentId() {
+		$query = $this->db->select("DISTINCT(enrollment_no)")->order_by('enrollment_no')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
 
 
 }

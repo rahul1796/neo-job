@@ -156,7 +156,7 @@ class Report extends MY_Model {
                         max_salary AS \"MAX SALARY PA\", education AS \"QUALIFICATION\",
                         min_age AS \"MIN AGE\", max_age AS \"MAX AGE\", min_experience AS \"MIN EXP\",
                         max_experience AS \"MAX EXP\", customer_name AS \"CUSTOMER\", key_skills AS \"KEY SKILLS\"";
-                        
+
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_job_detailed_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
