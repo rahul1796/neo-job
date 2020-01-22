@@ -199,9 +199,9 @@ class OpportunitiesController extends MY_Controller {
         }
         $status = $this->opportunity->updateLeadStatus($data);
         if ($status) {
-          $this->msg = 'Lead Status updated successfully';
+          $this->msg = 'Opportunity Status updated successfully';
         } else {
-          $this->msg = 'Error updating lead Status';
+          $this->msg = 'Error updating Opportunity Status';
         }
         $this->session->set_flashdata('status', $this->msg);
         $response['status'] = $status;

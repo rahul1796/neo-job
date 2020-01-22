@@ -4,13 +4,35 @@
   var statusOptions = JSON.parse('<?= json_encode($lead_status_options); ?>');
   console.log(statusOptions);
 </script>
+<style>
+    .label{
+        float: left;
+        padding-right: 4px;
+        padding-top: 2px;
+        position: relative;
+        text-align: right;
+        vertical-align: middle;
+    }
+    .label:before{
+        content:"*" ;
+        color:red
+    }
+
+</style>
 <div class="content-body" style="padding: 30px; margin-top: 10px;">
   <div class="row">
     <div class="col-md-12">
-    <?php $this->load->view('layouts/errors'); ?>
+      <?php if(isset($_SESSION['status'])): ?>
+      <div class="alert alert-primary" id="server-alert" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5><?php echo $_SESSION['status']; ?></h5>
+      </div>
+      <br><br>
+      <?php endif; ?>
     </div>
-    <br><br>
+
   </div>
+
 
     <!-- File export table -->
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
@@ -141,6 +163,11 @@
       table.ajax.reload(null,false); //reload datatable ajax
   }
 
+  window.setTimeout(function() {
+      $("#server-alert").fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove();
+      });
+  }, 4000);
 </script>
 
 <?php $this->load->view('opportunities/lead_history_modal'); ?>
