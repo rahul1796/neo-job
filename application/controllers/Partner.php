@@ -2334,10 +2334,10 @@ return false;
     }
     
     
-    public function customer_details($customer_id=0)
+    public function customer_details($company_id=0)
 	{
 		//$this->pramaan->_check_module_task_auth(false);
-		$customer_results=$this->partner->get_customer_details($customer_id);
+		$customer_results=$this->partner->get_customer_details($company_id);
 		echo json_encode($customer_results);
 	}
     
