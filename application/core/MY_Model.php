@@ -238,6 +238,11 @@ class MY_Model extends CI_Model {
     return $query->result();
   }
 
+  public function getCompanyNames() {
+    $query = $this->db->select("DISTINCT(company_name) ")->order_by('company_name')->get('neo_customer.companies');
+    return $query->result();
+  }
+
   public function getLabournetEntities() {
     $query = $this->db->get('neo_master.labournet_entities');
     return $query->result();
@@ -681,5 +686,20 @@ class MY_Model extends CI_Model {
     }
   }
 
+  public function getCompanySpocName() {
+    $query = $this->db->select("DISTINCT(spoc_name) AS spoc_name")->where('spoc_name<>')->where_in('is_main_branch', TRUE)->order_by('spoc_name')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+
+  public function getCompanySpocEmail() {
+    $query = $this->db->select("DISTINCT(spoc_email) AS spoc_email")->where('spoc_email<>')->where_in('is_main_branch', TRUE)->order_by('spoc_email')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+
+  public function getCompanySpocPhone() {
+    $query = $this->db->select("DISTINCT(spoc_phone) AS spoc_phone")->where('spoc_phone<>')->where_in('is_main_branch', TRUE)->order_by('spoc_phone')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+ 
 
 }

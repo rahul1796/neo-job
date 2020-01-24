@@ -349,7 +349,7 @@ $options_orgTypes=array(''=>'-Select Org type-');
                     <label for="employment_end_date">To</label>
                     <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="employment_end_date" placeholder="Select From Date" name="employment_end_date" value="">
                     </div>  -->
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-6">
                     <label for="center_name">Center Name</label>
                     <select class="form-control select2-neo" name="center_name" id="center_name">
                     <option value="0">Select Center Name</option>
@@ -358,9 +358,7 @@ $options_orgTypes=array(''=>'-Select Org type-');
                     <?php endforeach; ?>
                     </select>
                     </div>
-                </div>
-                <div class="form-row col-md-12">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                     <label for="batch_code">Batch Code</label>
                     <select class="form-control select2-neo" name="batch_code" id="batch_code">
                     <option value="0">Select Batch Code</option>
@@ -369,7 +367,10 @@ $options_orgTypes=array(''=>'-Select Org type-');
                     <?php endforeach; ?>
                     </select>
                     </div>
-                    <div class="form-group col-md-4">
+                </div>
+                <div class="form-row col-md-12">
+                    
+                    <div class="form-group col-md-8">
                     <label for="qualification_pack">QP</label>
                     <select class="form-control select2-neo" name="qualification_pack" id="qualification_pack">
                     <option value="0">Select QP</option>
@@ -392,7 +393,7 @@ $options_orgTypes=array(''=>'-Select Org type-');
                     <div class="text-center" style="margin-left: 675px;" name="search_btn" id="search_btn">
                         <button type="button" id="btn-filter" class="btn btn-primary">Search</button>
                         <button type="button" id="btn-reset" class="btn btn-default">Reset</button>  
-                        <a class="btn btn-success btn-md" href='<?php echo base_url('selfemployedcontroller/export_csv/');?>' style="color: white; cursor: pointer;"><i class="fa fa-download "></i> Download</a>
+                        <!-- <a class="btn btn-success btn-md" href='<?php //echo base_url('selfemployedcontroller/export_csv/');?>' style="color: white; cursor: pointer;"><i class="fa fa-download "></i> Download</a> -->
                     </div>
                 </div>
                        

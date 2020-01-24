@@ -12683,7 +12683,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         );
 
         //Change query here for total record
-        $strQuery = "SELECT COUNT(s.customer_id)::BIGINT AS total_record_count
+        $strQuery = "SELECT COUNT(s.company_id)::BIGINT AS total_record_count
                      FROM   users.vw_address_book_contact_list AS s WHERE TRUE ";
         $strTotalRecordCount = $this->db->query($strQuery)->row()->total_record_count;
         $intTotalRecordCount = $strTotalRecordCount * 1;
@@ -12715,7 +12715,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
 
 
             //Change query here for filtered rows
-            $strQuery = "SELECT     COUNT(s.customer_id)::BIGINT AS total_filtered_count
+            $strQuery = "SELECT     COUNT(s.company_id)::BIGINT AS total_filtered_count
                          FROM       users.vw_address_book_contact_list AS s
                          WHERE      TRUE ";
 
@@ -12738,14 +12738,15 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                 $ResponseRow = array();
                 $SerialNumber++;
                 $ResponseRow[] = $SerialNumber;
-                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->customer_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->customer_name .  '</a>';
+                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->company_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->company_name .  '</a>';
                 //$ResponseRow[] = $QueryRow->customer_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->designation ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_phone ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_email ?? 'N/A';
                 $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';
-                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->customer_id . "'" . ')"><i class="icon-android-create"></i></a>';
+                $ResponseRow[] = $QueryRow->source ?? 'N/A';
+                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->company_id . "'" . ')"><i class="icon-android-create"></i></a>';
                 $Data[] = $ResponseRow;
             }
 
