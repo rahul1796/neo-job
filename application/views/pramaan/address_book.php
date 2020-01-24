@@ -61,12 +61,13 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child, table.dataTable.dt
                                 <thead>
                                 <tr>
                                     <th>SNo.</th>
-                                    <th>Customer Name</th>
+                                    <th>Company Name</th>
                                     <th>Contact Name</th>
                                     <th>Designation </th>
                                     <th>Contact Phone</th>
                                     <th>Contact Email </th>
                                     <th>Industry </th>
+                                    <th>Source </th>
                                     <!--<th>Action </th>-->
                                 </tr>
                                 </thead>
@@ -124,65 +125,11 @@ function reload_table()
 {
     table.ajax.reload(null, false);
 }
-function ToggleActiveStatus(id, active_status) {
-    var strStatus = (active_status == 1) ? "Deactivate" : "Activate";
-    var strCompletedStatus = (active_status == 1) ? "Deactivated" : "Activated";
-    swal(
-        {
-            title: "",
-            text: "Are you sure, you want to " + strStatus + "?",
-            showCancelButton: true,
-            confirmButtonColor: ((active_status == 1) ? "#d9534f" : "#5cb85c"),
-            confirmButtonText: "Yes, " + strStatus + "!",
-            cancelButtonText: "No, Cancel!",
-            closeOnConfirm: false,
-            closeOnCancel: true
-        },
-        function(isConfirm) {
-            if (isConfirm) {
-                $.ajax({
-                    type: "POST",
-                    url: base_url + "pramaan/change_sector_active_status",
-                    data: {
-                        'id': id,
-                        'active_status': active_status
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        swal({
-                                title: "",
-                                text: "Account successfully " + strCompletedStatus + "!",
-                                confirmButtonColor: ((active_status == 1) ? "#d9534f" : "#5cb85c"),
-                                confirmButtonText: 'OK',
-                                closeOnConfirm: true,
-                                closeOnCancel: true
-                            },
-                            function(confirmed)
-                            {
-                                reload_table();
-                                //window.location.reload();
-                            });
-                    },
-                    error: function () {
-                        alert("Error Occurred");
-                    }
-                });
 
-            }
-        }
-    );
-}
 
-function EditSectorStatus(Id)
+function ShowDetails(company_id)
 {
-    if (Id) {
-        document.location.href = base_url + 'pramaan/edit_rs_sector/' +"<?php echo $parent_id;?>"+"/"+ Id;
-    }
-}
-
-function ShowDetails(customer_id)
-{
-  var track_url=base_url+'partner/customer_details/'+customer_id;
+  var track_url=base_url+'partner/customer_details/'+company_id;
   $.ajax({
         url : track_url,
         type: "GET",
@@ -194,19 +141,19 @@ function ShowDetails(customer_id)
             {
                 var employer=data.employer_detail;
                 var slno=1;
-                customer_detail_html += "<div  style='margin-bottom: 10px'>Customer Name: <span style='font-weight: bold;'>"+employer.customer_name+"</span></div>";               
+                customer_detail_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+employer.company_name+"</span></div>"; 
                 
                 customer_detail_html += '<div class="row">';
                 customer_detail_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; ">';
                 customer_detail_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
-                customer_detail_html += '<tr><th>Customer Type</th><th>Buisness Vertical</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th><th>Managed by</th><th>Source</th><th>Description</th></tr>';
+                customer_detail_html += '<tr><th>Company Type</th><th>No. of Opportunity</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th><th>Source</th><th>Description</th></tr>';
                 
                 $.each(data.customer_detail,function(a,b)
                 {
-                  customer_detail_html += '<tr><td>'+b.customer_type+'</td><td>'+b.buisness_vertical_name+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td><td>'+b.lead_managed_by+'</td><td>'+b.lead_source_name+'</td><td>'+b.customer_description+'</td></tr>';
+                  customer_detail_html += '<tr><td>'+b.company_type+'</td><td>'+b.opportunity_count+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td><td>'+b.lead_source_name+'</td><td>'+b.company_description+'</td></tr>';
                   slno++;
                 });
-                
+                //<td><a class="btn btn-success mr-1 mb-1" onclick="ShowOpportunityDetails('+b.id+')">'+b.opportunity_count+'</a></td>
                 customer_detail_html += '</table>';
                 customer_detail_html += '</div></div>'; 
             }
