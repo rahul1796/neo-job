@@ -10,12 +10,19 @@ class OpportunitiesController extends MY_Controller {
     $this->load->helper('inflector');
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Opportunity', 'opportunity');
-    $this->load->model('Company', 'company');
+    $this->load->model('Company', 'company');    
+    $this->load->model('Sale', 'sale');
     // $this->load->model('Candidate', 'candidate');
   }
 
   public function index() {
     $data['lead_status_options'] = $this->opportunity->getLeadStatuses();
+    $data['company_name_options'] = $this->sale->getCompanyNames(); 
+    $data['industries_list_options'] = $this->sale->getIndustries();    
+    $data['business_vertical_options'] = $this->sale->getBusinessVerticals();
+    $data['opportunity_code_options'] = $this->sale->getOpportunityCode();
+    $data['contract_id_options'] = $this->sale->getContractId();
+    $data['ln_entity_options'] = $this->sale->getLnEntity();
     $this->loadFormViews('index', $data);
   }
 
@@ -222,7 +229,7 @@ class OpportunitiesController extends MY_Controller {
       public function getOpporunityList()
       {
         $requestData= $_REQUEST;
-        $resp_data=$this->opportunity->getOppurunityList($requestData);
+        $resp_data=$this->opportunity->getOpportunityData($requestData);
         echo json_encode($resp_data);
       }
 

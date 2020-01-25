@@ -247,4 +247,244 @@ class Opportunity extends MY_Model
     }
 
 
+
+    function getOpportunityData($requestData=array())
+  {
+    $order_by=" ";
+    $search_type_id = isset($requestData['search_type_id']) ? intval($requestData['search_type_id']) : 0;
+    $search_value = isset($requestData['search_value']) ? $requestData['search_value'] : '';
+
+    $data = array();
+//    $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
+    $TeamMemberIdList = implode(",",$this->session->userdata('user_hierarchy'));
+    $columns = array(
+                0 => null,
+                1 => null,
+                2 => 'R.company_name',
+                3 => 'R.lead_status_name',
+                4 => 'R.opportunity_code',
+                5 => 'contract_id',
+                6 => 'R.business_vertical_name',
+                7 => 'R.industry_name',
+                8 => 'R.labournet_entity_name'
+     );
+
+      $column_search = array(
+          1 => "R.company_name",
+          2 => "R.lead_status_id",
+          3 => "R.opportunity_code",
+          4 => "R.contract_id",
+          5 => "R.business_vertical_id",
+          6 => "R.industry_id",
+          7 => "R.labournet_entity_id"
+      );
+
+    $HierarchyCondition = "";
+       if ($TeamMemberIdList != '')
+           $HierarchyCondition = " AND (R.assigned_user_ids||R.created_by && ARRAY[$TeamMemberIdList]) ";
+
+    $TotalRecordsQuery = "WITH R AS
+                            (
+                                SELECT  o.id,
+                                        o.created_by,
+                                        (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
+                                FROM    neo_customer.opportunities AS o
+                            )
+                            SELECT  COUNT(id) AS total_recs
+                            FROM    R
+                            WHERE   TRUE
+                        $HierarchyCondition";
+    $total_records=$this->db->query($TotalRecordsQuery)->row()->total_recs;
+
+    $totalData=$total_records*1;
+    $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
+
+    $pg=$requestData['start'];
+    $limit=$requestData['length'];
+    if($limit<0) $limit='all';
+
+    if(!$total_records)
+      return array('sEcho'=>'1', "iTotalRecords"=>"0", "iTotalDisplayRecords"=>"0",'aaData'=>array());
+    else
+    {
+        $FilterCondition = "";
+        if($this->session->userdata['usr_authdet']['user_group_id']==17) {
+          $FilterCondition .= " AND lead_status_id IN (16,21)";
+        }
+        if ($search_type_id > 0)
+        {
+            switch($search_type_id)
+            {
+                case 2:
+                case 5:
+                case 6:
+                case 7:
+                    if ($search_value != '0')
+                    {
+                        $FilterCondition = $column_search[$search_type_id] . "=" . $search_value;
+                    }
+                    break;
+
+                default:
+                    if (trim($search_value) != '')
+                    {
+                        $FilterCondition = $column_search[$search_type_id] . " ~* '" . trim($search_value) . "'";
+                    }
+            }
+
+
+
+            if (trim($FilterCondition) != "")
+            {
+                $FilterCondition = " AND ($FilterCondition) ";
+            }
+
+
+        }
+
+        $FilterQuery = "WITH R AS
+                              (
+                              SELECT o.id,
+                                    c.company_name,
+                                    o.opportunity_code,
+                                    o.contract_id,
+                                    o.lead_status_id,
+                                    ls.name AS lead_status_name,
+                                    o.business_vertical_id,
+                                    bv.name AS business_vertical,
+                                    o.industry_id,
+                                    i.name AS industry,
+                                    o.labournet_entity_id,
+                                    le.name AS labournet_entity,
+                                    B.spoc_name,      
+                                    B.spoc_email,      
+                                    B.spoc_phone,
+                                    o.created_by,
+                                    (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	      	 
+                              FROM neo_customer.opportunities AS O
+                              LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+                              LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+                              LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+                              LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+                              LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+                              LEFT JOIN
+                                      (
+                                        SELECT 	CB.opportunity_id,
+                                                STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                                STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                                STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                        FROM 	neo_customer.customer_branches AS CB
+                                        CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                        GROUP BY CB.opportunity_id
+                                      ) AS B ON 	B.opportunity_id=o.id
+                              ORDER BY o.created_at
+                              )
+                              SELECT  COUNT(R.id) AS total_filtered
+                              FROM    R
+                              WHERE   TRUE
+                        $FilterCondition
+                        $HierarchyCondition";
+
+      $totalFiltered = $this->db->query($FilterQuery)->row()->total_filtered;
+
+      if($columns[$requestData['order'][0]['column']]!='')
+      {
+          $order_by=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  ";
+      }
+      $FinalQuery = 	"WITH R AS
+                            (
+                            SELECT o.id,
+                                  c.company_name,
+                                  o.opportunity_code,
+                                  o.contract_id,
+                                  o.lead_status_id,
+                                  ls.name AS lead_status_name,
+                                  o.business_vertical_id,
+                                  bv.name AS business_vertical,
+                                  o.industry_id,
+                                  i.name AS industry,
+                                  o.labournet_entity_id,
+                                  le.name AS labournet_entity,
+                                  B.spoc_name,      
+                                  B.spoc_email,      
+                                  B.spoc_phone,
+                                  o.created_by,
+                                  (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+                            FROM neo_customer.opportunities AS O
+                            LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+                            LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+                            LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+                            LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+                            LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+                            LEFT JOIN
+                                    (
+                                      SELECT 	CB.opportunity_id,
+                                              STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                              STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                              STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                      FROM 	neo_customer.customer_branches AS CB
+                                      CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                      GROUP BY CB.opportunity_id
+                                    ) AS B ON 	B.opportunity_id=o.id
+                            ORDER BY o.created_at DESC
+                            )
+                            SELECT  R.*
+                            FROM    R
+                            WHERE   TRUE
+                    $FilterCondition
+                    $HierarchyCondition
+                    $order_by
+                    LIMIT $limit
+                    OFFSET $pg";
+                
+                    $QueryData = $this->db->query($FinalQuery);
+
+                    $SerialNumber = $pg;
+                    //$intActiveStatus = 1;
+                    foreach ($QueryData->result() as $QueryRow) {
+                      $Actions = '';
+                      $action_opp_url = base_url("opportunitiescontroller/edit/").$QueryRow->id;
+                          if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+                            $Actions .= '<button class="btn btn-sm btn-warning" title="Update Opportunity Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                          }
+                          if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
+                            $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Opportunity" href="'.$action_opp_url.'"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+                          }
+                          $Actions .= '<a class="btn btn-sm btn-success" title="Opportunity History" onclick="lead_history(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+                          $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';
+                          if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
+                            $Actions .= '<a class="btn btn-sm " title="Opportunity Commercials" href="'.base_url("/CommercialVerificationController/commericalsStore/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
+                          }
+                          if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
+                            $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+                          }
+                       // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
+                        $ResponseRow = array();
+                        $SerialNumber++;
+                        $ResponseRow[] = $SerialNumber;
+                        $ResponseRow[] = $Actions;
+                        $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->business_vertical ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->industry ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->labournet_entity ?? 'N/A';
+        
+                        $Data[] = $ResponseRow;
+                    }
+        
+                    $ResponseData = array(
+                        "draw" => intval($requestData['draw']),
+                        "recordsTotal" => intval($totalData),
+                        "recordsFiltered" => intval($totalFiltered),
+                        "data" => $Data
+                    );
+
+
+      return $ResponseData;
+    }
+  }
+
+
 }

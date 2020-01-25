@@ -367,6 +367,21 @@ class MY_Model extends CI_Model {
   }
 
 
+  public function getContractId() {
+    $query = $this->db->select("contract_id")->get('neo_customer.opportunities');
+    return $query->result();
+  }
+
+  public function getOpportunityCode() {
+    $query = $this->db->select("opportunity_code")->get('neo_customer.opportunities');
+    return $query->result();
+  }
+
+  public function getLnEntity() {
+    return $this->db->get('neo_master.labournet_entities')->result();
+  }
+
+
   public function getJoinedCandidateCount($id) {
     $query = $this->db->select("joined_candidates")->where('id', $id)->get('neo_job.vw_job_list');
     return $query->row();
