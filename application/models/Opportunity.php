@@ -22,6 +22,20 @@ class Opportunity extends MY_Model
       return $this->db->where('id', $company_id)->get($this->tableName)->row_array();
     }
 
+    public function findByCompanyID($company_id) {
+      $query = $this->db->select('neo_customer.opportunities.company_id, neo_customer.opportunities.contract_id, neo_customer.opportunities.id, neo_customer.opportunities.business_vertical_id, neo_master.business_verticals.name')
+            ->from('neo_customer.opportunities')
+            ->join('neo_master.business_verticals', 'neo_master.business_verticals.id = neo_customer.opportunities.business_vertical_id', 'LEFT')
+            ->where('neo_customer.opportunities.company_id', $company_id);
+      return $query->get()->result();
+    }
+
+    public function getSpocsByOpportunityID($id) {
+      $spocs = $this->db->select('spoc_detail')->where('opportunity_id', $id)->get('neo_customer.customer_branches')->row_array();
+      $spoc_array = json_decode($spocs['spoc_detail']);
+      return array_unique($spoc_array, SORT_REGULAR);
+    }
+
     public function save($data) {
       $data = $this->makeTimeStamp($data, 'save');
       $this->db->trans_start();

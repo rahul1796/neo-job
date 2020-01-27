@@ -178,3 +178,10 @@ ALTER TABLE neo_customer.companies_audit
 
   CREATE TRIGGER companies_audit_trigger AFTER UPDATE ON neo_customer.companies
       FOR EACH ROW EXECUTE PROCEDURE neo_customer.companies_audit_trigger_fn();
+
+
+
+      --------------- SQL ---------------
+
+ALTER TABLE neo_job.jobs
+  ADD COLUMN opportunity_id INTEGER;
