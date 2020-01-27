@@ -60,32 +60,31 @@ select.input-sm
                                         <label for="search_by">Search By:</label>
                                         <select class="form-control" id="search_by" name="search_by" style="width: 250px;" onchange="searchby_onchange(this.value)">
                                         <option value="0"> -Select-</option>
-                                        <option value="1">Customer Name</option>
-                                        <option value="2">Customer Type</option>
-                                        <option value="3">Source</option>
+                                        <option value="1">Company Name</option>
+                                        <option value="2">Opportunity Code</option>
+                                        <option value="3">Contract Id</option>
                                         <option value="4">Spoc Name</option>
                                         <option value="5">Spoc Email</option>
                                         <option value="6">Spoc Phone</option>
-                                        <option value="7">State</option>
-                                        <option value="8">Buisness Vertical</option>
-                                        <option value="9">Industry</option>
-                                        <option value="10">Functional Area</option>
+                                        <option value="7">Product</option>
+                                        <option value="8">Industry</option>
                                     </select>
                                         <input type="text" class="form-control hidden" id="searchbox" name="searchbox" value="" placeholder="Search here" style="width: 380px; margin-top: -33px; margin-left: 270px;">
-                                        <select class="form-control hidden" name="customer_type_id" id="customer_type_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                            <option value="0">Select Customer Type</option>
-                                            <?php foreach($customer_type_options as $option): ?>
-                                              <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
+                                        
+                                        <select class="form-control hidden" name="opportunity_code" id="opportunity_code" style="margin-left: 270px; margin-top: -33px; width: 380px;">
+                                            <option value="0">Select Opportunity Code</option>
+                                            <?php foreach($opportunity_code_list_options as $option): ?>
+                                              <option value="<?php echo $option->opportunity_code; ?>"><?php echo $option->opportunity_code; ?></option>
                                             <?php endforeach; ?>
                                           </select>
-                                        <select class="form-control hidden" name="source_id" id="source_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                            <option value="0">Select Source</option>
-                                            <?php foreach($lead_source_options as $option): ?>
-                                              <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
+                                          <select class="form-control hidden" name="contract_id" id="contract_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
+                                            <option value="0">Select Contract Id</option>
+                                            <?php foreach($contract_id_list_options as $option): ?>
+                                              <option value="<?php echo $option->contract_id; ?>"><?php echo $option->contract_id; ?></option>
                                             <?php endforeach; ?>
                                           </select>
                                          <select class="form-control hidden" name="buisness_vertical_id" id="buisness_vertical_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                            <option value="0">Select Buisness Vertical</option>
+                                            <option value="0">Select Product</option>
                                             <?php foreach($business_vertical_options as $option): ?>
                                               <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
                                             <?php endforeach; ?>
@@ -96,17 +95,12 @@ select.input-sm
                                               <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
                                             <?php endforeach; ?>
                                           </select>
-                                         <select class="form-control hidden" name="functional_area_id" id="functional_area_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                            <option value="0">Select Functional Area</option>
-                                            <?php foreach($functional_area_options as $option): ?>
-                                              <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
-                                            <?php endforeach; ?>
-                                          </select>
+                                         
                                               <div class="hidden" id="customer_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="customer_list" name="customer_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Customer Name</option>
                                                 <?php foreach($customer_name_options as $option): ?>
-                                                  <option value="<?php echo $option->customer_name; ?>"><?php echo $option->customer_name; ?></option>
+                                                  <option value="<?php echo $option->company_name; ?>"><?php echo $option->company_name; ?></option>
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
@@ -137,12 +131,7 @@ select.input-sm
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                             <select class="form-control hidden" name="state_id" id="state_id" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                                <option value="0">Select State</option>
-                                                <?php foreach($state_options as $option): ?>
-                                                  <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
-                                                <?php endforeach; ?>
-                                              </select>
+                                             
                                         <label id="lblsearchbox" style="color:red; display: none;margin-left: 12%;">* Please Enter Search Value</label>
 
                                        </div>
@@ -209,12 +198,10 @@ select.input-sm
         }
         //lert(varSearchByValue);
         $("#customer_list").selectedIndex = "0";
-        $("#customer_type_id").val('0');
-        $("#source_id").val('0');
+        $("#opportunity_code").selectedIndex = "0";
+        $("#contract_id").selectedIndex = "0";
         $("#buisness_vertical_id").val('0');
         $("#industry_id").val('0');
-        $("#functional_area_id").val('0');
-         $("#state_id").val('0');
         $("#searchbox").val('');
     }
 
@@ -228,13 +215,14 @@ select.input-sm
              case "1":
                 varSearchValue = $("#customer_list option:selected").text();
                 break;
-            case "2":
-                varSearchValue = $("#customer_type_id").val();
+
+                case "2":
+                varSearchValue = $("#opportunity_code option:selected").text();
                 break;
 
-            case "3":
-                varSearchValue = $("#source_id").val();
-                break;
+                case "3":
+                varSearchValue = $("#contract_id option:selected").text();
+                break;            
 
              case "4":
                 varSearchValue = $("#spoc_name_list option:selected").text();
@@ -247,22 +235,15 @@ select.input-sm
              case "6":
             varSearchValue = $("#spoc_phone_list option:selected").text();
             break;
-
-             case "7":
-                varSearchValue = $("#state_id").val();
-                break;
-
-            case "8":
+            
+            case "7":
                 varSearchValue = $("#buisness_vertical_id").val();
                 break;
 
-            case "9":
+            case "8":
                 varSearchValue = $("#industry_id").val();
                 break;
 
-            case "10":
-                varSearchValue = $("#functional_area_id").val();
-                break;
         }
 
         if (varTable != undefined && varTable != null)
@@ -279,7 +260,7 @@ select.input-sm
             "searching": false,
             "language": { "loadingRecords": "Loading..." },
             "ajax": {
-                "url": base_url+"employer/get_customer_data",
+                "url": base_url+"employer/getContractsData",
                 "type": "POST",
                 "data": function (d) {
                     d.search_type_id = varSearchTypeId;
@@ -318,22 +299,23 @@ select.input-sm
                 }
                 break;
             case "2":
-                if ($("#customer_type_id").val() == '0')
-                {
-                    $("#lblSearchError").text('* Please select customer type!');
+                if ($("#opportunity_code option:selected").index() < 1)
+                  {
+                    $("#lblSearchError").text('* Please select customer!');
                     $("#lblSearchError").show();
                     return;
                 }
                 break;
 
-            case "3":
-                if ($("#source_id").val() == '0')
-                {
-                    $("#lblSearchError").text('* Please select customer source!');
+                case "3":
+                if ($("#contract_id option:selected").index() < 1)
+                  {
+                    $("#lblSearchError").text('* Please select customer!');
                     $("#lblSearchError").show();
                     return;
                 }
                 break;
+            
 
                  case "4":
                 if ($("#spoc_name_list option:selected").index() < 1)
@@ -362,16 +344,9 @@ select.input-sm
                 }
                 break;
 
-                case "7":
-                if ($("#state_id option:selected").index() < 1)
-                  {
-                    $("#lblSearchError").text('* Please select state!');
-                    $("#lblSearchError").show();
-                    return;
-                }
-                break;
+              
 
-            case "8":
+            case "7":
                 if ($("#buisness_vertical_id").val() == '0')
                 {
                     $("#lblSearchError").text('* Please select buisness vertical!');
@@ -380,7 +355,7 @@ select.input-sm
                 }
                 break;
 
-            case "9":
+            case "8":
                 if ($("#industry_id").val() == '0')
                 {
                     $("#lblSearchError").text('* Please select industry!');
@@ -388,15 +363,7 @@ select.input-sm
                     return;
                 }
                 break;
-
-             case "10":
-                if ($("#functional_area_id").val() == '0')
-                {
-                    $("#lblSearchError").text('* Please select functional area!');
-                    $("#lblSearchError").show();
-                    return;
-                }
-                break;
+             
 
             default:
                 if (varSearchValue.trim() == '')
@@ -463,32 +430,11 @@ $(document).ready(function () {
                 $('#searchbox').focus();
             }
         });
-    });
+    });    
+    
     $(document).ready(function () {
         $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9' || $('#search_by').val() == '10') {
-                $('#customer_type_id').addClass('hidden');
-            }
-            else {
-                $('#customer_type_id').removeClass('hidden');
-                $('#customer_type_id').focus();
-            }
-        });
-    });
-    $(document).ready(function () {
-        $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9' || $('#search_by').val() == '10') {
-                $('#source_id').addClass('hidden');
-            }
-            else {
-                $('#source_id').removeClass('hidden');
-                $('#source_id').focus();
-            }
-        });
-    });
-    $(document).ready(function () {
-        $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '9' || $('#search_by').val() == '10') {
+            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '8') {
                 $('#buisness_vertical_id').addClass('hidden');
             }
             else {
@@ -499,7 +445,7 @@ $(document).ready(function () {
     });
     $(document).ready(function () {
         $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '10') {
+            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' ) {
                 $('#industry_id').addClass('hidden');
             }
             else {
@@ -508,17 +454,7 @@ $(document).ready(function () {
             }
         });
     });
-    $(document).ready(function () {
-        $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8' || $('#search_by').val() == '9') {
-                $('#functional_area_id').addClass('hidden');
-            }
-            else {
-                $('#functional_area_id').removeClass('hidden');
-                $('#functional_area_id').focus();
-            }
-        });
-    });
+    
      $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -593,12 +529,24 @@ $(document).ready(function () {
 
      $(document).ready(function () {
         $('#search_by').change(function () {
-            if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '8' || $('#search_by').val() == '9'|| $('#search_by').val() == '10') {
-                $('#state_id').addClass('hidden');
+            if ($('#search_by').val() == '0' || $('#search_by').val() == '1'  || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8') {
+                $('#opportunity_code').addClass('hidden');
             }
             else {
-                $('#state_id').removeClass('hidden');
-                $('#state_id').focus();
+                $('#opportunity_code').removeClass('hidden');
+                $('#opportunity_code').focus();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#search_by').change(function () {
+            if ($('#search_by').val() == '0' || $('#search_by').val() == '1'  || $('#search_by').val() == '2' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8') {
+                $('#contract_id').addClass('hidden');
+            }
+            else {
+                $('#contract_id').removeClass('hidden');
+                $('#contract_id').focus();
             }
         });
     });
