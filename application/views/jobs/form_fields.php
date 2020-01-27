@@ -98,12 +98,13 @@
 
     <div class="col-md-6">
         <label for="business_vertical_id"  class="label">Business Vertical:</label>
-        <select class="form-control" readonly  name="business_vertical_id" onmousedown="function(){return false;}"  id="business_vertical_id">
+        <select class="form-control" disabled  name="business_vertical_id_select" onmousedown="function(){return false;}"  id="business_vertical_id_select">
             <option value="">Select Business Vertical</option>
             <?php foreach($business_vertical_options as $bv):?>
                 <option value="<?php echo $bv->id; ?>" <?php echo ($bv->id==$fields['business_vertical_id']) ? 'selected' : '' ?> ><?php echo $bv->name; ?></option>
             <?php endforeach; ?>
         </select>
+        <input type="hidden" id="business_vertical_id" name="business_vertical_id" value="<?=$fields['business_vertical_id']?>">
         <?php echo form_error('business_vertical_id'); ?>
     </div>
 
@@ -512,8 +513,13 @@
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0).prop('selected', true).change());
      if(opportunity_id!=0) {
-       $('#business_vertical_id').val(oppo_bv_id).change();
-        getSpocName(opportunity_id);
+       //alert(oppo_bv_id);
+       $('#business_vertical_id').val(oppo_bv_id);
+      $('#business_vertical_id_select').val(oppo_bv_id).change();
+
+        if(opportunity_id!=undefined) {
+          getSpocName(opportunity_id);
+        }
      }
    });
 
