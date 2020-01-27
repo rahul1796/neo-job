@@ -108,6 +108,7 @@ class Opportunity extends MY_Model
         $this->db->reset_query();
       }
       unset($data['is_paid']);
+      $this->db->where('id', $data['customer_id']);
       $this->db->update($this->tableName, $maindata);
 
       $this->db->reset_query();
@@ -356,11 +357,11 @@ class Opportunity extends MY_Model
                                     i.name AS industry,
                                     o.labournet_entity_id,
                                     le.name AS labournet_entity,
-                                    B.spoc_name,      
-                                    B.spoc_email,      
+                                    B.spoc_name,
+                                    B.spoc_email,
                                     B.spoc_phone,
                                     o.created_by,
-                                    (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	      	 
+                                    (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
                               FROM neo_customer.opportunities AS O
                               LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
                               LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
@@ -405,11 +406,11 @@ class Opportunity extends MY_Model
                                   i.name AS industry,
                                   o.labournet_entity_id,
                                   le.name AS labournet_entity,
-                                  B.spoc_name,      
-                                  B.spoc_email,      
+                                  B.spoc_name,
+                                  B.spoc_email,
                                   B.spoc_phone,
                                   o.created_by,
-                                  (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+                                  (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
                             FROM neo_customer.opportunities AS O
                             LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
                             LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
@@ -436,7 +437,7 @@ class Opportunity extends MY_Model
                     $order_by
                     LIMIT $limit
                     OFFSET $pg";
-                
+
                     $QueryData = $this->db->query($FinalQuery);
 
                     $SerialNumber = $pg;
@@ -470,10 +471,10 @@ class Opportunity extends MY_Model
                         $ResponseRow[] = $QueryRow->business_vertical ?? 'N/A';
                         $ResponseRow[] = $QueryRow->industry ?? 'N/A';
                         $ResponseRow[] = $QueryRow->labournet_entity ?? 'N/A';
-        
+
                         $Data[] = $ResponseRow;
                     }
-        
+
                     $ResponseData = array(
                         "draw" => intval($requestData['draw']),
                         "recordsTotal" => intval($totalData),

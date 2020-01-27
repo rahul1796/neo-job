@@ -166,7 +166,7 @@
       <div class="col-md-12">
         <br>
         <?php if(in_array( $this->session->userdata('usr_authdet')['user_group_id'], lead_commercial_update_roles())): ?>
-            <?php if(($customer['lead_status_id']==16 && ((bool)$customer['has_commercial'])==false) || $customer['lead_status_id']==21): ?>
+            <?php if(($customer['lead_status_id']==16 && $customer['has_commercial'])==false || $customer['lead_status_id']==21): ?>
               <input type="submit" class="btn btn-primary" name="" value="Save Commercial Details">
             <?php endif;?>
         <?php endif;?>
