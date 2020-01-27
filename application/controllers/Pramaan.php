@@ -78,6 +78,8 @@ class Pramaan extends CI_Controller
         $data['data']['total_candidates'] = $this->dashboard->getCandidatesCount();
         $data['data']['total_jobs'] = $this->dashboard->getJobsCount();
         $data['data']['total_leads'] = $this->dashboard->getLeadCount();
+        $data['data']['total_companies'] = $this->dashboard->getCompanyCount();
+        $data['data']['total_opportunities'] = $this->dashboard->getOpportunityCount();
 
         $data['data']['interested_candidates'] = $this->dashboard->getInterestedCandidatesCount();
         $data['data']['pending_candidates'] = $this->dashboard->getPendingCandidatesCount();
@@ -106,10 +108,15 @@ class Pramaan extends CI_Controller
         $data['data']['negotiation_count'] = $this->dashboard->getNegotiationCount();
         $data['data']['proposal_accepted_count'] = $this->dashboard->getProposalAcceptedCount();
         $data['data']['op_lost_at_proposal_level'] = $this->dashboard->getOpLostAtProposalLevelCount();
-        $data['data']['contract_signed'] = $this->dashboard->getContractSignedCount();
-        $data['data']['contract_not_signed'] = $this->dashboard->getContractNotSignedCount();
+        // $data['data']['contract_signed'] = $this->dashboard->getContractSignedCount();
+        // $data['data']['contract_not_signed'] = $this->dashboard->getContractNotSignedCount();
         $data['data']['lead_convert_to_client'] = $this->dashboard->getLeadConvertToClientCount();
         $data['data']['on_hold'] = $this->dashboard->getOnHoldCount();
+
+        $data['data']['opportunity_lost'] = $this->dashboard->getOpportunityLostCount();
+        $data['data']['legal_approved'] = $this->dashboard->getLegalApprovedCount();
+        $data['data']['legal_rejected'] = $this->dashboard->getLegalRejectedCount();
+        $data['data']['contract_completed'] = $this->dashboard->getContractCompletedCount();
 
         $this->load->view('index', $data);
     }
@@ -7914,38 +7921,38 @@ die;*/
           redirect('/pramaan/dashboard', 'refresh');
         }
       }
-      
+
 
       public function changepassword($parent_id = 0)
-    {       
+    {
         $user              = $this->pramaan->_check_module_task_auth(true);
         $data['page']      = 'changepassword';
-        $data['title']     = 'Change Password'; 
+        $data['title']     = 'Change Password';
         $this->load->view('index', $data);
 
     }
-    
-    
+
+
     public function update_user_password()
     {
-       
+
         $this->load->library('form_validation');
         $this->form_validation->set_rules('oldpass', 'old password', 'trim|required|min_length[8]|max_length[30]|callback_password_check');
         $this->form_validation->set_rules('newpass', 'new password', 'trim|required|min_length[8]|max_length[30]|callback_last_passwords');
-        $this->form_validation->set_rules('passconf', 'confirm password', 'trim|required|min_length[8]|max_length[30]|matches[newpass]');       
+        $this->form_validation->set_rules('passconf', 'confirm password', 'trim|required|min_length[8]|max_length[30]|matches[newpass]');
 
         if($this->form_validation->run() == false) {
             $this->changepassword();
         }
         else {
-            $id = $this->session->userdata('usr_authdet')['id']; 
+            $id = $this->session->userdata('usr_authdet')['id'];
 
             $newpass = $this->input->post('newpass');
 
-            $this->user->updateUserPassword($id, array('pwd' => $newpass));               
+            $this->user->updateUserPassword($id, array('pwd' => $newpass));
             $this->session->set_flashdata('status', 'You have successfully changed your password');
-            redirect('/pramaan/dashboard', 'refresh');               
-            
+            redirect('/pramaan/dashboard', 'refresh');
+
         }
     }
 
@@ -7953,14 +7960,14 @@ die;*/
     {
         $id = $this->session->userdata('usr_authdet')['id'];
         $user = $this->user->getUserCurrentPassword($id);
-        if($user->pwd !== $oldpass){              
+        if($user->pwd !== $oldpass){
             $this->form_validation->set_message('password_check', 'The {field} does not match');
             return false;
-        } 
+        }
         return true;
     }
-    
-    
+
+
     public function last_passwords($oldpass)
     {
         $id = $this->session->userdata('usr_authdet')['id'];
@@ -7968,7 +7975,7 @@ die;*/
         if($current['counter'] > 0) {
             $this->form_validation->set_message('last_passwords', 'The {field} should not match last 3 password');
             return false;
-        }      
+        }
         return true;
     }
 

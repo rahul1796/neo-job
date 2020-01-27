@@ -58,6 +58,14 @@ class MY_Model extends CI_Model {
     return $this->db->where('is_customer', true)->get('neo_customer.customers')->result();
   }
 
+  public function allCompanies() {
+    $query = $this->db->select('DISTINCT neo_customer.companies.id, neo_customer.companies.company_name', false)->from('neo_customer.companies')
+            ->join('neo_customer.opportunities', 'neo_customer.opportunities.company_id=neo_customer.companies.id','INNER')
+            ->where('neo_customer.opportunities.is_contract', TRUE);
+
+    return $query->get()->result();
+  }
+
   public function save($data) {
     $this->db->insert($this->tableName, array_filter($data, array($this, 'nonZeroFilter')));
     if($this->db->affected_rows() == 1 ) {
@@ -748,6 +756,6 @@ class MY_Model extends CI_Model {
     $query = $this->db->select("DISTINCT(spoc_phone) AS spoc_phone")->where('spoc_phone<>')->where_in('is_contract', TRUE)->order_by('spoc_phone')->get('neo_customer.vw_company_spoc_details');
     return $query->result();
   }
- 
+
 
 }
