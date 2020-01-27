@@ -552,4 +552,62 @@ $(document).ready(function () {
     $(document).ready(function() {
         $('.select2-neo').select2();
       });
+
+      function view_opportunity(company_id)
+  {
+    var opportunity_url=base_url+'companiescontroller/getOpportunityDetail/'+company_id;
+    $.ajax({
+          url : opportunity_url,
+          type: "GET",
+          dataType: "JSON",
+          success: function(data)
+          {
+              var opportunity_list_html='';
+              if(data.status)
+              {
+                  var company=data.company_detail;
+                  var slno=1;
+                  opportunity_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
+                  
+                  opportunity_list_html += '<div class="row">';
+                  opportunity_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
+                  opportunity_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
+                  opportunity_list_html += '<tr><th>Opportunity No.</th><th>Opportunity Code</th><th>Product Name</th><th>Contract ID</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
+
+                  $.each(data.opportunity_detail,function(a,b)
+                  {
+                    opportunity_list_html += '<tr><td>'+slno+'</td><td>'+b.opportunity_code+'</td><td>'+b.business_vertical+'</td><td>'+b.contract_id+'</td><td>'+b.created_at+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td></tr>';
+                    slno++;
+                  });
+
+                  opportunity_list_html += '</table>';
+                  opportunity_list_html += '</div></div>'; 
+              }
+              $('.candidate_job_status').html(opportunity_list_html);
+
+              $("#tblApplicationTrackerDetails").DataTable();
+          },
+          error: function (jqXHR, textStatus, errorThrown)
+          {
+              alert('Error get data from ajax');
+          }
+      });
+      $('#modal_view_opportunity').modal('show'); // show bootstrap modal when complete loaded
+  }
 </script>
+<div id="modal_view_opportunity" class="modal fade bs-example-modal-xl" role="dialog">
+      <div class="modal-dialog modal-xl" role="document" >
+          <div class="modal-content">
+              <div class="modal-header" style="border-bottom:hidden;">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h3 class="modal-title">Opportunity Details</h3>
+              </div>
+              <div class="modal-body candidate_job_status">
+                  -No records found-
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
