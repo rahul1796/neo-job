@@ -26,7 +26,7 @@
         <?php endif; ?>
 
         <?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
-          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="icon-industry"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
+          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="fa fa-building"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
         <?php endif; ?>
 
         <?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
