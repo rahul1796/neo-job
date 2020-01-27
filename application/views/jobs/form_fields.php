@@ -17,28 +17,37 @@
 
 <?php $this->load->view('layouts\soft_error'); ?>
 <div class="form-group row" style="margin-top: 20px;">
-     <div class="col-md-4">
+     <div class="col-md-6">
         <label for="customer_id" class="label">Client:</label>
         <select class="form-control neo-select2" name="customer_id" id="customer_id">
         <option value="">Select Client</option>
             <?php foreach($customer_options as $customer):?>
-                <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->customer_name; ?></option>
+                <option value="<?php echo $customer->id; ?>" <?php echo ($customer->id==$fields['customer_id']) ? 'selected' : '' ?> ><?php echo $customer->company_name; ?></option>
             <?php endforeach; ?>
         </select>
         <?php echo form_error('customer_id'); ?>
-    </div>
- <div class="col-md-4">
-   <label for="job_title" class="label">Job Title:</label>
-   <input type="text" class="form-control" id="job_title" placeholder="Enter Job Title" name="job_title" value="<?php echo $fields['job_title']; ?>">
-   <?php echo form_error('job_title'); ?>
- </div>
+      </div>
+      <div class="col-md-6">
+         <label for="opportunity_id" class="label">Select Client Contract ID:</label>
+         <select class="form-control neo-select2" name="opportunity_id" id="opportunity_id">
+         <option value="0">Select Contract</option>
+         </select>
+         <?php echo form_error('opportunity_id'); ?>
+       </div>
+</div>
 
- <div class="col-md-4">
-   <label for="job_description" class="label">Job Description:</label>
-   <input type="text" class="form-control" id="job_description" placeholder="Enter Job Description" name="job_description" value="<?php echo $fields['job_description']; ?>">
-   <?php echo form_error('job_description'); ?>
- </div>
+<div class="form-group row">
+  <div class="col-md-6">
+    <label for="job_title" class="label">Job Title:</label>
+    <input type="text" class="form-control" id="job_title" placeholder="Enter Job Title" name="job_title" value="<?php echo $fields['job_title']; ?>">
+    <?php echo form_error('job_title'); ?>
+  </div>
 
+  <div class="col-md-6">
+    <label for="job_description" class="label">Job Description:</label>
+    <input type="text" class="form-control" id="job_description" placeholder="Enter Job Description" name="job_description" value="<?php echo $fields['job_description']; ?>">
+    <?php echo form_error('job_description'); ?>
+  </div>
 </div>
 
 <div class="form-group row">
@@ -88,13 +97,14 @@
     </div>-->
 
     <div class="col-md-6">
-        <label for="business_vertical_id" class="label">Business Vertical:</label>
-        <select class="form-control" name="business_vertical_id">
+        <label for="business_vertical_id"  class="label">Business Vertical:</label>
+        <select class="form-control" disabled  name="business_vertical_id_select" onmousedown="function(){return false;}"  id="business_vertical_id_select">
             <option value="">Select Business Vertical</option>
             <?php foreach($business_vertical_options as $bv):?>
                 <option value="<?php echo $bv->id; ?>" <?php echo ($bv->id==$fields['business_vertical_id']) ? 'selected' : '' ?> ><?php echo $bv->name; ?></option>
             <?php endforeach; ?>
         </select>
+        <input type="hidden" id="business_vertical_id" name="business_vertical_id" value="<?=$fields['business_vertical_id']?>">
         <?php echo form_error('business_vertical_id'); ?>
     </div>
 
@@ -455,13 +465,17 @@
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
   var customer_id = <?= (!empty($fields['customer_id'])) ? $fields['customer_id'] : 0 ?>;
   var client_manager_name = "<?= (!empty($fields['client_manager_name'])) ? $fields['client_manager_name'] : '' ?>";
+  var opportunity_id = <?= (!empty($fields['opportunity_id'])) ? $fields['opportunity_id'] : 0 ?>;
 
  $(document).ready(function() {
 
-
-    if(customer_id!=0){
-        getSpocName(customer_id);
+   if(customer_id!=0){
+       getOpportunites(customer_id);
    }
+
+    if(opportunity_id!=0){
+        getSpocName(opportunity_id);
+    }
 
    if(country_id!=0){
      getStates(country_id);
@@ -493,12 +507,28 @@
      }
    });
 
+   $('#opportunity_id').on('change', function() {
+    let opportunity_id = $(this).val();
+    let oppo_bv_id = $(this).find(':selected').attr('data-bv-id');
+     $('#client_manager_name').html('');
+     $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0).prop('selected', true).change());
+     if(opportunity_id!=0) {
+       //alert(oppo_bv_id);
+       $('#business_vertical_id').val(oppo_bv_id);
+      $('#business_vertical_id_select').val(oppo_bv_id).change();
+
+        if(opportunity_id!=undefined) {
+          getSpocName(opportunity_id);
+        }
+     }
+   });
+
    $('#customer_id').on('change', function() {
     let customer_id = $(this).val();
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('Select Client Manager').attr('value', 0).prop('selected', true).change());
      if(customer_id!=0) {
-        getSpocName(customer_id);
+        getOpportunites(customer_id);
      }
    });
 
@@ -510,6 +540,28 @@
 
 
  });
+
+ function getOpportunites(company_id) {
+     let request = $.ajax({
+       url: "<?= base_url('JobsController/getOpportunities/'); ?>"+company_id,
+       type: "GET",
+     });
+
+     request.done(function(msg) {
+       var response = JSON.parse(msg);
+       // alert(response);
+       $('#opportunity_id').html('');
+       $('#opportunity_id').append($('<option>').text('Select Contract').attr('value', 0));
+       response.forEach(function(response) {
+          $('#opportunity_id').append($('<option>').text(response.contract_id +" ("+response.name+")").attr('value', response.id).attr('data-bv-id', response.business_vertical_id));
+       })
+       $('#opportunity_id').val(opportunity_id).change();
+     });
+
+     request.fail(function(jqXHR, textStatus) {
+       //alert( "Request failed: " + textStatus );
+     });
+ }
 
  function getDistricts(id){
    var request = $.ajax({
@@ -566,6 +618,7 @@
    request.done(function(msg) {
      var response = JSON.parse(msg);
       //alert(response);
+      console.log(response);
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('').attr('value', 0).prop('selected', true));
      response.forEach(function(spoc) {
