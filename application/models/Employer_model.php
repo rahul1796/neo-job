@@ -887,7 +887,7 @@ class Employer_model extends CI_Model
 		}
 	}
 
-	function get_customer_data($requestData=array())
+	function getContractsData($requestData=array())
 	{
 		$cond = '';
 		$order_by = "ORDER by created_at DESC";
@@ -901,30 +901,25 @@ class Employer_model extends CI_Model
 		$columns = array(
 			0 => null,
 			1 => null,
-			2 => "R.customer_name",
-			3 => "R.lead_type_name",
-			4 => "R.source_name",
+			2 => "R.company_name",
+			3 => "R.opportunity_code",
+			4 => "R.contract_id",
 			5 => "R.spoc_name",
 			6 => "R.spoc_email",
 			7 => "R.spoc_phone",
-			8 => "R.state",
-			9 => "R.district",
-			10 => "R.buisness_vertical_name",
-			11 => "R.industry_name",
-			12 => "R.functional_area_name"
+			8 => "R.buisness_vertical_name",
+			9 => "R.industry_name"
 		);
 
 		$column_search = array(
-                        1 =>"R.customer_name",
-                        2 =>"R.lead_type_id",
-                        3 =>"R.lead_source_id",
+						1 =>"R.company_name",
+						2 =>"R.opportunity_code",
+						3 =>"R.contract_id",
                         4 =>"R.spoc_name",
                         5 =>"R.spoc_email",
                         6 =>"R.spoc_phone",
-                        7 =>"R.state_id",
-                        8 =>"R.business_vertical_id",
-                        9 =>"R.industry_id",
-                        10 =>"R.functional_area_id"
+                        7 =>"R.business_vertical_id",
+                        8 =>"R.industry_id"
                );
                    // AND created_by IN ({$hierachy_ids})
 		$HierarchyCondition = " AND (R.created_by IN ($hierachy_ids) OR R.assigned_user_ids && ARRAY[$hierachy_ids]) ";
@@ -967,12 +962,8 @@ class Employer_model extends CI_Model
                         {
                             switch($search_type_id)
                             {
-                                case 2:
-                                case 3:
                                 case 7:
                                 case 8:
-                                case 9:
-                                case 10:
                                     if ($search_value != '0')
                                     {
                                         $FilterCondition = $column_search[$search_type_id] . "=" . $search_value;
@@ -1124,12 +1115,9 @@ class Employer_model extends CI_Model
                             $row[] = $customer->contract_id ?? 'N/A';
                             $row[] = $customer->spoc_name ?? 'N/A';
                             $row[] = $customer->spoc_email ?? 'N/A';
-                            $row[] = $customer->spoc_phone ?? 'N/A';
-                            // $row[] = $customer->location == '' ? 'N/A' : $customer->location;
-                            // $row[] = $customer->district == '' ? 'N/A' : $customer->district;
+                            $row[] = $customer->spoc_phone ?? 'N/A';                           
                             $row[] = $customer->business_vertical ?? 'N/A';
                             $row[] = $customer->industry ?? 'N/A';
-                            //$row[] = $customer->functional_area_name ?? 'N/A';
                             $data[] = $row;
                     }
                     $response_data = array(
