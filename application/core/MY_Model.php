@@ -724,5 +724,38 @@ class MY_Model extends CI_Model {
     return $query->result();
   }
 
+  public function getContractOpportunity() {
+    $query = $this->db->select("opportunity_code")->where('is_contract', TRUE)->get('neo_customer.opportunities');
+    return $query->result();
+  }
+
+  public function getContractIdByContract() {
+    $query = $this->db->select("contract_id")->where('is_contract', TRUE)->get('neo_customer.opportunities');
+    return $query->result();
+  }
+  
+
+  public function getCustomerNamesByContracts() {
+    $query = $this->db->select('neo_customer.companies.company_name')->from('neo_customer.opportunities')
+    ->join('neo_customer.companies', 'neo_customer.opportunities.company_id=neo_customer.companies.id', 'LEFT')
+    ->where('neo_customer.opportunities.is_contract', true)->get();
+    return $query->result();
+  }
+
+  public function getCustomerSpocNameByContracts() {
+    $query = $this->db->select("DISTINCT(spoc_name) AS spoc_name")->where('spoc_name<>')->where_in('is_contract', TRUE)->order_by('spoc_name')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+
+  public function getCustomerSpocEmailByContracts() {
+    $query = $this->db->select("DISTINCT(spoc_email) AS spoc_email")->where('spoc_email<>')->where_in('is_contract', TRUE)->order_by('spoc_email')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+
+  public function getCustomerSpocPhoneByContracts() {
+    $query = $this->db->select("DISTINCT(spoc_phone) AS spoc_phone")->where('spoc_phone<>')->where_in('is_contract', TRUE)->order_by('spoc_phone')->get('neo_customer.vw_company_spoc_details');
+    return $query->result();
+  }
+
 
 }
