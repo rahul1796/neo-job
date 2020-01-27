@@ -378,6 +378,7 @@ class Opportunity extends MY_Model
                                         CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
                                         GROUP BY CB.opportunity_id
                                       ) AS B ON 	B.opportunity_id=o.id
+                                      WHERE o.is_contract=false
                               ORDER BY o.created_at
                               )
                               SELECT  COUNT(R.id) AS total_filtered
@@ -427,6 +428,7 @@ class Opportunity extends MY_Model
                                       CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
                                       GROUP BY CB.opportunity_id
                                     ) AS B ON 	B.opportunity_id=o.id
+                                    WHERE o.is_contract=false
                             ORDER BY o.created_at DESC
                             )
                             SELECT  R.*
