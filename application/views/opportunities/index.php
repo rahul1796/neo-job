@@ -80,10 +80,10 @@
                                         <option value="2">Status</option>
                                         <option value="3">Opportunity Code</option>
                                         <option value="4">Contract Id</option>                                        
-                                        <option value="5">Buisness Vertical</option>                                        
+                                        <option value="5">Product</option>                                        
                                         <option value="6">Industry</option>
                                         <option value="7">Labournet Entity</option>
-                                       
+
                                     </select>
                                         <input type="text" class="form-control hidden" id="searchbox" name="searchbox" value="" placeholder="Search here" style="width: 380px; margin-top: -33px; margin-left: 270px;">
                                         <div class="hidden" id="customer_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
@@ -118,7 +118,7 @@
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                           
+
                                              <select class="form-control hidden" name="buisness_vertical" id="buisness_vertical" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="0">Select Buisness Vertical</option>
                                                 <?php foreach($business_vertical_options as $option): ?>
@@ -163,9 +163,9 @@
                                     <th>Status</th>
                                     <th>Oppurtunity Code</th>
                                     <th>Contract id</th>
-                                    <th>Buisness Vertical</th>
+                                    <th>Product</th>
                                     <th>Industry</th>
-				                            <th>Labournet Entity</th>
+				                    <th>Labournet Entity</th>
 
                                 </tr>
                                 </thead>
@@ -195,12 +195,15 @@
 	</div>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/datatables.min.css'?>">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css'?>">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('adm-assets/datetimepicker/css/bootstrap-datetimepicker.css')?>">
 <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/datatables.min.js'?>"></script>
 <script src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js" type="text/javascript"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/js/extensions/moment.min.js'?>"></script>
+<script src="<?php echo base_url().'adm-assets/datetimepicker/js/bootstrap-datetimepicker.js'?>" type="text/javascript"></script>
 <script>
           $(document).ready(function(){
         $('#search_by').on('change', function(){
@@ -217,9 +220,9 @@
         }
         //lert(varSearchByValue);
         $("#customer_list").selectedIndex = "0";
-        $("#status_id").val('0'); 
+        $("#status_id").val('0');
         $("#opportunity_code").selectedIndex = "0";
-        $("#contract_id").selectedIndex = "0";  
+        $("#contract_id").selectedIndex = "0";
         $("#buisness_vertical").val('0');
         $("#industry").val('0');
         $("#ln_entity").val('0');
@@ -313,7 +316,7 @@
                     return;
                 }
                 break;
-           
+
 
               case "2":
                 if ($("#status_id").val() == '0')
@@ -341,7 +344,7 @@
                     return;
                 }
                 break;
-              
+
                 case "5":
                 if ($("#buisness_vertical").val() == '0')
                 {
@@ -360,7 +363,7 @@
                     return;
                 }
                 break;
-            
+
 
              case "7":
                 if ($("#ln_entity").val() == '0')
@@ -427,7 +430,7 @@ $(document).ready(function () {
             }
         });
     });
-   
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '7' || $('#search_by').val() == '8') {
@@ -439,7 +442,7 @@ $(document).ready(function () {
             }
         });
     });
-   
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '7') {
@@ -534,7 +537,7 @@ $(document).ready(function () {
         });
     });
 
-        
+
     $(document).ready(function() {
         $('.select2-neo').select2();
       });
@@ -545,8 +548,7 @@ $(document).ready(function () {
       });
   }, 4000);
 </script>
- 
+
 <?php $this->load->view('opportunities/lead_history_modal'); ?>
 <?php $this->load->view('opportunities/spoc_list_modal'); ?>
 <?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options]); ?>
-
