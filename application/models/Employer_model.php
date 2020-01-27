@@ -904,14 +904,14 @@ class Employer_model extends CI_Model
 			2 => "R.customer_name",
 			3 => "R.lead_type_name",
 			4 => "R.source_name",
-                        5 => "R.spoc_name",
-                        6 => "R.spoc_email",
-                        7 => "R.spoc_phone",
-                        8 => "R.state",
-                        9 => "R.district",
-                        10 => "R.buisness_vertical_name",
-                        11 => "R.industry_name",
-                        12 => "R.functional_area_name"
+			5 => "R.spoc_name",
+			6 => "R.spoc_email",
+			7 => "R.spoc_phone",
+			8 => "R.state",
+			9 => "R.district",
+			10 => "R.buisness_vertical_name",
+			11 => "R.industry_name",
+			12 => "R.functional_area_name"
 		);
 
 		$column_search = array(
@@ -930,22 +930,18 @@ class Employer_model extends CI_Model
 		$HierarchyCondition = " AND (R.created_by IN ($hierachy_ids) OR R.assigned_user_ids && ARRAY[$hierachy_ids]) ";
 
                 $TotalRecQuery =    "WITH R AS
-                                    (
-                                        SELECT 	C.id,
-                                                C.created_by,
-                                                CD.file_name,
-                                                lt.name AS lead_type_name,
-                                                ls.name AS source_name,
-                                                COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                        FROM 	neo_customer.customers AS C
-                                        LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                        LEFT JOIN neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                        LEFT JOIN neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                        WHERE   C.is_customer
-                                    )
-                                    SELECT 	COUNT(R.id) AS total_recs
-                                    FROM 	R
-                                    WHERE	TRUE
+										(
+											SELECT 	o.id,
+													o.created_by,
+													CD.file_name,
+													COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=o.id),ARRAY[]::INT[]) AS assigned_user_ids
+											FROM 	neo_customer.opportunities AS o
+											LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+											WHERE   o.is_contract
+										)
+										SELECT 	COUNT(R.id) AS total_recs
+										FROM 	R
+										WHERE	TRUE
                                     $HierarchyCondition";
 
 		$total_records = $this->db->query($TotalRecQuery)->row()->total_recs;
@@ -997,109 +993,96 @@ class Employer_model extends CI_Model
                         }
 
                     $totalFiltered = $this->db->query("WITH R AS
-                                                        (
-                                                            SELECT  C.id,
-                                                                    C.customer_name,
-                                                                    C.created_by,
-                                                                    c.created_at,
-                                                                    c.lead_source_id,
-                                                                     B.spoc_name
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
-                                                                    B.spoc_email
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
-                                                                    B.spoc_phone
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
-                                                                    d.name AS location,
-                                                                    C.business_vertical_id,
-                                                                    c.industry_id,
-                                                                    c.functional_area_id,
-                                                                    c.lead_type_id,
-                                                                    CB.state_id,
-                                                                    d.name AS district,
-                                                            COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                                            FROM    neo_customer.customers AS C
-                                                            LEFT JOIN   neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                                            LEFT JOIN   neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                                            LEFT JOIN   neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                                            LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
-                                                            LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id
-                                                            LEFT JOIN   neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
-                                                            LEFT JOIN   neo_master.industries AS i on i.id=c.industry_id
-                                                            LEFT JOIN   neo_master.functional_areas AS fa ON fa.id=c.functional_area_id
-                                                            LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
-                                                            LEFT JOIN
-                                                            (
-                                                            SELECT 	CB.customer_id,
-                                                                        STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                                        STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                                        STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
-                                                            FROM 	neo_customer.customer_branches AS CB
-                                                            CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
-                                                            GROUP BY CB.customer_id
-                                                            ) AS B ON 	B.customer_id=C.id
-                                                            WHERE   C.is_customer
-                                                        )
-                                                        SELECT COUNT(R.id)::bigint AS total_filtered
-                                                        FROM R
-                                                        WHERE TRUE
+															(
+															SELECT o.id,
+																c.company_name,
+																o.opportunity_code,
+																o.contract_id,
+																CD.file_name,
+																o.is_paid,
+																o.lead_status_id,
+																ls.name AS lead_status_name,
+																o.business_vertical_id,
+																bv.name AS business_vertical,
+																o.industry_id,
+																i.name AS industry,
+																o.labournet_entity_id,
+																le.name AS labournet_entity,
+																B.spoc_name,      
+																B.spoc_email,      
+																B.spoc_phone,
+																o.created_by,
+																o.created_at,
+																(SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+															FROM neo_customer.opportunities AS O
+															LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+															LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+															LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+															LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+															LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+															LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+															LEFT JOIN
+																	(
+																	SELECT 	CB.opportunity_id,
+																			STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+																			STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+																			STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+																	FROM 	neo_customer.customer_branches AS CB
+																	CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+																	GROUP BY CB.opportunity_id
+																	) AS B ON 	B.opportunity_id=o.id
+															WHERE o.is_contract
+															)
+															SELECT  COUNT(R.id) AS total_filtered
+												  FROM    R
+												  WHERE   TRUE
                                                         $FilterCondition
                                                         $HierarchyCondition")->row()->total_filtered;
 
                     $result_recs = $this->db->query("WITH R AS
-                                                        (
-                                                              SELECT C.id,
-                                                                C.customer_name,
-                                                                C.is_paid,
-                                                                C.created_by,
-                                                                c.created_at,
-                                                                CD.file_name,
-                                                                B.spoc_name
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
-                                                                B.spoc_email
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
-                                                                B.spoc_phone
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
-                                                                d.name AS location,
-                                                                C.business_vertical_id,
-                                                                bv.name AS buisness_vertical_name,
-                                                                c.industry_id,
-                                                                i.name AS industry_name,
-                                                                c.functional_area_id,
-                                                                fa.name AS functional_area_name,
-                                                                c.lead_type_id,
-                                                                lt.name AS lead_type_name,
-                                                                c.lead_source_id,
-                                                                ls.name AS source_name,
-                                                                CB.state_id,
-                                                                s.name AS location,
-                                                                CB.district_id,
-                                                                d.name AS district,
-                                                                COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                                                FROM    neo_customer.customers AS C
-                                                                LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                                                LEFT JOIN neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                                                LEFT JOIN neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                                                LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
-                                                        LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id
-                                                        LEFT JOIN   neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
-                                                        LEFT JOIN neo_master.industries AS i on i.id=c.industry_id
-                                                        LEFT JOIN neo_master.functional_areas AS fa ON fa.id=c.functional_area_id
-                                                        LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
-                                                        LEFT JOIN
-                                                        (
-                                                        SELECT 	CB.customer_id,
-                                                                    STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                                    STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                                    STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
-                                                        FROM 	neo_customer.customer_branches AS CB
-                                                        CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
-                                                        GROUP BY CB.customer_id
-                                                        ) AS B ON 	B.customer_id=C.id
-                                                                WHERE   C.is_customer
-                                                        )
-                                                        SELECT R.*
-                                                    FROM R
-                                                    WHERE TRUE
+														(
+														SELECT o.id,
+															c.company_name,
+															o.opportunity_code,
+															o.contract_id,
+															CD.file_name,
+															o.is_paid,
+															o.lead_status_id,
+															ls.name AS lead_status_name,
+															o.business_vertical_id,
+															bv.name AS business_vertical,
+															o.industry_id,
+															i.name AS industry,
+															o.labournet_entity_id,
+															le.name AS labournet_entity,
+															B.spoc_name,      
+															B.spoc_email,      
+															B.spoc_phone,
+															o.created_by,
+															o.created_at,
+															(SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+														FROM neo_customer.opportunities AS O
+														LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+														LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+														LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+														LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+														LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+														LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+														LEFT JOIN
+																(
+																SELECT 	CB.opportunity_id,
+																		STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+																		STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+																		STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+																FROM 	neo_customer.customer_branches AS CB
+																CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+																GROUP BY CB.opportunity_id
+																) AS B ON 	B.opportunity_id=o.id
+														WHERE o.is_contract
+														)
+														SELECT  R.*
+														FROM    R
+														WHERE   TRUE
                                                     $FilterCondition
                                                     $HierarchyCondition
                                                     $order_by
@@ -1136,17 +1119,17 @@ class Employer_model extends CI_Model
 
                             $row[] = $slno;
                             $row[] = $ActionColumn;
-                            $row[] = $customer->customer_name ?? 'N/A';
-                            $row[] = $customer->lead_type_name ?? 'N/A';
-                            $row[] = $customer->source_name ?? 'N/A';
+                            $row[] = $customer->company_name ?? 'N/A';
+                            $row[] = $customer->opportunity_code ?? 'N/A';
+                            $row[] = $customer->contract_id ?? 'N/A';
                             $row[] = $customer->spoc_name ?? 'N/A';
                             $row[] = $customer->spoc_email ?? 'N/A';
                             $row[] = $customer->spoc_phone ?? 'N/A';
-                            $row[] = $customer->location == '' ? 'N/A' : $customer->location;
-                            $row[] = $customer->district == '' ? 'N/A' : $customer->district;
-                            $row[] = $customer->buisness_vertical_name ?? 'N/A';
-                            $row[] = $customer->industry_name ?? 'N/A';
-                            $row[] = $customer->functional_area_name ?? 'N/A';
+                            // $row[] = $customer->location == '' ? 'N/A' : $customer->location;
+                            // $row[] = $customer->district == '' ? 'N/A' : $customer->district;
+                            $row[] = $customer->business_vertical ?? 'N/A';
+                            $row[] = $customer->industry ?? 'N/A';
+                            //$row[] = $customer->functional_area_name ?? 'N/A';
                             $data[] = $row;
                     }
                     $response_data = array(

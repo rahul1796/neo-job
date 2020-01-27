@@ -308,7 +308,8 @@ class Company extends MY_Model
                         $ResponseRow[] = $SerialNumber;
                         $ResponseRow[] = $Actions;
                         $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->opportunity_count ?? 'N/A';
+                        $ResponseRow[] = ($QueryRow->opportunity_count) ? '<center><b><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Opportunity Detail" onclick="view_opportunity(' .  $QueryRow->id . ')">' . $QueryRow->opportunity_count . '</a></b></center>' : '<center>'.$QueryRow->opportunity_count.'</center>';
+                        // $ResponseRow[] = $QueryRow->opportunity_count ?? 'N/A';
                         $ResponseRow[] = $QueryRow->company_description ?? 'N/A';
                         $ResponseRow[] = $QueryRow->industries ?? 'N/A';
                         $ResponseRow[] = $QueryRow->functional_area ?? 'N/A';
@@ -334,6 +335,68 @@ class Company extends MY_Model
       return $ResponseData;
     }
   }
+
+
+  function getOpportunityData($company_id=0)
+	{
+		$company_det_rec=$this->db->query("SELECT c.company_name, 
+                                                o.opportunity_code
+                                            FROM neo_customer.opportunities AS o
+                                            LEFT JOIN neo_customer.companies AS c ON c.id=o.company_id
+                                            WHERE c.id=?",$company_id);
+		
+		$opportunity_det_rec=$this->db->query("SELECT o.id,
+                                                  c.company_name,
+                                                  o.opportunity_code,
+                                                  o.contract_id,
+                                                  CD.file_name,
+                                                  o.is_paid,
+                                                  o.lead_status_id,
+                                                  ls.name AS lead_status_name,
+                                                  o.business_vertical_id,
+                                                  bv.name AS business_vertical,
+                                                  o.industry_id,
+                                                  i.name AS industry,
+                                                  o.labournet_entity_id,
+                                                  le.name AS labournet_entity,
+                                                  B.spoc_name,      
+                                                  B.spoc_email,      
+                                                  B.spoc_phone,
+                                                  o.created_by,
+                                                  o.created_at,    
+                                                  (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+                                              FROM neo_customer.opportunities AS O
+                                              LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+                                              LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+                                              LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+                                              LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+                                              LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+                                              LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+                                              LEFT JOIN
+                                                    (
+                                                      SELECT 	CB.opportunity_id,
+                                                              STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                                              STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                                              STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                                      FROM 	neo_customer.customer_branches AS CB
+                                                      CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                                      GROUP BY CB.opportunity_id
+                                                    ) AS B ON 	B.opportunity_id=o.id
+                                              WHERE c.id=?",array($company_id));  
+
+		if($company_det_rec->num_rows())
+		{
+			$output['status']=true;		
+			$output['company_detail']=$company_det_rec->row_array();
+			if($opportunity_det_rec->num_rows())
+				$output['opportunity_detail']=$opportunity_det_rec->result_array();
+			else
+				$output['opportunity_detail']=array();
+		}
+		else
+			$output['status']=false;
+		return $output;
+	}
 
 
 }
