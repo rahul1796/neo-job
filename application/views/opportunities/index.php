@@ -80,7 +80,7 @@
                                         <option value="2">Status</option>
                                         <option value="3">Opportunity Code</option>
                                         <option value="4">Contract Id</option>                                        
-                                        <option value="5">Buisness Vertical</option>                                        
+                                        <option value="5">Product</option>                                        
                                         <option value="6">Industry</option>
                                         <option value="7">Labournet Entity</option>
                                        
@@ -163,9 +163,9 @@
                                     <th>Status</th>
                                     <th>Oppurtunity Code</th>
                                     <th>Contract id</th>
-                                    <th>Buisness Vertical</th>
+                                    <th>Product</th>
                                     <th>Industry</th>
-				                            <th>Labournet Entity</th>
+				                    <th>Labournet Entity</th>
 
                                 </tr>
                                 </thead>

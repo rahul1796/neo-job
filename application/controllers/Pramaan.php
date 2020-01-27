@@ -7972,4 +7972,24 @@ die;*/
         return true;
     }
 
+    public function contracts()
+    {
+        $this->authorize(customer_view_roles());
+        $this->pramaan->_check_module_task_auth(true);
+        $data['page']='contracts';
+        $data['title']='Contracts';
+        $data['module']="employer";
+        $data['business_vertical_options'] = $this->sale->getBusinessVerticals();
+        $data['lead_source_options'] = $this->sale->getLeadSources();
+        $data['customer_type_options'] = $this->candidate->getLeadType();
+        $data['industry_options'] = $this->sale->getIndustries();
+        $data['functional_area_options'] = $this->sale->getFunctionalAreas();
+        $data['customer_name_options'] = $this->sale->getCustomerNames();
+        $data['spoc_name_list_options'] = $this->sale->getCustomerSpocName();
+        $data['spoc_email_list_options'] = $this->sale->getCustomerSpocEmail();
+        $data['spoc_phone_list_options'] = $this->sale->getCustomerSpocPhone();
+        $data['state_options'] = $this->sale->getStates();
+        $this->load->view('index',$data);
+    }
+
 }

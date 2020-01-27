@@ -164,15 +164,14 @@ select.input-sm
                                 <tr>
                                     <th>SNo.</th>
                                     <th>Actions</th>
-                                    <th>Customer Name</th>
+                                    <th>Company Name</th>
                                     <th>Opportunity Code</th>
                                     <th>Contract ID</th>
                                     <th>SPOC Name</th>
                                     <th>SPOC Email</th>
                                     <th>SPOC Phone</th>
-                                    <th>Buisness Vertical</th>
+                                    <th>Product</th>
                                     <th>Industry</th>
-                                    <!-- <th>Functional Area</th> -->
                                 </tr>
                                 </thead>
                                 <tbody>
