@@ -23,16 +23,16 @@
     </div><!-- /.modal-dialog -->
 
     <script type="text/javascript">
-        function showAdditionalSpocs(job_id) {
+        function showAdditionalSpocs(id) {
           $('#spoc_list_modal').modal('show');
           $('#spoc-list-table').html('');
 
-          getSpocs(job_id);
+          getSpocs(id);
 
         }
-        function getSpocs(job_id) {
+        function getSpocs(id) {
           $.ajax({
-            'url' : '<?= base_url("/salescontroller/getSpocsByCustomerID/"); ?>'+job_id,
+            'url' : '<?= base_url("/salescontroller/getSpocsByCustomerID/"); ?>'+id,
             type: "GET",
           }).done(function(response) {
             //console.log(response);
