@@ -185,7 +185,7 @@ class Company extends MY_Model
                               C.company_description,
                               C.created_by,
                               CB.state_id,
-                              s.name AS location,
+                              s.name AS state,
                               CB.district_id,
                               d.name AS district,
                               (
@@ -201,7 +201,7 @@ class Company extends MY_Model
                               (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=C.id) AS assigned_user_ids
                               FROM		neo_customer.companies AS C
                               LEFT JOIN 	neo_master.lead_sources AS LS ON LS.id=c.lead_source_id
-                              LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
+                              LEFT JOIN   neo_customer.customer_branches AS CB ON CB.customer_id=c.id AND cb.is_main_branch
                               LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
                               LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id
                               LEFT JOIN neo_master.industries AS i ON i.id=c.industry_id
@@ -245,7 +245,7 @@ class Company extends MY_Model
                                         C.company_description,
                                         C.created_by,
                                         CB.state_id,
-                                        s.name AS location,
+                                        s.name AS state,
                                         CB.district_id,
                                         d.name AS district,
                                         (
@@ -261,7 +261,7 @@ class Company extends MY_Model
                                           (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=C.id) AS assigned_user_ids
                             FROM		neo_customer.companies AS C
                             LEFT JOIN 	neo_master.lead_sources AS LS ON LS.id=c.lead_source_id
-                            LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
+                            LEFT JOIN   neo_customer.customer_branches AS CB ON CB.customer_id=c.id AND cb.is_main_branch
                             LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
                             LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id                            
                             LEFT JOIN neo_master.industries AS i ON i.id=c.industry_id
@@ -316,7 +316,7 @@ class Company extends MY_Model
                         $ResponseRow[] = $QueryRow->spoc_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->spoc_email ?? 'N/A';
                         $ResponseRow[] = $QueryRow->spoc_phone ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->location ?? 'N/A';
+                        $ResponseRow[] = $QueryRow->state ?? 'N/A';
                         $ResponseRow[] = $QueryRow->district ?? 'N/A';
                         $ResponseRow[] = $QueryRow->lead_source_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->remarks ?? 'N/A';
