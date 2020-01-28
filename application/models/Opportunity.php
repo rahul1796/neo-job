@@ -269,7 +269,7 @@ class Opportunity extends MY_Model
     $search_type_id = isset($requestData['search_type_id']) ? intval($requestData['search_type_id']) : 0;
     $search_value = isset($requestData['search_value']) ? $requestData['search_value'] : '';
 
-    $data = array();
+    $Data = array();
 //    $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
     $TeamMemberIdList = implode(",",$this->session->userdata('user_hierarchy'));
     $columns = array(
