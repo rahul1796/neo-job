@@ -986,6 +986,7 @@ class Employer_model extends CI_Model
                     $totalFiltered = $this->db->query("WITH R AS
 															(
 															SELECT o.id,
+															o.company_id,
 																c.company_name,
 																o.opportunity_code,
 																o.contract_id,
@@ -1033,6 +1034,7 @@ class Employer_model extends CI_Model
                     $result_recs = $this->db->query("WITH R AS
 														(
 														SELECT o.id,
+															o.company_id,
 															c.company_name,
 															o.opportunity_code,
 															o.contract_id,
@@ -1085,13 +1087,13 @@ class Employer_model extends CI_Model
                     foreach ($result_recs->result() as $customer) {
                             $row = array();
                             $slno++;
-							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a>';
+							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->company_id . ')"><i class="fa fa-eye"></i></a>';
 							 if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
 							{
 							 $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
 							}
 
-							$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+							//$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
 
 							 if (trim($customer->file_name)!='')
 							{
