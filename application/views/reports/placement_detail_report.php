@@ -45,7 +45,7 @@
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Placement</h5>
+                                    <h5 class="card-title">Job Posted Date</h5>
                                     <div class="row">
                                         <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
                                         <div class="col-md-6 form-group">
