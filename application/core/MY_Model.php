@@ -420,12 +420,7 @@ class MY_Model extends CI_Model {
 
   public function getSpocsByCustomerID($id) {
     $spocs = $this->db->select('spoc_detail')->where('opportunity_id', $id)->get('neo_customer.customer_branches')->row_array();
-    // $hr = $this->db->select('hr_name as spoc_name, hr_email as spoc_email, hr_phone as spoc_phone, hr_designation as spoc_designation')
-    //       ->where('id', $id)->get('neo_customer.opportunities')->row();
-    $spoc_array = json_decode($spocs['spoc_detail']);
-    // if($hr->spoc_name!=''){
-    //   array_push($spoc_array, $hr);
-    // }
+    $spoc_array = json_decode($spocs['spoc_detail']);   
     return array_unique($spoc_array, SORT_REGULAR);
   }
 
