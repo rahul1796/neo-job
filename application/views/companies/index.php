@@ -149,6 +149,7 @@
                                     <th>Actions</th>
                                     <th>Company Name</th>                                    
                                     <th>Opportunities</th>
+                                    <th>Contracts</th>
                                     <th>Description</th>
                                     <th>Industry</th>
                                     <th>Functional Area</th>
@@ -572,7 +573,7 @@ $(document).ready(function () {
                   opportunity_list_html += '<div class="row">';
                   opportunity_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
                   opportunity_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
-                  opportunity_list_html += '<tr><th>Opportunity No.</th><th>Opportunity Code</th><th>Product Name</th><th>Contract ID</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
+                  opportunity_list_html += '<tr><th>Sl No.</th><th>Opportunity Code</th><th>Product</th><th>Contract ID</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
 
                   $.each(data.opportunity_detail,function(a,b)
                   {
@@ -583,7 +584,7 @@ $(document).ready(function () {
                   opportunity_list_html += '</table>';
                   opportunity_list_html += '</div></div>'; 
               }
-              $('.candidate_job_status').html(opportunity_list_html);
+              $('.opportunity_detail').html(opportunity_list_html);
 
               $("#tblApplicationTrackerDetails").DataTable();
           },
@@ -594,6 +595,48 @@ $(document).ready(function () {
       });
       $('#modal_view_opportunity').modal('show'); // show bootstrap modal when complete loaded
   }
+
+  function view_contract(company_id)
+  {
+    var contract_url=base_url+'companiescontroller/getContractDetail/'+company_id;
+    $.ajax({
+          url : contract_url,
+          type: "GET",
+          dataType: "JSON",
+          success: function(data)
+          {
+              var contract_list_html='';
+              if(data.status)
+              {
+                  var company=data.company_detail;
+                  var slno=1;
+                  contract_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
+                  
+                  contract_list_html += '<div class="row">';
+                  contract_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
+                  contract_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
+                  contract_list_html += '<tr><th>Sl No.</th><th>Opportunity Code</th><th>Product</th><th>Contract ID</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
+
+                  $.each(data.contract_detail,function(a,b)
+                  {
+                    contract_list_html += '<tr><td>'+slno+'</td><td>'+b.opportunity_code+'</td><td>'+b.business_vertical+'</td><td>'+b.contract_id+'</td><td>'+b.created_at+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td></tr>';
+                    slno++;
+                  });
+
+                  contract_list_html += '</table>';
+                  contract_list_html += '</div></div>'; 
+              }
+              $('.contract_details').html(contract_list_html);
+
+              $("#tblApplicationTrackerDetails").DataTable();
+          },
+          error: function (jqXHR, textStatus, errorThrown)
+          {
+              alert('Error get data from ajax');
+          }
+      });
+      $('#modal_view_contract').modal('show'); // show bootstrap modal when complete loaded
+  }
 </script>
 <div id="modal_view_opportunity" class="modal fade bs-example-modal-xl" role="dialog">
       <div class="modal-dialog modal-xl" role="document" >
@@ -602,7 +645,24 @@ $(document).ready(function () {
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <h3 class="modal-title">Opportunity Details</h3>
               </div>
-              <div class="modal-body candidate_job_status">
+              <div class="modal-body opportunity_detail" style="height: 400px;overflow-y: auto;">
+                  -No records found-
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="modal_view_contract" class="modal fade bs-example-modal-xl" role="dialog">
+      <div class="modal-dialog modal-xl" role="document" >
+          <div class="modal-content">
+              <div class="modal-header" style="border-bottom:hidden;">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h3 class="modal-title">Contract Details</h3>
+              </div>
+              <div class="modal-body contract_details" style="height: 400px;overflow-y: auto;">
                   -No records found-
               </div>
               <div class="modal-footer">

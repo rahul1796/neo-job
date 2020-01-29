@@ -199,6 +199,13 @@ class CompaniesController extends MY_Controller {
 		//$this->pramaan->_check_module_task_auth(false);
 		$opportunity_results=$this->company->getOpportunityData($company_id);
 		echo json_encode($opportunity_results);
+  }
+  
+  public function getContractDetail($company_id=0)
+	{
+		//$this->pramaan->_check_module_task_auth(false);
+		$contract_results=$this->company->getContractData($company_id);
+		echo json_encode($contract_results);
 	}
 
 }
