@@ -463,10 +463,10 @@ class Opportunity extends MY_Model
                       $Actions = '';
                       $action_opp_url = base_url("opportunitiescontroller/edit/").$QueryRow->id;
                           if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                            $Actions .= '<button class="btn btn-sm btn-warning" title="Update Opportunity Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                            $Actions .= '<button class="btn btn-sm btn-warning" title="Update Opportunity Status" onclick="open_lead_popup(' . $QueryRow->id . ',' . $QueryRow->lead_status_id . ')" style="margin-left: 2px;background-color:#273c75;border-color: #192a56;"><i class="fa fa-pencil-square-o"></i></button>';
                           }
                           if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                            $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Opportunity" href="'.$action_opp_url.'"  style="margin-left: 2px;color:white;"><i class="icon-android-create"></i></a>';
+                            $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Opportunity" href="'.$action_opp_url.'"  style="margin-left: 2px;color:white;background-color:#33d9b2;border-color: #218c74;"><i class="icon-android-create"></i></a>';
                           }
                           $Actions .= '<a class="btn btn-sm btn-success" title="Opportunity History" onclick="lead_history(' . $QueryRow->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
                           $Actions .= '<a class="btn btn-sm btn-primary" title="Additional Spoc Details" onclick="showAdditionalSpocs(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-phone"></i></a>';

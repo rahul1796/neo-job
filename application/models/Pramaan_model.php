@@ -8111,9 +8111,9 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
              // {
                 $Actions = '';
                 if(in_array($user_group_id, job_status_change_roles())) {
-                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px; background-color:#273c75;border-color: #192a56;"><i class="fa fa-pencil-square-o"></i></button>';
                 }
-                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white;"><i class="icon-android-create"></i></a>';
+                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white; background-color:#33d9b2;border-color: #218c74;"><i class="icon-android-create"></i></a>';
               //}
 //              else
 //              {
