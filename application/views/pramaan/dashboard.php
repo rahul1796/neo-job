@@ -12,7 +12,7 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="row">
-            <div class="col-xl-3 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+            <div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
 								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
 									<span class="info" style="font-weight: bolder; font-size: 16px;">Vacancies</span>
@@ -76,10 +76,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+						<div class="col-xl-3 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
 								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
-									<span class="success" style="font-weight: bolder; font-size: 16px;">Opportunities</span>
+									<span class="success" style="font-weight: bolder; font-size: 16px;">Opportunities & Contracts</span>
 									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, lead_view_roles())) ? base_url('opportunitiescontroller/index') : '#' ;?>"> <?php echo $total_opportunities; ?></a></h3>
 								</div>
 								<div class="card-body">
