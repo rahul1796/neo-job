@@ -174,7 +174,7 @@ select.input-sm
                                     <th>Actions</th>
                                     <th>Job Title</th>
                                     <th>Job Code</th>
-                                    <th>Customer</th>
+                                    <th>Company</th>
                                     <th>Status</th>
                                     <th>Placement Officers</th>
                                     <th>Recruiter</th>
