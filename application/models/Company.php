@@ -192,7 +192,14 @@ class Company extends MY_Model
                                 SELECT count(*) AS count
                                 FROM neo_customer.opportunities o
                                 WHERE o.company_id = c.id
+                                AND o.is_contract = FALSE
                               ) AS opportunity_count,
+                              (
+                                SELECT count(*) AS count
+                                FROM neo_customer.opportunities o
+                                WHERE o.company_id = c.id
+                                AND o.is_contract 
+                              ) AS contract_count,
                                 c.industry_id,
                                 i.name AS industries,
                                 c.functional_area_id,
@@ -252,7 +259,14 @@ class Company extends MY_Model
                                           SELECT count(*) AS count
                                           FROM neo_customer.opportunities o
                                           WHERE o.company_id = c.id
+                                          AND o.is_contract = FALSE
                                         ) AS opportunity_count,
+                                        (
+                                          SELECT count(*) AS count
+                                          FROM neo_customer.opportunities o
+                                          WHERE o.company_id = c.id
+                                          AND o.is_contract 
+                                        ) AS contract_count,
                                           c.industry_id,
                                           i.name AS industries,
                                           c.functional_area_id,
@@ -295,7 +309,7 @@ class Company extends MY_Model
                       $Actions = '';
                           $action_com_url = base_url("companiescontroller/edit/").$QueryRow->id;
                           if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_update_roles())) {
-                            $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Lead" href="'.$action_com_url.'"  style="margin-left: 2px;color:white;background-color:#004d80;border-color: #002e4d;"><i class="icon-android-create"></i></a>';
+                            $Actions .= '<a class="btn btn-sm btn-danger" title="Edit Company" href="'.$action_com_url.'"  style="margin-left: 2px;color:white;background-color:#004d80;border-color: #002e4d;"><i class="icon-android-create"></i></a>';
                           }
                           $action_opp_url = base_url("opportunitiescontroller/create/").$QueryRow->id;
                           $Actions .= '<a class="btn btn-sm btn-success" title="Create Opportunity" href="'.$action_opp_url.'"  style="margin-left: 2px;"><i class="fa fa-share"></i></a>';
@@ -309,7 +323,7 @@ class Company extends MY_Model
                         $ResponseRow[] = $Actions;
                         $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
                         $ResponseRow[] = ($QueryRow->opportunity_count) ? '<center><b><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Opportunity Detail" onclick="view_opportunity(' .  $QueryRow->id . ')">' . $QueryRow->opportunity_count . '</a></b></center>' : '<center>'.$QueryRow->opportunity_count.'</center>';
-                        // $ResponseRow[] = $QueryRow->opportunity_count ?? 'N/A';
+                        $ResponseRow[] = ($QueryRow->contract_count) ? '<center><b><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Contract Detail" onclick="view_contract(' .  $QueryRow->id . ')">' . $QueryRow->contract_count . '</a></b></center>' : '<center>'.$QueryRow->contract_count.'</center>';
                         $ResponseRow[] = $QueryRow->company_description ?? 'N/A';
                         $ResponseRow[] = $QueryRow->industries ?? 'N/A';
                         $ResponseRow[] = $QueryRow->functional_area ?? 'N/A';
@@ -340,10 +354,10 @@ class Company extends MY_Model
   function getOpportunityData($company_id=0)
 	{
 		$company_det_rec=$this->db->query("SELECT c.company_name, 
-                                                o.opportunity_code
+                                                o.is_contract
                                             FROM neo_customer.opportunities AS o
                                             LEFT JOIN neo_customer.companies AS c ON c.id=o.company_id
-                                            WHERE c.id=?",$company_id);
+                                            WHERE c.id=? AND o.is_contract=FALSE",$company_id);
 		
 		$opportunity_det_rec=$this->db->query("SELECT o.id,
                                                   c.company_name,
@@ -363,7 +377,8 @@ class Company extends MY_Model
                                                   B.spoc_email,      
                                                   B.spoc_phone,
                                                   o.created_by,
-                                                  o.created_at,    
+                                                  o.created_at,
+                                                  o.is_contract,    
                                                   (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
                                               FROM neo_customer.opportunities AS O
                                               LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
@@ -382,7 +397,7 @@ class Company extends MY_Model
                                                       CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
                                                       GROUP BY CB.opportunity_id
                                                     ) AS B ON 	B.opportunity_id=o.id
-                                              WHERE c.id=?",array($company_id));  
+                                              WHERE c.id=? AND o.is_contract=FALSE",array($company_id));  
 
 		if($company_det_rec->num_rows())
 		{
@@ -392,6 +407,69 @@ class Company extends MY_Model
 				$output['opportunity_detail']=$opportunity_det_rec->result_array();
 			else
 				$output['opportunity_detail']=array();
+		}
+		else
+			$output['status']=false;
+		return $output;
+  }
+  
+
+  function getContractData($company_id=0)
+	{
+		$company_det_rec=$this->db->query("SELECT c.company_name, 
+                                                o.contract_id
+                                            FROM neo_customer.opportunities AS o
+                                            LEFT JOIN neo_customer.companies AS c ON c.id=o.company_id
+                                            WHERE c.id=? AND o.is_contract",$company_id);
+		
+		$contract_det_rec=$this->db->query("SELECT o.id,
+                                                  c.company_name,
+                                                  o.opportunity_code,
+                                                  o.contract_id,
+                                                  CD.file_name,
+                                                  o.is_paid,
+                                                  o.lead_status_id,
+                                                  ls.name AS lead_status_name,
+                                                  o.business_vertical_id,
+                                                  bv.name AS business_vertical,
+                                                  o.industry_id,
+                                                  i.name AS industry,
+                                                  o.labournet_entity_id,
+                                                  le.name AS labournet_entity,
+                                                  B.spoc_name,      
+                                                  B.spoc_email,      
+                                                  B.spoc_phone,
+                                                  o.created_by,
+                                                  o.created_at, 
+                                                  o.is_contract,   
+                                                  (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+                                              FROM neo_customer.opportunities AS O
+                                              LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+                                              LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+                                              LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+                                              LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+                                              LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+                                              LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+                                              LEFT JOIN
+                                                    (
+                                                      SELECT 	CB.opportunity_id,
+                                                              STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                                              STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                                              STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                                      FROM 	neo_customer.customer_branches AS CB
+                                                      CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                                      GROUP BY CB.opportunity_id
+                                                    ) AS B ON 	B.opportunity_id=o.id
+                                              WHERE c.id=? AND o.is_contract",array($company_id));  
+
+		if($company_det_rec->num_rows())
+		{
+			$output['status']=true;		
+			$output['company_detail']=$company_det_rec->row_array();
+			if($contract_det_rec->num_rows())
+				$output['contract_detail']=$contract_det_rec->result_array();
+			else
+				$output['contract_detail']=array();
 		}
 		else
 			$output['status']=false;
