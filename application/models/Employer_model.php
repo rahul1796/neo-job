@@ -1088,10 +1088,10 @@ class Employer_model extends CI_Model
                             $row = array();
                             $slno++;
 							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->company_id . ')"><i class="fa fa-eye"></i></a>';
-							 if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
-							{
-							 $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
-							}
+							//  if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
+							// {
+							//  $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
+							// }
 
 							//$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
 

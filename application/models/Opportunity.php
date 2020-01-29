@@ -304,6 +304,7 @@ class Opportunity extends MY_Model
                                         o.created_by,
                                         (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
                                 FROM    neo_customer.opportunities AS o
+                                WHERE o.is_contract=false 
                             )
                             SELECT  COUNT(id) AS total_recs
                             FROM    R
