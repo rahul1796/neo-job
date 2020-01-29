@@ -1,5 +1,5 @@
 <?php $user=$this->pramaan->_check_module_task_auth(true); ?>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/1.0.7/css/responsive.dataTables.min.css">
+<<link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/responsive.dataTables.min.css'?>">
 
 <div class="content-body" style="padding: 30px; margin-top: 10px;">
   <div class="row">
