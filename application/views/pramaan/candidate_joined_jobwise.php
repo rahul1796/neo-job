@@ -435,7 +435,7 @@ function reload_table()
 
                     <div class="form-group row" style="margin-top: 20px;">
                         <div class="col-md-3">
-                           <label for="employer_name" class="label">Customer Name:</label>
+                           <label for="employer_name" class="label">Company Name:</label>
                            <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName" value="" onkeydown="return false;" readonly/>
                            <label id="lblEmployerNameError" style="color:red;display: none;">* Please Enter Employer Name</label>
                         </div>
@@ -630,7 +630,7 @@ function reload_table()
                         </div>
 
                         <div class="col-md-3">
-                            <label for="customer_name" class="control-label">Customer Name:</label>
+                            <label for="customer_name" class="control-label">Company Name:</label>
                             <input type="text" class="form-control" id="txtCustomerName1" name="txtCustomerName" value="" onkeydown="return false;" disabled="disabled"/>
                         </div>
 
