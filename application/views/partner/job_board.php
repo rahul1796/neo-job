@@ -360,7 +360,7 @@ function jobBoard_list_inner_content(resp,colcount)
           job_list_html += '  <div class="col-md-6" style="width: 37%;">';
               job_list_html += '<p><b class="text-uppercase" style="color: #ef7f1a;font-size: 16px;">'+b.job_title+'</b><br><strong> QP: </strong>'+(b.qualification_pack_name || 'N/A')+'</i></p>'+
                         '<ul>'+
-                            '<li><strong> Customer: </strong>'+ (b.customer_name || 'N/A')+'</li>'+
+                            '<li><strong> Company: </strong>'+ (b.customer_name || 'N/A')+'</li>'+
                             '<li><strong>Job Description: </strong>'+(b.job_description || 'N/A')+'</li>'+
                             '<li><strong> Positions: </strong>'+(b.no_of_position || 'N/A')+'</li>'+
                             '<li><strong> Location: </strong>'+(b.office_location || 'N/A')+'</li>'+
