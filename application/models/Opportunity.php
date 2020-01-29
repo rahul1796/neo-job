@@ -26,6 +26,7 @@ class Opportunity extends MY_Model
       $query = $this->db->select('neo_customer.opportunities.company_id, neo_customer.opportunities.contract_id, neo_customer.opportunities.id, neo_customer.opportunities.business_vertical_id, neo_master.business_verticals.name')
             ->from('neo_customer.opportunities')
             ->join('neo_master.business_verticals', 'neo_master.business_verticals.id = neo_customer.opportunities.business_vertical_id', 'LEFT')
+            ->where('is_contract', TRUE)
             ->where('neo_customer.opportunities.company_id', $company_id);
       return $query->get()->result();
     }
