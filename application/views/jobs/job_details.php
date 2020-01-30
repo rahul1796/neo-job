@@ -23,7 +23,7 @@
           <div class="form-group row" style="margin-top: 20px;">
             <div class="col-md-6">
               <label for="placement_location">Company Name:</label>
-              <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->customer_name ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
+              <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->company_name ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
             </div>
 
             <div class="col-md-6">
