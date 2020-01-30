@@ -390,7 +390,7 @@
                     <div class="form-group row" style="margin-top: 20px;">
                         <div class="col-md-3">
                            <label for="employer_name" class="">Customer Name:</label>
-                           <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->customer_name ?? 'N/A' ; ?>" onkeydown="return false;" readonly/>
+                           <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->company_name ?? 'N/A' ; ?>" onkeydown="return false;" readonly/>
                            <label id="lblEmployerNameError" style="color:red;display: none;">* Please Enter Employer Name</label>
                         </div>
                         <div class="col-md-3">
