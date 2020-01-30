@@ -594,7 +594,8 @@ class Employer_model extends CI_Model
 										 LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 										 LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 										 LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                         LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
+                                         LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+										 LEFT JOIN   neo_customer.companies AS cc ON cc.id=cust.company_id
                                          LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
 										 $cond")->row()->total_recs;
 
@@ -632,41 +633,43 @@ class Employer_model extends CI_Model
 											    LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 											    LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 											    LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                                LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
+                                                LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+												LEFT JOIN   neo_customer.companies AS cc ON cc.id=cust.company_id
                                                 LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
 												$sWhere")->row()->total_filtered;
 
 			$result_recs=$this->db->query("SELECT		CJ.candidate_id,
-                                                                        C.candidate_name,
-                                                                        CJ.candidate_status_id,
-                                                                        CS.name AS candidate_status,
-                                                                        C.candidate_number,
-                                                                        CJ.job_id,
-                                                                        J.job_title,
-                                                                        J.customer_id,
-                                                                         COALESCE(CUST.customer_name,'NA') AS customer_name,
-                                                                        COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
-                                                                        TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
-                                                                        TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
-                                                                        COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
-                                                                        COALESCE(CP.employer_name,'NA') AS employer_name,
-                                                                        COALESCE(CP.employer_contact_phone,'NA') AS employer_contact_phone,
-                                                                        COALESCE(CP.employer_location,'NA') AS employer_location,
-                                                                        COALESCE(CP.placement_location,'NA') AS placement_location,
-                                                                        COALESCE(ET.id,0) AS employment_type_id,
-                                                                        COALESCE(ET.name,'') AS employment_type,
-                                                                        COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
-                                                                        COALESCE(CP.ctc,'NA') AS ctc,
-                                                                        TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
-                                                                        TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
-                                                                        FROM		neo_job.candidates_jobs AS CJ
-                                                                        LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
-                                                                        LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
-                                                                        LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
-                                                                        LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                                                        LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
-                                                                        LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
-						        		LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+														C.candidate_name,
+														CJ.candidate_status_id,
+														CS.name AS candidate_status,
+														C.candidate_number,
+														CJ.job_id,
+														J.job_title,
+														J.customer_id,
+														COALESCE(cc.company_name,'NA') AS company_name,
+														COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
+														TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
+														TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
+														COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
+														COALESCE(CP.employer_name,'NA') AS employer_name,
+														COALESCE(CP.employer_contact_phone,'NA') AS employer_contact_phone,
+														COALESCE(CP.employer_location,'NA') AS employer_location,
+														COALESCE(CP.placement_location,'NA') AS placement_location,
+														COALESCE(ET.id,0) AS employment_type_id,
+														COALESCE(ET.name,'') AS employment_type,
+														COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
+														COALESCE(CP.ctc,'NA') AS ctc,
+														TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
+														TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
+														FROM		neo_job.candidates_jobs AS CJ
+														LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
+														LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
+														LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
+														LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
+														LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+														LEFT JOIN neo_customer.companies AS cc ON cc.id=cust.company_id
+														LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+														LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
                                                                         $sWhere
 											$order_by
 											limit $limit
@@ -683,11 +686,11 @@ class Employer_model extends CI_Model
 				$slno++;
                                  $ActionColumn='';
                                 if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17)
-				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
+				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->company_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
 				if (trim($candidate_status->offer_letter_file)!='')
 					$ActionColumn .= '<a class="btn btn-primary btn-sm" href="'. base_url(). OFFER_LETTER_PATH .$candidate_status->offer_letter_file.'" title="Download Offer Letter"><i class="fa fa-download"></i></a>';
 					if (trim($candidate_status->resigned_date)=='')
-					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
+					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->company_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
 				$row[] = $slno;
 				$row[] = $ActionColumn;
                                 $row[] = '<center><span style="border-radius:4px;color:white;padding:5px;background-color:'. $CandidateStatusColors[$candidate_status->candidate_status_id] .'">' . $candidate_status->candidate_status . '</span></center>';
@@ -806,14 +809,14 @@ class Employer_model extends CI_Model
 
 			$result_recs=$this->db->query("SELECT		CJ.candidate_id,
 														C.candidate_name,
-                                                                                                                CJ.candidate_status_id,
-                                                                                                                CS.name AS candidate_status,
+														CJ.candidate_status_id,
+														CS.name AS candidate_status,
 														C.candidate_number,
 														CJ.job_id,
 														J.job_title,
 														J.customer_id,
-                                                                                                                COALESCE(CUST.customer_name,'NA') AS customer_name,
-														COALESCE(QP.name,J.qualification_pack_name) AS qp_name,
+														COALESCE(CUST.company_name,'NA') AS customer_name,
+														COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
 														TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
 														TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
 														COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
@@ -824,17 +827,17 @@ class Employer_model extends CI_Model
 														COALESCE(ET.id,0) AS employment_type_id,
 														COALESCE(ET.name,'NA') AS employment_type,
 														COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
-                                                                                                                COALESCE(CP.ctc,'NA') AS ctc,
+														COALESCE(CP.ctc,'NA') AS ctc,
 														TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
-                                                                                                                TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
+														TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
 											FROM		neo_job.candidates_jobs AS CJ
 											LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
 											LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 											LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 											LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                            LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
-                                            LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
-                                            LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+											LEFT JOIN	neo_customer.companies AS CUST ON CUST.id=J.customer_id
+											LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+											LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
 						        			$sWhere
 											$order_by
 											limit $limit
@@ -1087,7 +1090,7 @@ class Employer_model extends CI_Model
                     foreach ($result_recs->result() as $customer) {
                             $row = array();
                             $slno++;
-							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->company_id . ')"><i class="fa fa-eye"></i></a>';
+							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a>';
 							//  if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
 							// {
 							//  $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';

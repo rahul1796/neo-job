@@ -89,7 +89,7 @@ select.input-sm
     <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;">
         <div class="breadcrumb-wrapper col-xs-12">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><?php echo anchor("pramaan/customers","Customer");?></a>
+                <li class="breadcrumb-item"><?php echo anchor("pramaan/contracts","Contracts");?></a>
                 </li>
                 <li class="breadcrumb-item active">Joined Candidate List
                 </li>
@@ -98,24 +98,24 @@ select.input-sm
     </div>
     <div class="card" style="margin-top: 35px; padding: 16px;">
         <div class="card-body">
-            <h5 class="card-title">Customer Details</h5>
+            <h5 class="card-title">Company Details</h5>
             <div class="form-group row" style="margin-top: 20px;">
                 <div class="col-md-3">
-                    <label for="placement_location">Customer Name:</label>
-                    <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?php echo $customer_details['customer_name'] ?? 'N/A';  ?>" onkeydown="return false;" disabled="disabled"/>
+                    <label for="placement_location">Company Name:</label>
+                    <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?php echo $customer_details['company_name'] ?? 'N/A';  ?>" onkeydown="return false;" disabled="disabled"/>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="ctc">HR Email:</label>
-                    <input type="text" class="form-control" id="hr_email"  name="hr_email" value="<?php echo $customer_details['hr_email'] ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
+                    <label for="ctc">Spoc Email:</label>
+                    <input type="text" class="form-control" id="hr_email"  name="hr_email" value="<?php echo $customer_details['spoc_email'] ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="date_of_join">HR Phone:</label>
-                    <input type="text" class="form-control" id="hr_phone"  name="hr_phone" value="<?php echo $customer_details['hr_phone'] ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
+                    <label for="date_of_join">Spoc Phone:</label>
+                    <input type="text" class="form-control" id="hr_phone"  name="hr_phone" value="<?php echo $customer_details['spoc_phone'] ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
                 </div>
                 <div class="col-md-3">
-                    <label for="offer_letter_date">Location:</label>
+                    <label for="offer_letter_date">Contract Location:</label>
                     <input type="text" class="form-control" id="location"  name="location" value="<?php echo $customer_details['location'] ?? 'N/A'; ?>" onkeydown="return false;" disabled="disabled"/>
                 </div>
             </div>
@@ -457,7 +457,7 @@ function reload_table()
 
                     <div class="form-group row" style="margin-top: 20px;">
                          <div class="col-md-3">
-                           <label for="employer_name" class="label">Customer Name:</label>
+                           <label for="employer_name" class="label">Company Name:</label>
                            <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName" value="" onkeydown="return false;" readonly/>
                            <label id="lblEmployerNameError" style="color:red;display: none;">* Please Enter Employer Name</label>
                         </div>
@@ -649,7 +649,7 @@ function reload_table()
                     <button type="button" onclick="javascript:window.location.reload()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 id="hdrPopupTitle" class="modal-title">Candidate Resign Detail</h3>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="height: 445px;">
                     <div class="form-group row" style="margin-top: 20px;">
                         <input name="candidateid" id="hidCandidateId1" type="hidden" value="">
                         <input name="jobid" id="hidJobId1" type="hidden" value="">

@@ -408,9 +408,9 @@ function reload_table()
     table.ajax.reload(null, false);
 }
 
-function ViewJoinedCandidates(CompanyId)
+function ViewJoinedCandidates(Id)
 {
-    document.location.href = base_url + 'pramaan/candidate_joined_customerwise/' + CompanyId ;
+    document.location.href = base_url + 'pramaan/candidate_joined_customerwise/' + Id ;
 
 }
 </script>

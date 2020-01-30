@@ -7782,38 +7782,50 @@ die;*/
         $this->load->view('index',$data);
     }
 
-    public function candidate_joined_customerwise($customer_id = 0)
+    public function candidate_joined_customerwise($id = 0)
     {
         $user              = $this->pramaan->_check_module_task_auth(true);
         $data['page']      = 'candidate_joined_customerwise';
         $data['employer_type_list'] = $this->db->query("SELECT id,name FROM neo_master.employment_type WHERE is_active=TRUE AND name!='Self Employed' ORDER BY name")->result_array();
         $data['title']     = 'Joined Candidates';
         $customer_details = array(
-            'customer_name' => '',
-            'hr_email' => '',
-            'hr_phone' => '',
+            'company_name' => '',
+            'spoc_email' => '',
+            'spoc_phone' => '',
             'location' => ''
         );
 
-        $Query = "SELECT        C.customer_name,
-                                C.hr_email,
-                                C.hr_phone,
-                                d.name AS location
-                    FROM 	neo_customer.customer_branches AS CB
-                    LEFT JOIN neo_customer.customers AS c ON c.id=cb.customer_id
-                    LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
-                    WHERE	C.id=?";
-        $job_rec = $this->db->query($Query, $customer_id);
+        $Query = "SELECT    C.company_name,
+                            B.spoc_name,      
+                            B.spoc_email,      
+                            B.spoc_phone,
+                            d.name AS location
+                        FROM 	neo_customer.customer_branches AS CB
+                        LEFT JOIN neo_customer.opportunities AS o ON o.id=cb.opportunity_id
+                        LEFT JOIN neo_customer.companies AS C on C.id=o.company_id
+                        LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
+                        LEFT JOIN
+                                (
+                                SELECT 	CB.opportunity_id,
+                                        STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                        STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                        STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                FROM 	neo_customer.customer_branches AS CB
+                                CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                GROUP BY CB.opportunity_id
+                                ) AS B ON 	B.opportunity_id=o.id
+                    WHERE	o.id=?";
+        $job_rec = $this->db->query($Query, $id);
         if ($job_rec->num_rows())
         {
-            $customer_details['customer_name'] = $job_rec->row()->customer_name;
-            $customer_details['hr_email'] = $job_rec->row()->hr_email;
-            $customer_details['hr_phone'] = $job_rec->row()->hr_phone;
+            $customer_details['company_name'] = $job_rec->row()->company_name;
+            $customer_details['spoc_email'] = $job_rec->row()->spoc_email;
+            $customer_details['spoc_phone'] = $job_rec->row()->spoc_phone;
             $customer_details['location'] = $job_rec->row()->location;
         }
 
         $data['customer_details'] = $customer_details;
-        $data['id'] = $customer_id;
+        $data['id'] = $id;
         $this->load->view('index', $data);
 
     }
@@ -7831,16 +7843,18 @@ die;*/
 
         $Query = "SELECT    J.job_title,
                             d.name AS district_name,
-                            C.customer_name,
+                            C.company_name,
                             QP.name AS qualification_pack_name,
                             QP.code AS qualification_code,
                             cp.resigned_date,
                             cp.reason_to_leave
-          FROM 	  neo_job.jobs AS J
-          LEFT JOIN neo_customer.customers AS C ON C.id=J.customer_id
-          LEFT JOIN neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-          LEFT Join neo_master.districts AS d ON d.id = j.district_id
-          LEFT JOIN neo_job.candidate_placement AS cp ON cp.job_id=j.id
+                    FROM 	  neo_job.jobs AS J
+                    LEFT JOIN neo_customer.companies AS C ON C.id=J.customer_id
+                    LEFT JOIN neo_customer.opportunities AS o ON o.company_id=c.id
+                    LEFT JOIN neo_customer.customer_branches AS cb ON cb.opportunity_id=o.id
+                    LEFT JOIN neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
+                    LEFT Join neo_master.districts AS d ON d.id = j.district_id
+                    LEFT JOIN neo_job.candidate_placement AS cp ON cp.job_id=j.id
           WHERE	  J.id=?";
         $job_rec = $this->db->query($Query, $job_id);
         if ($job_rec->num_rows())
