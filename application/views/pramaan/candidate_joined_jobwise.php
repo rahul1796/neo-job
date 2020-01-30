@@ -620,7 +620,7 @@ function reload_table()
                     <button type="button" onclick="javascript:window.location.reload()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 id="hdrPopupTitle" class="modal-title">Candidate Resign Detail</h3>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="height: 445px;">
                     <div class="form-group row" style="margin-top: 20px;">
                         <input name="candidateid" id="hidCandidateId1" type="hidden" value="">
                         <input name="jobid" id="hidJobId1" type="hidden" value="">
