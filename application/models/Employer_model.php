@@ -586,7 +586,7 @@ class Employer_model extends CI_Model
 		);
 
 
-		$cond=" WHERE J.customer_id=" . $customer_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 ";
+		$cond=" WHERE J.opportunity_id=" . $customer_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 ";
 
 		$total_records=$this->db->query("SELECT COUNT(*)::bigint AS total_recs
  										 FROM		neo_job.candidates_jobs AS CJ
