@@ -247,9 +247,9 @@
     else
     {
       swal({
-            title: "Error Occured?",
+            title: "",
             text: "Please Ensure any one of the 5 input value must greater than zero!",
-            type: "error",
+            //type: "warning",
             showCancelButton: false,
             confirmButtonColor: '#DD6B55',
             cancelButtonText: "Close",
