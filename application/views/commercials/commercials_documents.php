@@ -51,7 +51,7 @@
 
 
   <div id="Personal" class="w3-container info" style="background: white;padding: 40px;margin-top: 45px; ">
-  <form action="<?php echo base_url('commercialverificationcontroller/commericalsStore/').$id;?>" method="POST" id="commercial-form" enctype="multipart/form-data">
+  <form action="<?php echo base_url('commercialverificationcontroller/commericalsStore/').$id;?>" method="POST" id="commercial-form" enctype="multipart/form-data" onsubmit="return check_notzeros()">
       <div class="row">
         <?php $i=0; ?>
         <div class="col-md-12">
@@ -194,7 +194,8 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#commercial-form').submit(function(){
-      $(this).find(':input[type=submit]').prop('disabled', true);
+
+      //$(this).find(':input[type=submit]').prop('disabled', true);
     });
   });
   window.setTimeout(function() {
@@ -226,6 +227,36 @@
     } else {
       $('#option_remark_container_'+input_value).addClass('hidden');
       $('#remark_container_'+input_value).removeClass('hidden');
+    }
+  }
+  function check_notzeros()
+  {
+    
+    var v1=$('input[name="commercial[0][value]"]').val();
+    var v2=$('input[name="commercial[1][value]"]').val();
+    var v3=$('input[name="commercial[2][value]"]').val();
+    var v4=$('input[name="commercial[3][value]"]').val();
+    var v5=$('input[name="commercial[4][value]"]').val();
+    
+    var sum=parseFloat(v1)+parseFloat(v2)+parseFloat(v3)+parseFloat(v4)+parseFloat(v5);
+    if(sum>0)
+    {
+      $(this).find(':input[type=submit]').prop('disabled', true);
+      return true;
+    }
+    else
+    {
+      swal({
+            title: "Error Occured?",
+            text: "Please Ensure any one of the 5 input value must greater than zero!",
+            type: "error",
+            showCancelButton: false,
+            confirmButtonColor: '#DD6B55',
+            cancelButtonText: "Close",
+            closeOnCancel: false
+        });
+      //alert('Please Ensure any one of the 5 input value must greater than zero');
+      return false;
     }
   }
 
