@@ -10,12 +10,20 @@ class OpportunitiesController extends MY_Controller {
     $this->load->helper('inflector');
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Opportunity', 'opportunity');
-    $this->load->model('Company', 'company');
+    $this->load->model('Company', 'company');    
+    $this->load->model('Sale', 'sale');
     // $this->load->model('Candidate', 'candidate');
   }
 
   public function index() {
-    $this->loadFormViews('index');
+    $data['lead_status_options'] = $this->opportunity->getLeadStatuses();
+    $data['company_name_options'] = $this->sale->getCompanyNames(); 
+    $data['industries_list_options'] = $this->sale->getIndustries();    
+    $data['business_vertical_options'] = $this->sale->getBusinessVerticals();
+    $data['opportunity_code_options'] = $this->sale->getOpportunityCode();
+    $data['contract_id_options'] = $this->sale->getContractId();
+    $data['ln_entity_options'] = $this->sale->getLnEntity();
+    $this->loadFormViews('index', $data);
   }
 
   public function create($customer_id=0) {
@@ -172,5 +180,89 @@ class OpportunitiesController extends MY_Controller {
       }
       return $this->form_validation->run();
     }
+
+
+      public function leadStatusUpdate() {
+        $data['lead_status_id']= $this->input->post('lead_status_id');
+        $data['customer_id']= $this->input->post('customer_id');
+        $data['created_by'] = $this->session->userdata('usr_authdet')['id'];
+        $data['is_paid'] = $this->input->post('is_paid') ?? -1;
+
+        if($data['lead_status_id']!=8){
+          $data['remarks'] = $this->input->post('remark');
+          if($this->input->post('schedule_date') != '') {
+            $data['schedule_date'] = $this->input->post('schedule_date');
+            $data['name'] = $this->input->post('name');
+            $data['phone'] = $this->input->post('phone');
+            $data['city'] = $this->input->post('city');
+            $data['address'] = $this->input->post('address');
+          }
+        } else {
+          $data['remarks'] = $this->input->post('remarks');
+          $data['schedule_date'] = $this->input->post('schedule_date');
+          $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
+          $data['potential_number'] = $this->input->post('potential_number');
+          $data = $this->addFileInfo($data);
+        }
+        $status = $this->opportunity->updateLeadStatus($data);
+        if ($status) {
+          $this->msg = 'Opportunity Status updated successfully';
+        } else {
+          $this->msg = 'Error updating Opportunity Status';
+        }
+        $this->session->set_flashdata('status', $this->msg);
+        $response['status'] = $status;
+        $response['msg'] = 'request reached successfully';
+        echo json_encode($response);
+        exit;
+      }
+
+      public function addFileInfo($data) {
+        $file_data = $this->uploadFile('file_name');
+        if($file_data['status']==true) {
+            $data['file_name'] = $file_data['upload_data']['file_name'];
+        }
+        return $data;
+      }
+
+      //sumit's code
+      public function getOpporunityList()
+      {
+        $requestData= $_REQUEST;
+        $resp_data=$this->opportunity->getOpportunityData($requestData);
+        echo json_encode($resp_data);
+      }
+
+      public function check_commercial_document($customer_id)
+      {
+        //echo $customer_id;
+          $result = array(
+            "file_name" => ""
+          );
+          $query = "WITH RES AS
+          (
+              SELECT 	LL.file_name,
+                      ROW_NUMBER() OVER(PARTITION BY LL.customer_id,LL.lead_status_id ORDER BY id DESC) AS counter
+              FROM 	neo_customer.lead_logs AS LL
+              WHERE	LL.customer_id= $customer_id
+              AND		LL.lead_status_id=8
+          )
+          SELECT 	COALESCE(RES.file_name,'') AS file_name
+          FROM	RES
+          WHERE	RES.counter=1 ";
+
+          $response = $this->db->query($query);
+          if ($response->num_rows() > 0)
+          {
+              //echo json_encode($response->row());
+              $result["file_name"] = $response->row()->file_name;
+          }
+          else
+          {
+              $result["file_name"] = "";
+          }
+
+          echo json_encode($result);
+      }
 
 }

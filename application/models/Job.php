@@ -15,9 +15,9 @@ class Job extends MY_Model
     }
 
     public function findEmployer($id) {
-      return $this->db->select('neo_job.jobs.*, neo_customer.customers.customer_name,neo_master.districts.name as district_name,neo_master.qualification_packs.name as qualification_pack_name, neo_master.qualification_packs.code AS qualification_code')
+      return $this->db->select('neo_job.jobs.*, neo_customer.companies.company_name,neo_master.districts.name as district_name,neo_master.qualification_packs.name as qualification_pack_name, neo_master.qualification_packs.code AS qualification_code')
             ->from($this->tableName)
-            ->join('neo_customer.customers', 'neo_job.jobs.customer_id=neo_customer.customers.id', 'LEFT')
+            ->join('neo_customer.companies', 'neo_job.jobs.customer_id=neo_customer.companies.id', 'LEFT')
             ->join('neo_master.districts', 'neo_job.jobs.district_id=neo_master.districts.id', 'LEFT')
             ->join('neo_master.qualification_packs', 'neo_job.jobs.qualification_pack_id=neo_master.qualification_packs.id', 'LEFT')
             ->where('neo_job.jobs.id', $id)->get()->row();

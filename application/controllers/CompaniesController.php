@@ -11,10 +11,20 @@ class CompaniesController extends MY_Controller {
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Company', 'company');
     $this->load->model('Candidate', 'candidate');
+    $this->load->model('Sale', 'sale');
   }
 
-  public function index() {
-    $this->loadFormViews('index');
+  public function index() {   
+    $data['company_name_options'] = $this->sale->getCompanyNames();  
+    $data['lead_source_options'] = $this->sale->getLeadSources();
+    $data['state_options'] = $this->sale->getStates();
+    $data['spoc_name_list_options'] = $this->sale->getCompanySpocName();
+    $data['spoc_email_list_options'] = $this->sale->getCompanySpocEmail();
+    $data['spoc_phone_list_options'] = $this->sale->getCompanySpocPhone();
+    $data['industries_list_options'] = $this->sale->getIndustries();
+    $data['functional_area_list_options'] = $this->sale->getFunctionalAreas();
+    $this->loadFormViews('index', $data);
+   
   }
 
   public function create() {
@@ -174,5 +184,28 @@ class CompaniesController extends MY_Controller {
       }
       return $this->form_validation->run();
     }
+
+    ///////////////////////SUMIT//////////////////////////
+
+    public function getCompanyList()
+  {
+    $requestData= $_REQUEST;
+    $resp_data=$this->company->getCompanyData($requestData);
+    echo json_encode($resp_data);
+  }
+
+  public function getOpportunityDetail($company_id=0)
+	{
+		//$this->pramaan->_check_module_task_auth(false);
+		$opportunity_results=$this->company->getOpportunityData($company_id);
+		echo json_encode($opportunity_results);
+  }
+  
+  public function getContractDetail($company_id=0)
+	{
+		//$this->pramaan->_check_module_task_auth(false);
+		$contract_results=$this->company->getContractData($company_id);
+		echo json_encode($contract_results);
+	}
 
 }
