@@ -121,16 +121,16 @@ class Opportunity extends MY_Model
         $maindata['is_paid'] = $data['is_paid'];
         if($data['lead_status_id']==16 && $maindata['is_paid']==0) {
            $maindata['is_contract'] = true;
+           unset($data['is_paid']);
+           $this->db->update($this->tableName, $maindata);
+
+           $this->db->reset_query();
+           $this->createLeadLog($data, "Free Opportunity");
+
+           $maindata['lead_status_id'] = 22;
+           $data['lead_status_id']=22;
+           $this->db->reset_query();
         }
-        unset($data['is_paid']);
-        $this->db->update($this->tableName, $maindata);
-
-        $this->db->reset_query();
-        $this->createLeadLog($data, "Free Opportunity");
-
-        $maindata['lead_status_id'] = 22;
-        $data['lead_status_id']=22;
-        $this->db->reset_query();
       }
       unset($data['is_paid']);
       $this->db->where('id', $data['customer_id']);
