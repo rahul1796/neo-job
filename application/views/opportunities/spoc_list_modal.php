@@ -32,7 +32,7 @@
         }
         function getSpocs(id) {
           $.ajax({
-            'url' : '<?= base_url("/salescontroller/getSpocsByCustomerID/"); ?>'+id,
+            'url' : '<?= base_url("/opportunitiescontroller/getSpocsByCustomerID/"); ?>'+id,
             type: "GET",
           }).done(function(response) {
             //console.log(response);
