@@ -1096,7 +1096,7 @@ class Employer_model extends CI_Model
 							//  $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
 							// }
 
-							//$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+							$ActionColumn .=  '<a class="btn btn-sm btn-success" title="contract History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;background-color:#34495e;border-color:#2c3e50;"><i class="fa fa-history"></i></a>';
 
 							 if (trim($customer->file_name)!='')
 							{
