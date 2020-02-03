@@ -10,15 +10,15 @@ class OpportunitiesController extends MY_Controller {
     $this->load->helper('inflector');
     $this->load->model("Pramaan_model", "pramaan");
     $this->load->model('Opportunity', 'opportunity');
-    $this->load->model('Company', 'company');    
+    $this->load->model('Company', 'company');
     $this->load->model('Sale', 'sale');
     // $this->load->model('Candidate', 'candidate');
   }
 
   public function index() {
     $data['lead_status_options'] = $this->opportunity->getLeadStatuses();
-    $data['company_name_options'] = $this->sale->getCompanyNames(); 
-    $data['industries_list_options'] = $this->sale->getIndustries();    
+    $data['company_name_options'] = $this->sale->getCompanyNames();
+    $data['industries_list_options'] = $this->sale->getIndustries();
     $data['business_vertical_options'] = $this->sale->getBusinessVerticals();
     $data['opportunity_code_options'] = $this->sale->getOpportunityCode();
     $data['contract_id_options'] = $this->sale->getContractId();
@@ -223,6 +223,28 @@ class OpportunitiesController extends MY_Controller {
             $data['file_name'] = $file_data['upload_data']['file_name'];
         }
         return $data;
+      }
+
+      public function getLeadHistory($lead_id){
+        echo json_encode($this->opportunity->getLeadHistory($lead_id));
+        exit;
+      }
+
+      public function getSpocsByCustomerID($id) {
+        $data = $this->opportunity->getSpocsByCustomerID($id);
+        if (count($data)>0) {
+          $status = true;
+          $this->msg = 'Spocs Found';
+        } else {
+          $status = false;
+          $this->msg = 'Not able to find any Additional Spoc';
+        }
+        //$this->session->set_flashdata('status', $this->msg);
+        $response['status'] = $status;
+        $response['msg'] = $this->msg;
+        $response['data'] = $data;
+        echo json_encode($response);
+        exit;
       }
 
       //sumit's code

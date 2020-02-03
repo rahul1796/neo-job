@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lead History</h3>
+                <h3 class="modal-title">Opportunity History</h3>
             </div>
             <div class="modal-body form">
                 <div id="msgDisplay"></div>
@@ -63,7 +63,7 @@
   function getLeadHistory(lead_id) {
       $('#historytblBody').html('');
       $.ajax({
-      url: "<?= base_url('salescontroller/getLeadHistory/')?>"+lead_id,
+      url: "<?= base_url('opportunitiescontroller/getLeadHistory/')?>"+lead_id,
       dataType: 'script',
       type: "GET",
       success: function(response) {
