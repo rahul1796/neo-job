@@ -45,6 +45,7 @@ class Opportunity extends MY_Model
       $this->createOrUpdateLocation($data['opportunity_id'], $data, 'save');
       $data = $this->generateOpportunityCodes($data);
       $this->db->where('id', $data['opportunity_id'])->update($this->tableName, $this->getFillable($data));
+      $this->createInitialOpportunityLog($data);
       $this->db->trans_complete();
 
       return $this->db->trans_status();
@@ -90,6 +91,15 @@ class Opportunity extends MY_Model
     public function makeCodes($data) {
 
       return $data;
+    }
+
+    //opportunity identified log
+    public function createInitialOpportunityLog($data) {
+      $logs_data['customer_id'] = $data['opportunity_id'];
+      $logs_data['created_by'] = $data['created_by'];
+      $logs_data['lead_status_id'] = 1;
+      $this->db->reset_query();
+      $this->db->insert('neo_customer.lead_logs', $logs_data);
     }
 
     //generates contract code as well
@@ -138,6 +148,13 @@ class Opportunity extends MY_Model
       return $this->db->insert('neo_customer.lead_logs', $data);
     }
 
+    public function getLeadHistory($lead_id) {
+      return $this->db->select('logs.* , status.name as status_name')->from('neo_customer.lead_logs as logs')
+      ->join('neo_master.lead_statuses as status', 'logs.lead_status_id = status.id', 'LEFT')
+      ->order_by('logs.created_at', 'DESC')
+      ->order_by('logs.id', 'DESC')
+      ->where('logs.customer_id', $lead_id)->get()->result();
+    }
 
     //sumit's code
 
@@ -305,7 +322,7 @@ class Opportunity extends MY_Model
                                         o.created_by,
                                         (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
                                 FROM    neo_customer.opportunities AS o
-                                WHERE o.is_contract=false 
+                                WHERE o.is_contract=false
                             )
                             SELECT  COUNT(id) AS total_recs
                             FROM    R

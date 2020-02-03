@@ -122,7 +122,7 @@ function open_lead_popup(lead_id,lead_status_id) {
   $('#employer_id').val(lead_id);
   $('#proposal_customer_id').val(lead_id);
   $('#proposal_lead_status_id').val(lead_status_id);
-  $('#commerical-button').attr('href', '<?= base_url('leads/commercials_documents/')?>'+lead_id);
+  $('#commerical-button').attr('href', '<?= base_url('CommercialVerificationController/commericalsStore/')?>'+lead_id);
   //$('.modal-title').text('Lead Status');
   $('#leadModel').modal('show');
   $('#lead_feedback_input, #lead_schedule_input_container, .lead_feedback_input_container, #alert-box').addClass('hidden');
