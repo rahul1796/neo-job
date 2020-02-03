@@ -42,7 +42,7 @@
       <div class="breadcrumb-wrapper col-xs-12">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><?php echo anchor("opportunitiescontroller/index","opportunities");?></li>
-          <li class="breadcrumb-item active">Lead Commercials & Document</li>
+          <li class="breadcrumb-item active">Opportunity Commercials & Document</li>
         </ol>
       </div>
     </div>
@@ -231,13 +231,13 @@
   }
   function check_notzeros()
   {
-    
+
     var v1=$('input[name="commercial[0][value]"]').val();
     var v2=$('input[name="commercial[1][value]"]').val();
     var v3=$('input[name="commercial[2][value]"]').val();
     var v4=$('input[name="commercial[3][value]"]').val();
     var v5=$('input[name="commercial[4][value]"]').val();
-    
+
     var sum=parseFloat(v1)+parseFloat(v2)+parseFloat(v3)+parseFloat(v4)+parseFloat(v5);
     if(sum>0)
     {
