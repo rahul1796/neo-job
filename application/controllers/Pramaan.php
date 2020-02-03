@@ -80,6 +80,7 @@ class Pramaan extends CI_Controller
         $data['data']['total_leads'] = $this->dashboard->getLeadCount();
         $data['data']['total_companies'] = $this->dashboard->getCompanyCount();
         $data['data']['total_opportunities'] = $this->dashboard->getOpportunityCount();
+        $data['data']['total_contracts'] = $this->dashboard->getContractCount();
 
         $data['data']['interested_candidates'] = $this->dashboard->getInterestedCandidatesCount();
         $data['data']['pending_candidates'] = $this->dashboard->getPendingCandidatesCount();

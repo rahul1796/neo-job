@@ -32,6 +32,10 @@ class Dashboard extends MY_Model
     return $this->db->where_in('created_by', $this->hierarchy())->from('neo_customer.opportunities')->count_all_results();
   }
 
+  public function getContractCount() {
+    return $this->db->where('is_contract', true)->where_in('created_by', $this->hierarchy())->from('neo_customer.opportunities')->count_all_results();
+  }
+
   public function getEmployerCount() {
     //return $this->IND_money_format($this->db->where('is_customer', true)->from('neo_customer.customers')->count_all_results());
     return $this->db->where('is_customer', true)->where_in('created_by', $this->hierarchy())->from('neo_customer.customers')->count_all_results();
