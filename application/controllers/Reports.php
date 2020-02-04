@@ -6,7 +6,8 @@ class Reports extends MY_Controller {
   private $reports = ['getUserLogInReport' => 'User Login Activity Report',
                       'getUsabilityReport' => 'User Usability Report',
                       'getLeadDetailsReport' => 'Lead Details Report',
-                      'getClientTrackerReport'=>'Client Tracker Report',
+                      //'getClientTrackerReport'=>'Client Tracker Report',
+                      'getClientOpportunityTrackerReport'=>'Client Opportunity Tracker Report',
                       'getPlacementDetailReport' => 'Placement Detail Report',
                       'getJobDetailedReport' => 'Job Detailed Report',
                       'getSelfEmployedCandidatesReport' => 'Self Employed Candidates Report'];
@@ -64,6 +65,11 @@ class Reports extends MY_Controller {
   public function getClientTrackerReport() {
     $data = $this->report->getClientTrackerReport();
     $this->downloadRequest('ClientTrackerReport', $data);
+  }
+
+  public function getClientOpportunityTrackerReport() {
+    $data = $this->report->getClientOpportunityTrackerReport();
+    $this->downloadRequest('getClientOpportunityTrackerReport', $data);
   }
 
   public function getPlacementDetailReport() {
