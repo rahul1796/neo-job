@@ -491,9 +491,9 @@ class Opportunity extends MY_Model
                           if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
                             $Actions .= '<a class="btn btn-sm " title="Opportunity Commercials" href="'.base_url("/CommercialVerificationController/commericalsStore/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
                           }
-                          if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
-                            $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
-                          }
+                          // if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
+                          //   $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+                          // }
                        // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
                         $ResponseRow = array();
                         $SerialNumber++;
@@ -502,7 +502,7 @@ class Opportunity extends MY_Model
                         $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
+                        //$ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
                         $ResponseRow[] = $QueryRow->business_vertical ?? 'N/A';
                         $ResponseRow[] = $QueryRow->industry ?? 'N/A';
                         $ResponseRow[] = $QueryRow->labournet_entity ?? 'N/A';
