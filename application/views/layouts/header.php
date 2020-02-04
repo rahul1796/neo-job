@@ -457,11 +457,11 @@
 	                      <?php endif; ?>
 	                      <?php if (in_array($user['user_group_id'], reports())): ?>
 	                      <ul><li><a href="<?= base_url('reports?slug=getLeadDetailsReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Lead Details Report</span></a></li></ul>
-	                      <ul><li><a href="<?= base_url('reports?slug=getClientTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Tracker Report</span></a></li></ul>
+	                      <ul><li><a href="<?= base_url('reports?slug=getClientOpportunityTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Opportunity Tracker Report</span></a></li></ul>
 	                      <ul><li><a href="<?= base_url('reports?slug=getJobDetailedReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Job Detailed Report</span></a></li></ul>
 	                      <?php endif; ?>
 	                      <ul><li><a href="<?= base_url('reports?slug=getPlacementDetailReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Placement Detail Report</span></a></li></ul>
-												<ul><li><a href="<?= base_url('reports?slug=getSelfEmployedCandidatesReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Self Employed Detail Report</span></a></li></ul>                  
+												<ul><li><a href="<?= base_url('reports?slug=getSelfEmployedCandidatesReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Self Employed Detail Report</span></a></li></ul>
 	                                </li>
 	                  <?php endif; ?>
 
