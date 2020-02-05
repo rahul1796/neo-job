@@ -80,7 +80,7 @@
                                         <option value="2">Status</option>
                                         <option value="3">Opportunity Code</option>
                                         <!-- <option value="4">Contract Id</option>                                         -->
-                                        <option value="5">Product</option>                                        
+                                        <option value="5">Product</option>
                                         <option value="6">Industry</option>
                                         <option value="7">Labournet Entity</option>
 
@@ -552,3 +552,4 @@ $(document).ready(function () {
 <?php $this->load->view('opportunities/lead_history_modal'); ?>
 <?php $this->load->view('opportunities/spoc_list_modal'); ?>
 <?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options]); ?>
+<?php $this->load->view('opportunities/placement_officer_select_modal', $data); ?>
