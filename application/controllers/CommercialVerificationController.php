@@ -25,7 +25,7 @@ class CommercialVerificationController extends MY_Controller {
       //
 
       $customer = $this->opportunity->find($id);
-      // $this->commercial_redirect($customer);
+       $this->commercial_redirect($customer);
       $data = $this->set_commercial_document_data($id);
       $data['customer'] = $customer;
 
@@ -47,7 +47,7 @@ class CommercialVerificationController extends MY_Controller {
 
     public function commercials_documents($id) {
       $customer = $this->opportunity->find($id);
-      // $this->commercial_redirect($customer);
+      $this->commercial_redirect($customer);
       $data = $this->set_commercial_document_data($id);
       $data['customer'] = $customer;
       $this->loadFormViews('commercials_documents',$data);
@@ -168,7 +168,7 @@ class CommercialVerificationController extends MY_Controller {
           $this->msg = 'Error deleting document';
       }
       $this->session->set_flashdata('status', $this->msg);
-      redirect(base_url().'leads/commercials_documents/'.$customer_id, 'refresh');
+      redirect(base_url().'CommercialVerificationController/commercials_documents/'.$customer_id, 'refresh');
     }
 
     public function addFileInfo($data) {
