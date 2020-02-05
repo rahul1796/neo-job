@@ -46,37 +46,10 @@ function selectspocmodal(company_id)
     $('#selectSpocModal').modal('show'); // show bootstrap modal when complete loaded
 }
 
-
-  
-
-$(document).ready(function() { 
-  $('body').on('change', '.checkevent', function() {
-    varSpocCheckBoxArray=[];
-
-    let spocname = $(this).parent('td').siblings('.spocnametd').first().text();
-    let spocemail = $(this).parent('td').siblings('.spocemailtd').first().text();
-    let spocphone = $(this).parent('td').siblings('.spocphonetd').first().text();
-    let spocdesignation = $(this).parent('td').siblings('.spocdesignationtd').first().text();
-    
-    
-    let spocObject = {
-                    "spocName": spocname,
-                    "spocEmail": spocemail,
-                    "spocPhone": spocphone,
-                    "spocDesignation": spocdesignation
-                  }   
-  
-    varSpocArray.push(spocObject);    
-    // console.log(varSpocCheckBoxArray);                                    
-  }); 
-  
-});
-
-
 function btnSelect_OnClick()
 {   
     let x =  $('#spoc-field-container').children().length;
-    var varSpocArray = GetSpocArray();     
+    var varSpocArray = GetSpocArray(); 
     for(let i=0;i<varSpocArray.length;i++)
      {
          let spoc_json=varSpocArray[i];
