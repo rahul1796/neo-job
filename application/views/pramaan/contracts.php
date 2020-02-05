@@ -554,4 +554,4 @@ $(document).ready(function () {
       });
 </script>
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/js/extensions/moment.min.js'?>"></script>
-<?php $this->load->view('sales/lead_history_modal'); ?>
+<?php $this->load->view('opportunities/lead_history_modal'); ?>

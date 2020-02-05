@@ -500,7 +500,8 @@ class Opportunity extends MY_Model
                         $ResponseRow[] = $SerialNumber;
                         $ResponseRow[] = $Actions;
                         $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
+                        $ResponseRow[] = ($QueryRow->lead_status_id==16) ? ($QueryRow->lead_status_name.' (Pending Approval)') : $QueryRow->lead_status_name;
+                        //$ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
                         $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
                         $ResponseRow[] = $QueryRow->business_vertical ?? 'N/A';

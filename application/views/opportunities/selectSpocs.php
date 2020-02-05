@@ -58,42 +58,62 @@ $(document).ready(function() {
     let spocphone = $(this).parent('td').siblings('.spocphonetd').first().text();
     let spocdesignation = $(this).parent('td').siblings('.spocdesignationtd').first().text();
     
-    $(addDiv).trigger('click');
+    
     let spocObject = {
-                    spocName: spocname,
-                    spocEmail: spocemail,
-                    spocPhone: spocphone,
-                    spocDesignation: spocdesignation
-                  }  
- 
-   // var JSONObject = JSON.stringify(spocObject);
-    varSpocArray.push(spocObject);
-     for(let i=1;i<varSpocArray.length;i++)
-     {
-       //if(varSpocArray.length>1) 
-       //$(addDiv).trigger('click');
-      $('input[name="spoc_detail['+i+'][spoc_name]"]').val(varSpocArray[i].spocName);
-      $('input[name="spoc_detail['+i+'][spoc_email]"]').val(varSpocArray[i].spocEmail);
-      $('input[name="spoc_detail['+i+'][spoc_phone]"]').val(varSpocArray[i].spocPhone);
-      $('input[name="spoc_detail['+i+'][spoc_designation]"]').val(varSpocArray[i].spocDesignation);     
-      
-     }
-     //alert($(this).attr("id"));
-     if (jQuery.inArray($(this).attr("id"),varSpocCheckBoxArray)>=0)
-        varSpocCheckBoxArray.splice( varSpocCheckBoxArray.indexOf($(this).attr("id")), 1 );
-     else if (jQuery.inArray($(this).attr("id"),varSpocCheckBoxArray)==-1)
-        varSpocCheckBoxArray.push($(this).attr("id"));
-      //check();
-      console.log(varSpocCheckBoxArray);                                    
+                    "spocName": spocname,
+                    "spocEmail": spocemail,
+                    "spocPhone": spocphone,
+                    "spocDesignation": spocdesignation
+                  }   
+  
+    varSpocArray.push(spocObject);    
+    // console.log(varSpocCheckBoxArray);                                    
   }); 
   
 });
 
 
 function btnSelect_OnClick()
-{
-    var varSpocArray = GetSpocArray();    
-    alert(JSON.stringify(varSpocArray));
+{   
+    let x =  $('#spoc-field-container').children().length;
+    var varSpocArray = GetSpocArray();     
+    for(let i=0;i<varSpocArray.length;i++)
+     {
+         let spoc_json=varSpocArray[i];
+         //console.log(spoc_json.SpocName);
+                
+        fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
+		fieldSET +=           '<div class="col-xs-3">\
+					        <div class="input-group">\
+					            <input type="text" class="form-control" name="spoc_detail['+x+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" />\
+					        </div>\
+					 </div>\
+                                         <div class="col-xs-3">\
+					        <div class="input-group">\
+					            <input type="email" class="form-control" name="spoc_detail['+x+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" />\
+					        </div>\
+					 </div>\
+                                         <div class="col-xs-2">\
+					        <div class="input-group">\
+					            <input type="text" maxlength="10" class="form-control" name="spoc_detail['+x+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" />\
+					        </div>\
+					 </div>\
+           <div class="col-xs-3">\
+              <div class="input-group">\
+                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+x+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" />\
+              </div>\
+            </div>\
+            <div class="col-xs-1">\
+                    <span class="input-group-btn"><button class="btn btn-danger remove_div" data-value='+x+' type="button"><i class="fa fa-trash"></i></button></span>\
+                    </div>\
+            </div>';
+
+            $('#spoc-field-container').append(fieldSET); // Add field html
+         x++;    
+      
+    }
+     
+    //alert(JSON.stringify(varSpocArray));
 }
 
 function GetSpocArray()
@@ -138,7 +158,7 @@ function GetSpocArray()
             </div>
            
             <div class="modal-footer">
-                 <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick()">Select</button>
+                 <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick()" data-dismiss="modal">Select</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" >Close</button>
             </div>
         </div>
