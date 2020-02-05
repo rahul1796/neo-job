@@ -25,7 +25,7 @@
           <li class=" nav-item"><a href="<?php //echo base_url('leads/index/1');?>"><i class="icon-line-chart"></i><span data-i18n="nav.dash.main" class="menu-title">Leads</span></a></li>
         <?php //endif; ?> -->
 
-        <?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
+        <?php if (in_array($user['user_group_id'], company_view_roles())): ?>
           <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="fa fa-building"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
         <?php endif; ?>
 
