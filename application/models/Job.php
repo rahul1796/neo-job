@@ -186,7 +186,7 @@ class Job extends MY_Model
                         ->join('neo_master.business_verticals', 'neo_master.business_verticals.id = neo_job.jobs.business_vertical_id', 'LEFT')
                         ->where('neo_job.jobs.id', $job_id)->get()->row_array();
 
-    return 'JB-'.strtoupper(substr($result['customer_name'], 0, (strlen($result['customer_name'])>3 ? 4 : 3))).'-'.$result['code'].'-'.$job_id;
+    return 'JB-'.strtoupper(substr(trim($result['customer_name']), 0, (strlen(trim($result['customer_name']))>3 ? 4 : 3))).'-'.$result['code'].'-'.$job_id;
   }
 
   public function getPlacementDetails($candidate_id, $job_id) {
