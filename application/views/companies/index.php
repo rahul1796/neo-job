@@ -68,7 +68,7 @@
                                         <input type="text" class="form-control hidden" id="searchbox" name="searchbox" value="" placeholder="Search here" style="width: 380px; margin-top: -33px; margin-left: 270px;">
                                         <div class="hidden" id="customer_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="customer_list" name="customer_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                                <option value="">Select Customer Name</option>
+                                                <option value="">Select Company Name</option>
                                                 <?php foreach($company_name_options as $option): ?>
                                                   <option value="<?php echo $option->company_name; ?>"><?php echo $option->company_name; ?></option>
                                                 <?php endforeach; ?>
