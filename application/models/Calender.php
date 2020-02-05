@@ -59,9 +59,9 @@ class Calender extends MY_Model
   public function getLeadsSchedules($date) {
     return $this->db->select('logs.schedule_date as schedule_date, logs.name as meeting_person, logs.phone as contact_phone,
       logs.address as contact_address, logs.city as contact_city, logs.remarks as contact_remark, l.name as status,
-       c.lead_managed_by as managed_by')
+       c.managed_by as managed_by')
     ->from('neo_customer.lead_logs as logs')
-    ->join('neo_customer.customers as c', 'logs.customer_id = c.id')
+    ->join('neo_customer.opportunities as c', 'logs.customer_id = c.id')
     ->join('neo_master.lead_statuses as l', 'logs.lead_status_id = l.id')
     ->where("TO_CHAR(logs.schedule_date,'dd-Mon-yyyy')", $date)
     ->get()->result();
