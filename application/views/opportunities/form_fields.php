@@ -81,29 +81,34 @@
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
 
+<?php
+  $input_count = count($location_fields['spoc_detail']);
+  $readonlytext = $input_count>0 ? "readonly" : "";
+?>
+
 
 <div class="form-group row">
   <div class="col-md-3">
     <label for="spoc_name" class="">Branch Spoc Name:</label>
-    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>">
+    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" <?= $readonlytext ?>>
     <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
   </div>
 
   <div class="col-md-3">
     <label for="spoc_email" class="">Branch Spoc Email:</label>
-    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>">
+    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" <?= $readonlytext ?>>
     <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
     <label for="spoc_phone" class="">Branch Spoc Phone:</label>
-    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>">
+    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" <?= $readonlytext ?>>
     <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
   </div>
 
   <div class="col-md-3">
     <label for="spoc_designation" class="">Branch Spoc Designation:</label>
-    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>">
+    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" <?= $readonlytext ?>>
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
    </div>
@@ -113,6 +118,7 @@
 
 <div class="form-group row" id="multispoc">
     <div class="col-md-12" id="spoc-field-container">
+        
         <?php if(!empty($location_fields['spoc_detail'])): ?>
         <?php $x=0; ?>
         <?php foreach($location_fields['spoc_detail'] as $x=>$spoc): ?>
@@ -124,25 +130,25 @@
 
                                 <div class="col-xs-3">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="spoc_detail[<?=$x;?>][spoc_name]" value="<?= $spoc['spoc_name']?>" placeholder="Enter Spoc Name" />
+                                            <input type="text" class="form-control" name="spoc_detail[<?=$x;?>][spoc_name]" value="<?= $spoc['spoc_name']?>" placeholder="Enter Spoc Name" <?= $readonlytext ?>/>
                                             <?php echo form_error("spoc_detail[{$x}][spoc_name]"); ?>
                                         </div>
                                  </div>
                                  <div class="col-xs-3">
                                         <div class="input-group">
-                                            <input type="email" class="form-control" name="spoc_detail[<?=$x;?>][spoc_email]" value="<?= $spoc['spoc_email']?>" placeholder="Enter Spoc Email" />
+                                            <input type="email" class="form-control" name="spoc_detail[<?=$x;?>][spoc_email]" value="<?= $spoc['spoc_email']?>" placeholder="Enter Spoc Email" <?= $readonlytext ?> />
                                               <?php echo form_error("spoc_detail[{$x}][spoc_email]"); ?>
                                         </div>
                                  </div>
                                  <div class="col-xs-2">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" name="spoc_detail[<?=$x;?>][spoc_phone]" value="<?= $spoc['spoc_phone']?>" placeholder="Enter Spoc Phone"  />
+                                            <input type="text" class="form-control" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" name="spoc_detail[<?=$x;?>][spoc_phone]" value="<?= $spoc['spoc_phone']?>" placeholder="Enter Spoc Phone" <?= $readonlytext ?> />
                                             <?php echo form_error("spoc_detail[{$x}][spoc_phone]"); ?>
                                         </div>
                                  </div>
                                  <div class="col-xs-3">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" name="spoc_detail[<?=$x;?>][spoc_designation]" value="<?= $spoc['spoc_designation']?>" placeholder="Spoc Designation"  />
+                                            <input type="text" class="form-control" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" name="spoc_detail[<?=$x;?>][spoc_designation]" value="<?= $spoc['spoc_designation']?>" placeholder="Spoc Designation" <?= $readonlytext ?> />
                                             <?php echo form_error("spoc_detail[{$x}][spoc_designation]"); ?>
                                         </div>
                                  </div>

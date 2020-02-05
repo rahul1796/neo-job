@@ -11,6 +11,8 @@ function selectspocmodal(company_id)
             var customer_detail_html='';
             if(data.status)
             {
+                var varInputCount =  $('input[name*=spoc_phone').length;
+
                 var employer=data.employer_detail;
                 var slno=1;
                 customer_detail_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+employer.company_name+"</span></div>"; 
@@ -24,9 +26,20 @@ function selectspocmodal(company_id)
                 customer_detail_html += '</thead>';
                 $.each(data.customer_detail,function(a,b)
                 {
-                  let id="checkbox_"+slno;
-                  customer_detail_html += '<tr id="trSpocs"><td class="spocchecktd"><input id='+id+ ' class="checkevent" type="checkbox" name="spoc"></td><td class="spocnametd">'+b.spoc_name+'</td><td class="spocemailtd">'+b.spoc_email+'</td><td class="spocphonetd">'+b.spoc_phone+'</td><td class="spocdesignationtd">'+b.spoc_designation+'</td></tr>';
-                  slno++;
+                    let id="checkbox_"+slno;
+                    var varCheckBox = '<input id='+id+ ' class="checkevent" type="checkbox" name="spoc">';
+                    var varDuplicateStatus = false;
+                    for(var i=0; i<varInputCount; i++)
+                    {
+                        if (b.spoc_phone == $('input[name="spoc_detail['+i+'][spoc_phone]"]').val())
+                        {
+                            varCheckBox = '';
+                            break;
+                        }                        
+                    }
+                  
+                    customer_detail_html += '<tr id="trSpocs"><td class="spocchecktd">'+varCheckBox+'</td><td class="spocnametd">'+b.spoc_name+'</td><td class="spocemailtd">'+b.spoc_email+'</td><td class="spocphonetd">'+b.spoc_phone+'</td><td class="spocdesignationtd">'+b.spoc_designation+'</td></tr>';
+                    slno++;
                 });
                 //<td><a class="btn btn-success mr-1 mb-1" onclick="ShowOpportunityDetails('+b.id+')">'+b.opportunity_count+'</a></td>
                 customer_detail_html += '</tbody>';
@@ -46,10 +59,14 @@ function selectspocmodal(company_id)
     $('#selectSpocModal').modal('show'); // show bootstrap modal when complete loaded
 }
 
+
+
+
 function btnSelect_OnClick()
 {   
     //let x =  $('#spoc-field-container').children().length;
-    var x =1;
+    var varInputCount =  $('input[name*=spoc_phone').length;
+    var x =varInputCount;
     var varSpocArray = GetSpocArray(); 
     for(let i=0;i<varSpocArray.length;i++)
      {
@@ -59,22 +76,22 @@ function btnSelect_OnClick()
         fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
 		fieldSET +=           '<div class="col-xs-3">\
 					        <div class="input-group">\
-					            <input type="text" class="form-control" name="spoc_detail['+x+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" />\
+					            <input type="text" class="form-control" name="spoc_detail['+x+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" readonly/>\
 					        </div>\
 					 </div>\
                                          <div class="col-xs-3">\
 					        <div class="input-group">\
-					            <input type="email" class="form-control" name="spoc_detail['+x+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" />\
+					            <input type="email" class="form-control" name="spoc_detail['+x+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" readonly/>\
 					        </div>\
 					 </div>\
                                          <div class="col-xs-2">\
 					        <div class="input-group">\
-					            <input type="text" maxlength="10" class="form-control" name="spoc_detail['+x+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" />\
+					            <input type="text" maxlength="10" class="form-control" name="spoc_detail['+x+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" readonly/>\
 					        </div>\
 					 </div>\
            <div class="col-xs-3">\
               <div class="input-group">\
-                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+x+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" />\
+                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+x+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" readonly/>\
               </div>\
             </div>\
             <div class="col-xs-1">\
@@ -101,15 +118,18 @@ function GetSpocArray()
         var varTdList = varTrList[i].getElementsByTagName('td');
         var varChkList = varTrList[i].getElementsByTagName('input');
 
-        if (varChkList[0].checked)
+        if (varChkList != undefined && varChkList.length > 0)
         {
-            var varSpoc = {};
-            for(var j=1; j < varTdList.length; j++)
-            {        
-                varSpoc[varColumnS[j]] = varTdList[j].innerText;
+            if (varChkList[0].checked)
+            {
+                var varSpoc = {};
+                for(var j=1; j < varTdList.length; j++)
+                {        
+                    varSpoc[varColumnS[j]] = varTdList[j].innerText;
+                }
+                varSpocArray.push(varSpoc);
             }
-            varSpocArray.push(varSpoc);
-        }
+        }        
     }
 
     return varSpocArray;

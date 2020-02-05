@@ -2209,7 +2209,7 @@ class Partner_model extends CI_Model
 																RES.spoc_designation
 													FROM	 RES
 													WHERE	 RES.counter=1
-													ORDER BY 4");
+													ORDER BY 2");
 
 		if($employer_det_rec->num_rows())
 		{
