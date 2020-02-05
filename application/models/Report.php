@@ -40,7 +40,7 @@ class Report extends MY_Model {
 
     $select_column = "sr_no as \"SR NO\", user_name as \"USER NAME\", user_email as \"USER EMAIL\",
                       user_role_name as \"USER ROLE\", log_date as \"DATE\", login_count as \"#LOGGED IN\",
-                      lead_created_count as \"#LEAD CREATED\", lead_status_changed_count as \"#LEAD STATUS CHANGED\",
+                      lead_created_count as \"#OPPORTUNITY CREATED\", lead_status_changed_count as \"#OPPORTUNITY STATUS CHANGED\",
                       lead_converted_to_customer_count as \"#CONTRACT COMPLETED\",
                       jobs_posted_count as \"#JOBS POSTED\", candidate_created_count as \"#CANDIDATE ADDED\",
                       jobs_applied_count as \"#JOBS APPLIED\", jobs_closed_count as \"#JOBS CLOSED\",
@@ -87,7 +87,7 @@ class Report extends MY_Model {
                       customer_name AS \"COMPANY NAME\",
                       opportunity_code AS \"OPPORTUNITY CODE\",
                       contract_id AS \"CONTRACT ID\",
-                      created_user_name AS \"CUSTOMER CREATED BY\",
+                      created_user_name AS \"OPPORTUNITY CREATED BY\",
                       created_user_role AS \"USER ROLE\",
                       active_status AS \"ACTIVE STATUS\",
                       business_vertical_name AS \"BUSSINESS VERTICAL NAME\",

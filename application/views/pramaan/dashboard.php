@@ -688,7 +688,7 @@
 																				<div class="card-block">
 																					<div class="media">
 																						<div class="media-left media-middle">
-																							<i class="fa fa-file success font-large-2 float-xs-left"></i>
+																							<i class="fa fa-check success font-large-2 float-xs-left"></i>
 																						</div>
 																						<div class="media-body text-xs-right">
 																							<h3><?= $legal_approved; ?></h3>
@@ -706,7 +706,7 @@
 																				<div class="card-block">
 																					<div class="media">
 																						<div class="media-left media-middle">
-																							<i class="fa fa-file success font-large-2 float-xs-left"></i>
+																							<i class="fa fa-times danger font-large-2 float-xs-left"></i>
 																						</div>
 																						<div class="media-body text-xs-right">
 																							<h3><?= $legal_rejected; ?></h3>
@@ -724,7 +724,7 @@
 																				<div class="card-block">
 																					<div class="media">
 																						<div class="media-left media-middle">
-																							<i class="fa fa-file success font-large-2 float-xs-left"></i>
+																							<i class="fa fa-file warning font-large-2 float-xs-left"></i>
 																						</div>
 																						<div class="media-body text-xs-right">
 																							<h3><?= $contract_completed; ?></h3>
