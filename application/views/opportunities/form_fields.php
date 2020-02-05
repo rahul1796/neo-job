@@ -14,7 +14,9 @@
 .phone-input{
 	margin-bottom:8px;
 }
+
 </style>
+
 <?php $this->load->view('layouts\soft_error'); ?>
 
 <div class="form-group row">
@@ -79,31 +81,6 @@
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
 
-<div class="form-group row">
-  <div class="col-md-3">
-    <label for="spoc_name" class="">Branch Spoc Name:</label>
-    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>">
-    <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
-  </div>
-
-  <div class="col-md-3">
-    <label for="spoc_email" class="">Branch Spoc Email:</label>
-    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>">
-    <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
-  </div>
-
-  <div class="col-md-3">
-    <label for="spoc_phone" class="">Branch Spoc Phone:</label>
-    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>">
-    <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
-  </div>
-
-  <div class="col-md-3">
-    <label for="spoc_designation" class="">Branch Spoc Designation:</label>
-    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>">
-    <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
-  </div>
-   </div>
 <!--<h5>Add Additional Spoc Details</h5>
 <hr>-->
 
@@ -154,6 +131,7 @@
      </div>
     <div class="col-md-12">
         <button class="btn btn-primary add-div" type="button">Add Additional Spoc</button>
+        <a class="btn btn-success" id="selectSpoc" style="margin-left: 25px;" onclick="selectspocmodal()">Select Spoc</a>
     </div>
 </div>
 <hr>
@@ -220,22 +198,28 @@
 
 
 <button type="submit" class="btn btn-primary">Submit</button>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/datatables.min.css'?>">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css'?>">
+<script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/datatables.min.js'?>"></script>
+<script src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js" type="text/javascript"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 
   $('.select2-neo').select2();
 });
-</script>
+</script> -->
  <script type="text/javascript">
 
   var country_id = <?= (!empty($location_fields['country_id'])) ? $location_fields['country_id'] : 0 ?>;
   var state_id = <?= (!empty($location_fields['state_id'])) ? $location_fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($location_fields['district_id'])) ? $location_fields['district_id'] : 0 ?>;
-
-
+  var varSpocArray = [];
+  var varSpocCheckBoxArray = [];
  $(document).ready(function() {
 
    if(country_id!=0){
@@ -377,4 +361,8 @@ var maxField = 100; //Input fields increment limitation
         $('#spoc_'+y).remove();
       //  x--; //Decrement field counter
     });
+
+    
+
 </script>
+<?php $this->load->view('opportunities/selectSpocs'); ?>
