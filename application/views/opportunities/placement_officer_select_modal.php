@@ -14,7 +14,7 @@
                   <div class="col-md-12">
                     <label for="placement_officers" class="label">Assign Placement Officer:</label>
                     <select class="select2-neo form-control" name="placement_officers" id="placement_officer_assign_select" style="width: 50%">
-                      <option value="">Select Placement Officers</option>
+                      <option value='0'>Select Placement Officers</option>
                       <?php foreach($placement_officer_options as $option): ?>
                           <option value="<?php echo $option->id; ?>" ><?php echo $option->name; ?></option>
                       <?php endforeach; ?>
@@ -25,7 +25,7 @@
                   </div>
                   <div class="col-md-12">
                     <br>
-                    <button type="button" class="btn btn-primary" onclick="change_lead_assignee();" name="button" id="lead_assignee_update_btn">Assign Lead</button>
+                    <button type="button" class="btn btn-primary" onclick="change_lead_assignee();" name="button" id="lead_assignee_update_btn">Assign Opportunity</button>
                     <br>
 
                   </div>
@@ -47,11 +47,12 @@
 
   function open_placement_officer_assign_model(customer_id) {
     $('#assignee_status').text('');
+    $('#placement_officer_assign_select').val(0).change();
     $('#placement_officer_assign_modal').modal();
     $('#assign_placement_officer_customer_id').val(customer_id);
     $('#lead_assignee_update_btn').prop('disabled', true);
     $.ajax({
-      url: '<?= base_url('salescontroller/getAssignedUserToLead');?>',
+      url: '<?= base_url('opportunitiesController/getAssignedUserToLead');?>',
       data: {'customer_id' : customer_id},
       method: 'POST',
     }).done(function(response){
@@ -69,7 +70,7 @@
     let placement_officer = $('#placement_officer_assign_select').find(':selected').val();
     let customer_id = $('#assign_placement_officer_customer_id').val();
     $.ajax({
-      url: '<?= base_url('salesController/changeLeadAssignee');?>',
+      url: '<?= base_url('opportunitiesController/changeLeadAssignee');?>',
       data: {'customer_id' : customer_id, 'placement_officer' : placement_officer},
       method: 'POST',
     }).done(function(response){

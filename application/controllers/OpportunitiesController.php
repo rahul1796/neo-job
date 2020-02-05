@@ -24,6 +24,7 @@ class OpportunitiesController extends MY_Controller {
     $data['opportunity_code_options'] = $this->sale->getOpportunityCode();
     $data['contract_id_options'] = $this->sale->getContractId();
     $data['ln_entity_options'] = $this->sale->getLnEntity();
+    $data['data']['placement_officer_options'] = $this->sale->getPlacementOfficers();
     $this->loadFormViews('index', $data);
   }
 
@@ -166,7 +167,7 @@ class OpportunitiesController extends MY_Controller {
       $this->form_validation->set_rules('business_vertical_id', 'Product', 'required|is_natural_no_zero');
       $this->form_validation->set_rules('functional_area_id', 'Functional Area', 'required|is_natural');
       $this->form_validation->set_rules('industry_id', 'Industry', 'required|is_natural');
-      $this->form_validation->set_rules('labournet_entity_id', 'Labournet Entity', '');
+      $this->form_validation->set_rules('labournet_entity_id', 'Labournet Entity', 'required|is_natural_no_zero');
 
       //Branch Location Validation
       $this->form_validation->set_rules('address', 'Address', 'required');
@@ -251,6 +252,43 @@ class OpportunitiesController extends MY_Controller {
         echo json_encode($response);
         exit;
       }
+
+
+        public function getAssignedUserToLead() {
+          $data = $this->opportunity->getAssociatedPO($this->input->post('customer_id'));
+          if (count($data)>0) {
+            $status = true;
+            $this->msg = 'Commercials Found';
+          } else {
+            $status = false;
+            $this->msg = 'Not able to find any Commercials';
+          }
+          //$this->session->set_flashdata('status', $this->msg);
+          $response['status'] = $status;
+          $response['msg'] = $this->msg;
+          $response['data'] = $data;
+          echo json_encode($response);
+          exit;
+        }
+
+        public function changeLeadAssignee() {
+          $created_by= $this->session->userdata('usr_authdet')['id'];
+          $customer_id = $this->input->post('customer_id');
+          $user_id = $this->input->post('placement_officer');
+          if ($this->opportunity->replaceCustomerUsers($customer_id, $created_by, 'Placement Officer', $user_id)) {
+            $status = true;
+            $this->msg = 'Assignment Successful';
+          } else {
+            $status = false;
+            $this->msg = 'Not able to Assign User, Kindly refresh the page and try after sometime';
+          }
+          //$this->session->set_flashdata('status', $this->msg);
+          $response['status'] = $status;
+          $response['msg'] = $this->msg;
+          echo json_encode($response);
+          exit;
+        }
+
 
       //sumit's code
       public function getOpporunityList()

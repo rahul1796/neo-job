@@ -68,7 +68,7 @@ class CommercialVerificationController extends MY_Controller {
     }
 
     public function commercial_redirect($customer) {
-      if($customer['is_customer'] == true) {
+      if($customer['is_contract'] == true) {
         $this->session->set_flashdata('status', 'You are not authorised to access that page');
         redirect('/pramaan/dashboard', 'refresh');
       } else if (!(in_array($customer['lead_status_id'], [20,21,16]))) {
