@@ -151,8 +151,7 @@ class Opportunity extends MY_Model
     public function getLeadHistory($lead_id) {
       return $this->db->select('logs.* , status.name as status_name')->from('neo_customer.lead_logs as logs')
       ->join('neo_master.lead_statuses as status', 'logs.lead_status_id = status.id', 'LEFT')
-      ->order_by('logs.created_at', 'DESC')
-      ->order_by('logs.id', 'DESC')
+      ->order_by('logs.id', 'ASC')
       ->where('logs.customer_id', $lead_id)->get()->result();
     }
 
