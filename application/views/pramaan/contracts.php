@@ -416,8 +416,8 @@ function ViewJoinedCandidates(Id)
 </script>
 
 </div>
-<?php $this->load->view('sales/spoc_list_modal');?>
-<?php $this->load->view('sales/commercial_list_modal');?>
+<?php $this->load->view('opportunities/spoc_list_modal');?>
+<?php $this->load->view('commercials/commercial_list_modal');?>
 <script>
 $(document).ready(function () {
         $('#search_by').change(function () {
