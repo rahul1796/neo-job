@@ -155,6 +155,28 @@ class Opportunity extends MY_Model
       ->where('logs.customer_id', $lead_id)->get()->result();
     }
 
+
+      public function replaceCustomerUsers($customer_id, $created_by, $type, $data) {
+        $this->db->trans_start();
+        $this->db->reset_query();
+        $this->db->delete('neo_customer.leads_users', ['lead_id'=>$customer_id, 'user_type'=>$type]);
+        // foreach($data as $id) {
+        //   $row = array();
+          $row['user_id'] = $data;
+          $row['lead_id'] = $customer_id;
+          $row['user_type'] = $type;
+          $row['created_by'] = $created_by;
+          $this->db->reset_query();
+          $this->db->insert('neo_customer.leads_users', $row);
+        // }
+        $this->db->trans_complete();
+        return $this->db->trans_status();
+      }
+
+      public function getAssociatedPO($id){
+        return array_column($this->db->where('lead_id', $id)->where('user_type', 'Placement Officer')->get('neo_customer.leads_users')->result_array(), 'user_id');
+      }
+
     //sumit's code
 
 
@@ -490,9 +512,9 @@ class Opportunity extends MY_Model
                           if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
                             $Actions .= '<a class="btn btn-sm " title="Opportunity Commercials" href="'.base_url("/CommercialVerificationController/commericalsStore/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
                           }
-                          // if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
-                          //   $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
-                          // }
+                           if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
+                             $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Opportunity" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+                           }
                        // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
                         $ResponseRow = array();
                         $SerialNumber++;
