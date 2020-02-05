@@ -81,31 +81,6 @@
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
 
-<div class="form-group row">
-  <div class="col-md-3">
-    <label for="spoc_name" class="">Branch Spoc Name:</label>
-    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
-    <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
-  </div>
-
-  <div class="col-md-3">
-    <label for="spoc_email" class="">Branch Spoc Email:</label>
-    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
-    <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
-  </div>
-
-  <div class="col-md-2">
-    <label for="spoc_phone" class="">Branch Spoc Phone:</label>
-    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
-    <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
-  </div>
-
-  <div class="col-md-3">
-    <label for="spoc_designation" class="">Branch Spoc Designation:</label>
-    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
-    <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
-  </div>
-   </div>
 <!--<h5>Add Additional Spoc Details</h5>
 <hr>-->
 
@@ -244,7 +219,7 @@ $(document).ready(function() {
   var state_id = <?= (!empty($location_fields['state_id'])) ? $location_fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($location_fields['district_id'])) ? $location_fields['district_id'] : 0 ?>;
   var varSpocArray = [];
-
+  var varSpocCheckBoxArray = [];
  $(document).ready(function() {
 
    if(country_id!=0){
@@ -387,136 +362,7 @@ var maxField = 100; //Input fields increment limitation
       //  x--; //Decrement field counter
     });
 
-// $(document).ready(function(){
-//     $('.spoc_detail').click(function(){
-//       var rBtnVal = $(this).val();
-//       if(rBtnVal == "yes"){  
-//         $('#selectSpoc').show();     
-//           $("#spoc_name,#spoc_email,#spoc_phone,#spoc_designation").attr("readonly", true); 
-//       }
-//       else{   
-//         $('#selectSpoc').hide();     
-//           $("#spoc_name,#spoc_email,#spoc_phone,#spoc_designation").attr("readonly", false); 
-//       }
-//     });
-// });
-
-
-function selectspocmodal()
-{
-  var track_url=base_url+'partner/companySpocDetails/'+<?= ($fields['company_id']=='')? $company['id'] : $fields['company_id'] ?>;
-  $.ajax({
-        url : track_url,
-        type: "GET",
-        dataType: "JSON",        
-        success: function(data)
-        {
-            var customer_detail_html='';
-            if(data.status)
-            {
-                var employer=data.employer_detail;
-                var slno=1;
-                customer_detail_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+employer.company_name+"</span></div>"; 
-                
-                customer_detail_html += '<div class="row">';
-                customer_detail_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; ">';
-                customer_detail_html += '<table id="tblApplicationTrackerDetails" class="table table-bordered display responsive nowrap">';
-                customer_detail_html += '<thead>';
-                customer_detail_html += '<tr><th></th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th><th>Spoc Designation</th></tr>';
-                customer_detail_html += '<tbody id="tbodySpocs">';
-                customer_detail_html += '</thead>';
-                $.each(data.customer_detail,function(a,b)
-                {
-                  let id="checkbox_"+slno;
-                  customer_detail_html += '<tr id="trSpocs"><td class="spocchecktd"><input id='+id+ ' class="checkevent" type="checkbox" name="spoc"></td><td class="spocnametd">'+b.spoc_name+'</td><td class="spocemailtd">'+b.spoc_email+'</td><td class="spocphonetd">'+b.spoc_phone+'</td><td class="spocdesignationtd">'+b.spoc_designation+'</td></tr>';
-                  slno++;
-                });
-                //<td><a class="btn btn-success mr-1 mb-1" onclick="ShowOpportunityDetails('+b.id+')">'+b.opportunity_count+'</a></td>
-                customer_detail_html += '</tbody>';
-                customer_detail_html += '</table>';
-                customer_detail_html += '</div></div>'; 
-            }
-            $('.candidate_job_status').html(customer_detail_html);
-
-            $("#tblCustomerDetails").DataTable();
-            
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-    });
-    $('#selectSpocModal').modal('show'); // show bootstrap modal when complete loaded
-}
-
-
-  
-
-$(document).ready(function() { 
-  $('body').on('change', '.checkevent', function() {
-    let spocname = $(this).parent('td').siblings('.spocnametd').first().text();
-    let spocemail = $(this).parent('td').siblings('.spocemailtd').first().text();
-    let spocphone = $(this).parent('td').siblings('.spocphonetd').first().text();
-    let spocdesignation = $(this).parent('td').siblings('.spocdesignationtd').first().text();
-      
-    let spocObject = {
-                    spocName: spocname,
-                    spocEmail: spocemail,
-                    spocPhone: spocphone,
-                    spocDsignation: spocdesignation
-                  }    
- 
-    var JSONObject = JSON.stringify(spocObject);
-    varSpocArray.push(JSONObject);
-    console.log(varSpocArray);                                    
-  }); 
-  
-});
-
-
-// function GetSpocArray()
-// {
-//     var varSpocArray = [];
-//     var varColumnS = ["Select", "SpocName", "SpocEmail", "SpocPhone", "SpocDesignation"]
-//     var varTBody = document.getElementById('tbodySpocs');
-//     var varTrList = varTBody.getElementsByTagName('tr');
-//     for(var i=0; i < varTrList.length; i++)
-//     {
-//         var varTdList = varTrList[i].getElementsByTagName('td');
-//         var varChkList = varTrList[i].getElementsByTagName('input');
-
-//         //var chk = ()
-//         alert(varChkList[i].checked);
-//         var varSpoc = {};
-//         for(var j=1; j < varTdList.length; j++)
-//         {        
-//             varSpoc[varColumnS[j]] = varTdList[j].innerText;
-//         }
-//         varSpocArray.push(varSpoc);
-//     }
-
-//     return varSpocArray;
-// }
+    
 
 </script>
-
-
-
-
-<div id="selectSpocModal" class="modal fade bs-example-modal-xl" role="dialog" style="color: black;">
-    <div class="modal-dialog modal-xl" role="document" >
-        <div class="modal-content">
-            <div class="modal-header" style="border-bottom:hidden;">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Company Spoc List</h3>
-            </div>
-            <div class="modal-body candidate_job_status">
-                -No records found-
-            </div>
-            <div class="modal-footer">
-                 <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick()">Select</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" >Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<?php $this->load->view('opportunities/selectSpocs'); ?>
