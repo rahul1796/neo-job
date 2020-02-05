@@ -2179,14 +2179,37 @@ class Partner_model extends CI_Model
 		// 									WHERE cb.customer_id=$company_id");
 
 
-			$customer_det_rec=$this->db->query("WITH UNSP AS (SELECT CB.customer_id, x.spoc_name,x.spoc_phone, x.spoc_email, x.spoc_designation
-												FROM neo_customer.customer_branches AS CB, jsonb_to_recordset( CB.spoc_detail::jsonb)
-												AS x(\"spoc_name\" text, \"spoc_phone\" text, \"spoc_email\" text, \"spoc_designation\" text)
-												WHERE CB.customer_id={$company_id}
-												GROUP BY CB.customer_id, x.spoc_phone, x.spoc_name, x.spoc_email, x.spoc_designation 
-												HAVING(count(x.spoc_phone)) =1
-												)  
-												SELECT * FROM UNSP ");
+			$customer_det_rec=$this->db->query("WITH RES AS
+													(
+														WITH SPOC AS
+														(
+															SELECT 		cb.customer_id,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+																		COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+																		COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation            
+															FROM 		neo_customer.customer_branches cb
+															INNER JOIN 	neo_customer.companies c ON c.id = cb.customer_id
+															CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+															WHERE 		cb.customer_id={$company_id}
+														)
+														SELECT 	 SPOC.customer_id,
+																SPOC.spoc_name,
+																SPOC.spoc_email,
+																SPOC.spoc_phone,
+																SPOC.spoc_designation,
+																ROW_NUMBER() OVER(PARTITION BY SPOC.customer_id,SPOC.spoc_phone ORDER BY SPOC.customer_id,SPOC.spoc_phone) AS counter
+														FROM	 SPOC
+														ORDER BY 1,4
+													)
+													SELECT 	 RES.customer_id,
+																RES.spoc_name,
+																RES.spoc_email,
+																RES.spoc_phone,
+																RES.spoc_designation
+													FROM	 RES
+													WHERE	 RES.counter=1
+													ORDER BY 4");
 
 		if($employer_det_rec->num_rows())
 		{

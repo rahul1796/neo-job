@@ -48,7 +48,8 @@ function selectspocmodal(company_id)
 
 function btnSelect_OnClick()
 {   
-    let x =  $('#spoc-field-container').children().length;
+    //let x =  $('#spoc-field-container').children().length;
+    var x =1;
     var varSpocArray = GetSpocArray(); 
     for(let i=0;i<varSpocArray.length;i++)
      {
