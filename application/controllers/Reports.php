@@ -108,7 +108,7 @@ class Reports extends MY_Controller {
   }
 
   private function placementReportSearchOptions($data) {
-    $data['customer_options'] = $this->report->allCustomers();
+    $data['customer_options'] = $this->report->allCompanies();
     $data['gender_options'] = $this->report->getGenders();
     $data['candidate_statuses_options'] = $this->report->getCandidateStatuses();
     $data['employment_type_options'] = $this->report->getEmploymentTypes();
@@ -120,7 +120,7 @@ class Reports extends MY_Controller {
   }
 
   public function jobDetailReportSearchOptions($data) {
-    $data['customer_options'] = $this->report->allCustomers();
+    $data['customer_options'] = $this->report->allCompanies();
     $data['qp_options'] = $this->report->getQualificationPacks();
     $data['industry_options'] = $this->report->getIndustries();
     $data['business_vertical_options'] = $this->report->getBusinessVerticals();

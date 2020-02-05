@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
                                 <div class="card-body">
@@ -74,7 +74,7 @@
                                             </div>
                                         </div>
                                 </div>
-                            </div> 
+                            </div>
 
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
@@ -118,7 +118,7 @@
                                     <select class="form-control select2-neo" name="customer_id" id="customer_id">
                                         <option value="">Select Client</option>
                                         <?php foreach($customer_options as $customer):?>
-                                        <option value="<?php echo $customer->id; ?>" ><?php echo $customer->customer_name; ?></option>
+                                        <option value="<?php echo $customer->id; ?>" ><?php echo $customer->company_name; ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

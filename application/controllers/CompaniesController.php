@@ -14,8 +14,9 @@ class CompaniesController extends MY_Controller {
     $this->load->model('Sale', 'sale');
   }
 
-  public function index() {   
-    $data['company_name_options'] = $this->sale->getCompanyNames();  
+  public function index() {
+    $this->authorize(company_view_roles());
+    $data['company_name_options'] = $this->sale->getCompanyNames();
     $data['lead_source_options'] = $this->sale->getLeadSources();
     $data['state_options'] = $this->sale->getStates();
     $data['spoc_name_list_options'] = $this->sale->getCompanySpocName();
@@ -24,16 +25,18 @@ class CompaniesController extends MY_Controller {
     $data['industries_list_options'] = $this->sale->getIndustries();
     $data['functional_area_list_options'] = $this->sale->getFunctionalAreas();
     $this->loadFormViews('index', $data);
-   
+
   }
 
   public function create() {
+    $this->authorize(company_add_roles());
     $data = $this->setData();
     $data['data']['action'] = 'create';
     $this->loadFormViews('create', $data);
   }
 
   public function store() {
+    $this->authorize(company_add_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->company->save($data)) {
@@ -51,12 +54,14 @@ class CompaniesController extends MY_Controller {
   }
 
   public function edit($company_id) {
+    $this->authorize(company_update_roles());
     $data = $this->setData($company_id);
     $data['id'] = $company_id;
     $this->loadFormViews('edit', $data);
   }
 
   public function update($company_id) {
+    $this->authorize(company_update_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->company->update($company_id, $data)) {
@@ -200,7 +205,7 @@ class CompaniesController extends MY_Controller {
 		$opportunity_results=$this->company->getOpportunityData($company_id);
 		echo json_encode($opportunity_results);
   }
-  
+
   public function getContractDetail($company_id=0)
 	{
 		//$this->pramaan->_check_module_task_auth(false);

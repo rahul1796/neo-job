@@ -16,6 +16,7 @@ class OpportunitiesController extends MY_Controller {
   }
 
   public function index() {
+    $this->authorize(lead_view_roles());
     $data['lead_status_options'] = $this->opportunity->getLeadStatuses();
     $data['company_name_options'] = $this->sale->getCompanyNames();
     $data['industries_list_options'] = $this->sale->getIndustries();
@@ -27,6 +28,7 @@ class OpportunitiesController extends MY_Controller {
   }
 
   public function create($customer_id=0) {
+    $this->authorize(lead_add_roles());
     $data = $this->setData();
     $data['data']['action'] = 'create';
     $data['data']['fields']['customer_id'] = $customer_id;
@@ -35,6 +37,7 @@ class OpportunitiesController extends MY_Controller {
   }
 
   public function store($customer_id) {
+    $this->authorize(lead_add_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->opportunity->save($data)) {
@@ -54,6 +57,7 @@ class OpportunitiesController extends MY_Controller {
   }
 
   public function edit($opportunity_id) {
+    $this->authorize(lead_update_roles());
     $data = $this->setData($opportunity_id);
     $data['id'] = $opportunity_id;
     $data['data']['company'] = $this->company->find($data['data']['fields']['company_id']);
@@ -61,6 +65,7 @@ class OpportunitiesController extends MY_Controller {
   }
 
   public function update($opportunity_id) {
+    $this->authorize(lead_update_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->opportunity->update($opportunity_id, $data)) {

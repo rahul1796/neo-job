@@ -12,6 +12,19 @@ function calender_add_event_roles() {
   return [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,18,19];
 }
 
+function company_add_roles() {
+  return [0,1,2,3,4,5,7,8,14,18,19];
+}
+
+function company_update_roles() {
+  return [0,1,2,3,4,5,7,8,14,18,19];
+}
+
+function company_view_roles() {
+  return [0,1,2,3,4,5,7,14,18,19];
+}
+
+//opportunity roles
 function lead_add_roles() {
   return [0,1,2,3,4,5,7,8,14,18,19];
 }
