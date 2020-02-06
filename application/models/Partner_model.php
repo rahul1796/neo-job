@@ -2151,7 +2151,7 @@ class Partner_model extends CI_Model
 	}
 
 	public function getQualificationPack() {
-		$query = $this->db->select("DISTINCT(qualification_pack)")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
+		$query = $this->db->select("DISTINCT(qualification_pack)")->where("qualification_pack<>''")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
 		return $query->result();
 		}
 
