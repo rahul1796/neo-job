@@ -65,9 +65,9 @@ class CompaniesController extends MY_Controller {
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->company->update($company_id, $data)) {
-        $this->msg = 'Lead updated successfully';
+        $this->msg = 'Company updated successfully';
       } else {
-        $this->msg = 'Error Lead candidate, please try again after sometime';
+        $this->msg = 'Error Company updating, please try again after sometime';
       }
       $this->session->set_flashdata('status', $this->msg);
       redirect($this->redirectUrl, 'refresh');
