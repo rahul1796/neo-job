@@ -87,7 +87,7 @@
 ?>
 
 
-<div class="form-group row">
+<div class="form-group row" id="div1">
   <div class="col-md-3">
     <label for="spoc_name" class="label">Branch Spoc Name:</label>
     <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
@@ -111,7 +111,14 @@
     <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
+  <div class="col-xs-1" style="float: right; margin-top: 29px;">
+          <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
+  </div>
    </div>
+
+   
+   
+
 
 <!--<h5>Add Additional Spoc Details</h5>
 <hr>-->
@@ -230,7 +237,7 @@
 </div>
 
 
-<button type="submit" class="btn btn-primary">Submit</button>
+<button type="submit" class="btn btn-primary" id="form-submit">Submit</button>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/datatables.min.css'?>">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css'?>">
 <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" type="text/javascript"></script>
@@ -393,6 +400,20 @@ var maxField = 100; //Input fields increment limitation
         let y = $(this).attr('data-value');
         $('#spoc_'+y).remove();
       //  x--; //Decrement field counter
+    });
+
+    $('#form-submit').click(function(){
+    if($('input[name*=spoc_phone').length == '0'){
+      swal("You have to enter/select atleast one Spoc details!");
+     return false;
+    //  alert('Input can not be left blank');
+   }
+});
+
+    $(document).ready(function(){
+      $("#remove").click(function(){
+        $("#div1").remove();
+      });
     });
 
     
