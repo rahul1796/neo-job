@@ -127,9 +127,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="bv_id" class="">Select Business Vertical:</label>
+                                    <label for="bv_id" class="">Select Product:</label>
                                     <select class="form-control select2-neo" name="bv_id" id="bv_id">
-                                        <option value="">Select Business Vertical</option>
+                                        <option value="">Select Product</option>
                                         <?php foreach($business_vertical_options as $option):?>
                                         <option value="<?php echo $option->id; ?>" ><?php echo $option->name; ?></option>
                                         <?php endforeach; ?>
