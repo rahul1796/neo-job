@@ -146,7 +146,7 @@ class JobsController extends MY_Controller {
     //$this->form_validation->set_rules('job_location', 'Job Location', 'required');
     $this->form_validation->set_rules('client_manager_name', 'Client Manager', 'required');
     $this->form_validation->set_rules('applicable_consulting_fee', 'Fees', 'is_natural');
-    $this->form_validation->set_rules('business_vertical_id', 'Business Vertical', 'required|is_natural');
+    $this->form_validation->set_rules('business_vertical_id', 'Product', 'required|is_natural');
 //    $this->form_validation->set_rules('practice', 'Practice', '');
     $this->form_validation->set_rules('office_location', 'Office Location', 'required');
     $this->form_validation->set_rules('functional_area_id', 'Functional Area', 'is_natural');

@@ -97,7 +97,7 @@
     </div>-->
 
     <div class="col-md-6">
-        <label for="business_vertical_id"  class="label">Business Vertical:</label>
+        <label for="business_vertical_id"  class="label">Product:</label>
         <select class="form-control" disabled  name="business_vertical_id_select" onmousedown="function(){return false;}"  id="business_vertical_id_select">
             <option value="">Select Business Vertical</option>
             <?php foreach($business_vertical_options as $bv):?>
