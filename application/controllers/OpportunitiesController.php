@@ -179,10 +179,10 @@ class OpportunitiesController extends MY_Controller {
 
       //Multiple Spoc Validation
       foreach($this->input->post('spoc_detail') as $i=>$spoc) {
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_name]", 'Spoc Name', '');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_email]", 'Spoc Email', 'valid_email|callback_check_duplicate_fields');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_phone]", 'Spoc Phone', 'is_natural_no_zero|exact_length[10]|callback_check_duplicate_fields');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_designation]", 'Spoc Designation', 'max_length[30]');
+        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_name]", 'Spoc Name', 'required');
+        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_email]", 'Spoc Email', 'required|valid_email|callback_check_duplicate_fields');
+        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_phone]", 'Spoc Phone', 'required|is_natural_no_zero|exact_length[10]|callback_check_duplicate_fields');
+        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_designation]", 'Spoc Designation', 'required|max_length[30]');
       }
       return $this->form_validation->run();
     }
