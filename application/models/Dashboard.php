@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends MY_Model
 {
+
+  private $assignedJobs = [];
   //candidate job statuses
   public function hierarchy() {
       return $this->session->userdata['user_hierarchy'];
@@ -11,7 +13,8 @@ class Dashboard extends MY_Model
   public function assignedJobs() {
     $job_ids =  $this->db->select('job_id')->where_in('user_id', $this->hierarchy())
     ->get('neo_job.jobs_users')->result_array();
-    return array_column($job_ids, 'job_id');
+    $this->assignedJobs = array_column($job_ids, 'job_id');
+    return $this->assignedJobs;
   }
 
   public function assignedLeads() {
@@ -149,19 +152,19 @@ class Dashboard extends MY_Model
     //jobs status counts
 
     public function getDraftedJobsCount() {
-      return $this->IND_money_format($this->db->where_in('created_by', $this->hierarchy())->where_in('job_status_id', [1])->from('neo_job.jobs')->count_all_results());
+      return $this->IND_money_format($this->db->where_in('job_status_id', [1])->group_start()->where_in('created_by', $this->hierarchy())->or_where_in('id', $this->assignedJobs)->group_end()->from('neo_job.jobs')->count_all_results());
     }
 
     public function getOpenJobsCount() {
-      return $this->IND_money_format($this->db->where_in('created_by', $this->hierarchy())->where_in('job_status_id', [2])->from('neo_job.jobs')->count_all_results());
+      return $this->IND_money_format($this->db->where_in('job_status_id', [2])->group_start()->where_in('created_by', $this->hierarchy())->or_where_in('id', $this->assignedJobs)->group_end()->from('neo_job.jobs')->count_all_results());
     }
 
     public function getClosedJobsCount() {
-      return $this->IND_money_format($this->db->where_in('created_by', $this->hierarchy())->where_in('job_status_id', [3])->from('neo_job.jobs')->count_all_results());
+      return $this->IND_money_format($this->db->where_in('job_status_id', [3])->group_start()->where_in('created_by', $this->hierarchy())->or_where_in('id', $this->assignedJobs)->group_end()->from('neo_job.jobs')->count_all_results());
     }
 
     public function getOnHoldJobsCount() {
-      return $this->IND_money_format($this->db->where_in('created_by', $this->hierarchy())->where_in('job_status_id', [4])->from('neo_job.jobs')->count_all_results());
+      return $this->IND_money_format($this->db->where_in('job_status_id', [4])->group_start()->where_in('created_by', $this->hierarchy())->or_where_in('id', $this->assignedJobs)->group_end()->from('neo_job.jobs')->count_all_results());
     }
 
     //customer status counts
