@@ -622,7 +622,7 @@
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('').attr('value', 0).prop('selected', true));
      response.forEach(function(spoc) {
-        $('#client_manager_name').append($('<option>').text(spoc.spoc_name).attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
+        $('#client_manager_name').append($('<option>').text(spoc.spoc_name+' ('+spoc.spoc_phone+')').attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
      });
      $('#client_manager_name').val(client_manager_name).change();
    });
