@@ -99,27 +99,6 @@
 							</div>
 						</div>
 
-						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
-							<div class="my-1 text-xs-center">
-								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
-									<span class="warning" style="font-weight: bolder; font-size: 16px;">Candidates</span>
-									<h3 class="font-large-2 text-bold-200" style="margin-left: -15px;"><a href="<?= (in_array($user_group_id, candidate_view_roles())) ? base_url('/partner/candidates') : '#'; ?>"> <?php echo $total_candidates; ?></a></h3>
-								</div>
-								<div class="card-body">
-									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
-									<ul class="list-inline clearfix mt-1 mb-0">
-										<li class="border-right-grey border-right-lighten-2 pr-2">
-											<h2 class="grey darken-1 text-bold-400">85%</h2>
-											<span class="success">Completed</span>
-										</li>
-										<li class="pl-2">
-											<h2 class="grey darken-1 text-bold-400">15%</h2>
-											<span class="danger">Remaining</span>
-										</li>
-									</ul> -->
-								</div>
-							</div>
-						</div>
 
                         <div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
@@ -140,6 +119,28 @@
 										</li>
 									</ul>
 								</div> -->
+							</div>
+						</div>
+
+						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+							<div class="my-1 text-xs-center">
+								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
+									<span class="warning" style="font-weight: bolder; font-size: 16px;">Candidates</span>
+									<h3 class="font-large-2 text-bold-200" style="margin-left: -15px;"><a href="<?= (in_array($user_group_id, candidate_view_roles())) ? base_url('/partner/candidates') : '#'; ?>"> <?php echo $total_candidates; ?></a></h3>
+								</div>
+								<div class="card-body">
+									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
+									<ul class="list-inline clearfix mt-1 mb-0">
+										<li class="border-right-grey border-right-lighten-2 pr-2">
+											<h2 class="grey darken-1 text-bold-400">85%</h2>
+											<span class="success">Completed</span>
+										</li>
+										<li class="pl-2">
+											<h2 class="grey darken-1 text-bold-400">15%</h2>
+											<span class="danger">Remaining</span>
+										</li>
+									</ul> -->
+								</div>
 							</div>
 						</div>
 

@@ -122,7 +122,9 @@ class CommercialVerificationController extends MY_Controller {
             $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[2]}]", 'Customer', 'required|is_natural');
             $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[3]}]", 'Fee Type', 'required');
             if($this->input->post("commercial[{$i}][{$this->commercial_sub_fields[3]}]")=='0') {
-                $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[4]}]", 'Remark', 'required');
+                if($this->input->post("commercial[{$i}][{$this->commercial_sub_fields[1]}]")!=0) {
+                    $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[4]}]", 'Remark', 'required');
+                }
             } else {
               $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[5]}]", 'Remark', '');
             }
