@@ -45,6 +45,21 @@ class Opportunity extends MY_Model
       return $query->result();
     }
 
+    public function getSpocsByJobID($id) {
+      $query = $this->db->query("  SELECT 	DISTINCT	cb.customer_id,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+                                            COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+                                            COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation                    
+                                      FROM 		neo_customer.customer_branches AS CB 
+                                      LEFT JOIN   neo_job.jobs AS j ON j.opportunity_id=cb.opportunity_id
+                                      CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+                                      WHERE 		(cb.is_main_branch AND cb.customer_id IN (SELECT B.customer_id FROM neo_job.jobs AS B WHERE B.id=409))
+                                      OR          (cb.is_main_branch AND cb.opportunity_id=409)
+                                      ORDER BY	2,4");
+      return $query->result();
+    }
+
     // public function getSpocsByOpportunityID($id) {
     //   $spocs = $this->db->select('spoc_detail')->where('opportunity_id', $id)->get('neo_customer.customer_branches')->row_array();
     //   $spoc_array = json_decode($spocs['spoc_detail']);
