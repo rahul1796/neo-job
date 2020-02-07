@@ -39,6 +39,7 @@ class CandidatesController extends MY_Controller {
     $this->load->model('Employment', 'employment');
     $this->load->model('Education', 'education');
     $this->load->model('Document', 'document');
+    $this->load->model('Opportunity', 'opportunity');
     //$this->user_logged_in = $this->session->userdata['usr_authdet'];
   }
 
@@ -284,6 +285,7 @@ class CandidatesController extends MY_Controller {
   $data['data']['search_data'] = $search_data;
 
   $data['data']['job'] = $this->job->findEmployer($id);
+  $data['data']['employer_phone'] = $this->opportunity->getSpocsByJobID($id);
   $url = base_url('CandidatesController/appliedCandidates/'.$id);
   $data['data']['education_options'] = $this->candidate->getEducations();
   $data['data']['employment_type']=$this->candidate->getEmploymentTypes();
