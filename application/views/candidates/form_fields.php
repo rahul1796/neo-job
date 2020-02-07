@@ -187,7 +187,7 @@
       <select class="form-control" name="country_id" id="country_id">
           <option value="0">Select Country</option>
           <?php foreach($countries_options as $country_option): ?>
-              <option value="<?php echo $country_option->id; ?>" <?php echo ($country_option->id==$fields['country_id']) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
+              <option value="<?php echo $country_option->id; ?>" <?php echo (intval($country_option->id)==99) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
           <?php endforeach; ?>
       </select>
       <?php echo form_error('country_id'); ?>
@@ -278,7 +278,7 @@ $(document).ready(function() {
 </script>
 <script type="text/javascript">
 
-  var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 0 ?>;
+  var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 99 ?>;
   var state_id = <?= (!empty($fields['state_id'])) ? $fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
 
@@ -361,7 +361,7 @@ $(document).ready(function() {
      alert( "Select Valid Value for the Country" );
    });
  }
- 
+
   $('#date_of_birth').on('changeDate', function(ev){
     $(this).datepicker('hide');
 });
