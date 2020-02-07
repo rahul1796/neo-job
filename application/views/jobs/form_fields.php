@@ -99,7 +99,7 @@
     <div class="col-md-6">
         <label for="business_vertical_id"  class="label">Product:</label>
         <select class="form-control" disabled  name="business_vertical_id_select" onmousedown="function(){return false;}"  id="business_vertical_id_select">
-            <option value="">Select Product</option>
+            <option value=""></option>
             <?php foreach($business_vertical_options as $bv):?>
                 <option value="<?php echo $bv->id; ?>" <?php echo ($bv->id==$fields['business_vertical_id']) ? 'selected' : '' ?> ><?php echo $bv->name; ?></option>
             <?php endforeach; ?>
