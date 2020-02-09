@@ -80,44 +80,78 @@
   <input type="hidden" name="company_id" value="<?= ($fields['company_id']=='')? $company['id'] : $fields['company_id'] ?>">
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
+<!-- 
+<?php
+  //$input_count = count($location_fields['spoc_detail']);
+  //$readonlytext = $input_count>0 ? "readonly" : "";
+?>
+-->
 
+<div class="form-group row">
+  <div class="col-md-3">
+    <label for="spoc_name" class="label">Opportunity Spoc Name:</label>
+    <!--<input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
+    <?php //echo form_error("spoc_detail[0][spoc_name]"); ?>-->
+  </div>
+
+  <div class="col-md-3">
+    <label for="spoc_email" class="label">Opportunity Spoc Email:</label>
+    <!--<input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
+    <?php ///echo form_error("spoc_detail[0][spoc_email]"); ?>-->
+  </div>
+
+  <div class="col-md-2">
+    <label for="spoc_phone" class="label">Opportunity Spoc Phone:</label>
+   <!-- <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
+    <?php //echo form_error("spoc_detail[0][spoc_phone]"); ?>-->
+  </div>
+
+  <div class="col-md-3">
+    <label for="spoc_designation" class="label">Opportunity Spoc Designation:</label>
+   <!-- <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
+    <?php //echo form_error("spoc_detail[0][spoc_designation]"); ?>-->
+  </div>
+  <!--<div class="col-xs-1" style="float: right; margin-top: 29px;">
+          <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
+  </div>-->
+   </div>
+
+ 
 <?php
   $input_count = count($location_fields['spoc_detail']);
   $readonlytext = $input_count>0 ? "readonly" : "";
 ?>
 
 
-<div class="form-group row" id="div1">
+<div class="form-group row"  id="div1">
   <div class="col-md-3">
-    <label for="spoc_name" class="label">Branch Spoc Name:</label>
+    
     <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
   </div>
 
   <div class="col-md-3">
-    <label for="spoc_email" class="label">Branch Spoc Email:</label>
+   
     <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
   </div>
 
   <div class="col-md-2">
-    <label for="spoc_phone" class="label">Branch Spoc Phone:</label>
-    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
-    <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
+    
+   <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
+    <?phpecho form_error("spoc_detail[0][spoc_phone]"); ?>
   </div>
 
   <div class="col-md-3">
-    <label for="spoc_designation" class="label">Branch Spoc Designation:</label>
+   
     <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
-  <div class="col-xs-1" style="float: right; margin-top: 29px;">
+  <div class="col-xs-1" style="float: right; >
           <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
   </div>
    </div>
-
-
-
+ 
 
 
 <!--<h5>Add Additional Spoc Details</h5>
@@ -348,7 +382,7 @@ $('#company_name').bind('keypress', company_name);
 
 <script>
 var maxField = 100; //Input fields increment limitation
-    var x = <?= (empty($location_fields['spoc_detail'])) ? 1 : count($location_fields['spoc_detail']); ?> || 1; //Initial field counter is 1
+    var x = <?= (empty($location_fields['spoc_detail'])) ? 2 : count($location_fields['spoc_detail']); ?> || 2; //Initial field counter is 1
     var addButton = $('.add-button'); //Add button selector
     var addDiv = $('.add-div'); //Add button selector
     var wrapper1 = $('#spoc-field-container'); //Input field wrapper
@@ -416,6 +450,11 @@ var maxField = 100; //Input fields increment limitation
       });
     });
 
+    function removediv() {
+      $("#div1").remove();
+}
+
+    
 
 
 </script>
