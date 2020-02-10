@@ -29,7 +29,7 @@ function selectspocmodal(company_id)
                     let id="checkbox_"+slno;
                     var varCheckBox = '<input id='+id+ ' class="checkevent" type="checkbox" name="spoc">';
                     var varDuplicateStatus = false;
-                    for(var i=0; i<varInputCount; i++)
+                    for(var i=1; i<varInputCount; i++)
                     {
                         if (b.spoc_phone == $('input[name="spoc_detail['+i+'][spoc_phone]"]').val())
                         {
@@ -152,7 +152,7 @@ function GetSpocArray()
             </div>
            
             <div class="modal-footer">
-                 <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick()" data-dismiss="modal">Select</button>
+                 <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick();removediv();" data-dismiss="modal">Select</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" >Close</button>
             </div>
         </div>
