@@ -569,8 +569,8 @@ $(document).ready(function () {
                   var company=data.company_detail;
                   var slno=1;
                   opportunity_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
-                  opportunity_list_html += '<button type="button" class="btn btn-success" name="button" onclick="export_opportunity_pdf('+company_id+');" style="float: right;    margin-top: -40px;" title="export pdf"><i class="fa fa-file-pdf-o"></i></button>';
-                  opportunity_list_html += '<button type="button" class="btn btn-primary" name="button" onclick="export_opportunity_csv('+company_id+');" style="float: right;     margin-right: 55px;   margin-top: -40px;" title="export csv"><i class="fa fa-file-excel-o"></i></button>';
+                  opportunity_list_html += '<button type="button" class="btn btn-success" name="button" onclick="export_opportunity_pdf('+company_id+');" style="float: right;    margin-top: -40px;" title="export pdf"><i class="fa fa-file-pdf-o"> PDF</i></button>';
+                  opportunity_list_html += '<button type="button" class="btn btn-primary" name="button" onclick="export_opportunity_csv('+company_id+');" style="float: right;     margin-right: 85px;   margin-top: -40px;" title="export csv"><i class="fa fa-file-excel-o"> CSV</i></button>';
                   opportunity_list_html += '<div class="row">';
                   opportunity_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
                   opportunity_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
@@ -604,7 +604,7 @@ $(document).ready(function () {
 
   function export_opportunity_pdf(company_id)
   {
-    window.location=base_url+'companiescontroller/save_download/'+company_id;   
+    window.location=base_url+'pdf/index/'+company_id;   
   }
 
 
@@ -625,7 +625,8 @@ $(document).ready(function () {
                   var company=data.company_detail;
                   var slno=1;
                   contract_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
-                  
+                  contract_list_html += '<button type="button" class="btn btn-success" name="button" onclick="export_contract_pdf('+company_id+');" style="float: right;    margin-top: -40px;" title="export pdf"><i class="fa fa-file-pdf-o"> PDF</i></button>';
+                  contract_list_html += '<button type="button" class="btn btn-primary" name="button" onclick="export_contract_csv('+company_id+');" style="float: right;     margin-right: 85px;   margin-top: -40px;" title="export csv"><i class="fa fa-file-excel-o"> CSV</i></button>';
                   contract_list_html += '<div class="row">';
                   contract_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
                   contract_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
@@ -650,6 +651,16 @@ $(document).ready(function () {
           }
       });
       $('#modal_view_contract').modal('show'); // show bootstrap modal when complete loaded
+  }
+
+  function export_contract_csv(company_id)
+  {
+    window.location=base_url+'companiescontroller/exportContractDataCsv/'+company_id;   
+  }
+
+  function export_contract_pdf(company_id)
+  {
+    window.location=base_url+'pdf/contract/'+company_id;   
   }
 </script>
 <div id="modal_view_opportunity" class="modal fade bs-example-modal-xl" role="dialog">
