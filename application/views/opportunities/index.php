@@ -551,5 +551,5 @@ $(document).ready(function () {
 
 <?php $this->load->view('opportunities/lead_history_modal'); ?>
 <?php $this->load->view('opportunities/spoc_list_modal'); ?>
-<?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options]); ?>
+<?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options, 'business_vertical_options'=>$business_vertical_options]); ?>
 <?php $this->load->view('opportunities/placement_officer_select_modal', $data); ?>
