@@ -25,8 +25,13 @@
    <input type="text" class="form-control" id="company_name" placeholder="" readonly value="<?= $company['company_name']; ?>">
  </div>
  <div class="col-md-6">
-  <label for="managed_by" class="">Managed By:</label>
-  <input type="text" class="form-control" id="managed_by" name="managed_by" placeholder="" value="<?= $fields['managed_by']; ?>">
+   <label for="placement_officers" class="label">Managed By:</label>
+   <select class="neo-select2 form-control" id="managed_by" name="managed_by">
+     <option value=''>Choose Managed By</option>
+     <?php foreach($managed_by_options as $option): ?>
+         <option value="<?php echo $option->user_name; ?>" <?= (trim(strtolower($fields['managed_by']))==trim(strtolower($option->user_name))) ? 'selected' : '' ?> ><?php echo $option->user_name.' - '.$option->user_role; ?></option>
+     <?php endforeach; ?>
+ </select>
 </div>
 </div>
 
@@ -80,7 +85,7 @@
   <input type="hidden" name="company_id" value="<?= ($fields['company_id']=='')? $company['id'] : $fields['company_id'] ?>">
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
-<!-- 
+<!--
 <?php
   //$input_count = count($location_fields['spoc_detail']);
   //$readonlytext = $input_count>0 ? "readonly" : "";
@@ -116,7 +121,7 @@
   </div>-->
    </div>
 
- 
+
 <?php
   $input_count = count($location_fields['spoc_detail']);
   $readonlytext = $input_count>0 ? "readonly" : "";
@@ -125,25 +130,25 @@
 
 <div class="form-group row"  id="div1">
   <div class="col-md-3">
-    
+
     <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
   </div>
 
   <div class="col-md-3">
-   
+
     <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
   </div>
 
   <div class="col-md-2">
-    
+
    <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
     <?phpecho form_error("spoc_detail[0][spoc_phone]"); ?>
   </div>
 
   <div class="col-md-3">
-   
+
     <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
@@ -151,7 +156,7 @@
           <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
   </div>
    </div>
- 
+
 
 
 <!--<h5>Add Additional Spoc Details</h5>
@@ -278,6 +283,8 @@
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/datatables.min.js'?>"></script>
 <script src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js" type="text/javascript"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
 <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
@@ -325,6 +332,11 @@ $(document).ready(function() {
         getDistricts(state_id);
      }
    });
+
+   $('.neo-select2').select2({
+         placeholder: 'Select an option',
+         allowClear: true
+     });
 
  });
 
@@ -377,6 +389,7 @@ $('#company_name').bind('keypress', company_name);
    request.fail(function(jqXHR, textStatus) {
      alert( "Select Valid Value for the Country" );
    });
+
  }
 </script>
 
@@ -454,7 +467,7 @@ var maxField = 100; //Input fields increment limitation
       $("#div1").remove();
 }
 
-    
+
 
 
 </script>

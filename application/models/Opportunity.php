@@ -31,6 +31,16 @@ class Opportunity extends MY_Model
       return $query->get()->result();
     }
 
+    public function getCurrentHierarchy($user_id, $manager_role) {
+      $query = $this->db->query("SELECT * FROM neo_user.fn_get_current_coo_reportees(?,?) WHERE user_role_id IN ?",
+                [
+                  $user_id,
+                  $manager_role,
+                  [0,1,2,3,4,5,7,8,14,18,19],
+                ]);
+      return $query->result();
+    }
+
     public function getSpocsByOpportunityID($id) {
       $query = $this->db->query("SELECT 	DISTINCT	cb.customer_id,
                                             initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
