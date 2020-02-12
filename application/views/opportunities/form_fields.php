@@ -123,35 +123,35 @@
   $readonlytext = $input_count>0 ? "readonly" : "";
 ?>
 
-<!-- 
+ 
 <div class="form-group row"  id="div1">
   <div class="col-md-3">
     
-    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>"  >
-    <?php //echo form_error("spoc_detail[0][spoc_name]"); ?>
+    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" <?php echo $readonlytext?>>
+    <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
   </div>
 
   <div class="col-md-3">
    
-    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
-    <?php //echo form_error("spoc_detail[0][spoc_email]"); ?>
+    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" <?php echo $readonlytext?>>
+    <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
   </div>
 
   <div class="col-md-2">
     
-   <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
-    <?php //echo form_error("spoc_detail[0][spoc_phone]"); ?>
+   <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" <?php echo $readonlytext?>>
+    <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
   </div>
 
   <div class="col-md-3">
    
-    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
-    <?php //echo form_error("spoc_detail[0][spoc_designation]"); ?>
+    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" <?php echo $readonlytext?>>
+    <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
   <div class="col-xs-1" style="float: right; >
           <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
   </div>
-   </div> -->
+   </div> 
   
 
 
@@ -213,12 +213,12 @@
 
 
 
-<input type="checkbox" class="same_as_main" name="same_as" value="0" id="same_as_main"><label> Same As Company</label>
-
+<input type="checkbox" class="same_as_main" name="same_as_main" <?php echo ($location_fields['same_as_main']==TRUE) ? 'checked' : '' ?> id="same_as_main"><label> Same As Company</label>
+<input type="checkbox" class="same_as_main" id="other_main" name="other_main" checked value="FALSE" hidden>
 <div class="form-group row">
    <div class="col-md-12">
      <label for="address" class="label">Branch Address:</label>
-     <input type="text" class="form-control" id="address" placeholder="Enter company address" name="address" value="<?php echo $location_fields['address'] ?? ''; ?>">
+     <input type="text" class="form-control" id="address" placeholder="Enter company address" name="address" value="<?php echo $location_fields['address'] ?? ''; ?>" >
      <?php echo form_error('address'); ?>
    </div>
 </div>
@@ -227,31 +227,31 @@
 <div class="form-group row">
   <div class="col-md-4">
       <label for="country_id" class="label">Country:</label>
-      <select class="form-control" name="country_id" id="country_id">
+      <select class="form-control" name="country_id" id="country_id" >
           <option value="0">Select Country</option>
           <?php foreach($countries_options as $country_option): ?>
               <option value="<?php echo $country_option->id; ?>" <?php echo (intval($country_option->id)==99) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
           <?php endforeach; ?>
       </select>
-      <input type="hidden" id="company_country_id" name="country_id" value="">
+      <input type="hidden" id="company_country_id" name="other_country_id" value="">
       <?php echo form_error('country_id'); ?>
   </div>
 
   <div class="col-md-4">
       <label for="state_id" class="label">State:</label>
-      <select class="form-control" name="state_id" id="state_id">
+      <select class="form-control" name="state_id" id="state_id" >
           <option value="0">Select State</option>
       </select>
-      <input type="hidden" id="company_state_id" name="state_id" value="">
+      <input type="hidden" id="company_state_id" name="other_state_id" value="">
       <?php echo form_error('state_id'); ?>
   </div>
 
   <div class="col-md-4">
       <label for="district_id" class="label">District/City:</label>
-      <select class="form-control" name="district_id" id="district_id">
+      <select class="form-control" name="district_id" id="district_id" >
           <option value="0">Select District/City</option>
       </select>
-      <input type="hidden" id="company_district_id" name="district_id" value="">
+      <input type="hidden" id="company_district_id" name="other_district_id" value="">
       <?php echo form_error('district_id'); ?>
   </div>
 
@@ -262,13 +262,13 @@
 
     <div class="col-md-4">
    <label for="city" class="">Town / Village:</label>
-   <input type="text" class="form-control" id="city" placeholder="Enter City" name="city" value="<?php echo $location_fields['city']; ?>">
+   <input type="text" class="form-control" id="city" placeholder="Enter City" name="city" value="<?php echo $location_fields['city']; ?>" >
    <?php echo form_error('city'); ?>
  </div>
 
    <div class="col-md-4">
      <label for="landline" class="label">Pincode:</label>
-     <input type="text" class="form-control" id="pincode" placeholder="Enter Pincode" name="pincode" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "6"  value="<?php echo $location_fields['pincode']; ?>">
+     <input type="text" class="form-control" id="pincode" placeholder="Enter Pincode" name="pincode" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "6"  value="<?php echo $location_fields['pincode']; ?>" >
      <?php echo form_error('pincode'); ?>
    </div>
 
@@ -470,7 +470,15 @@ $(".same_as_main").change(function() {
 });
 
 $('.same_as_main').change(function () {
-    if ($(this).is(':checked')) {
+    if ($(this).is(':checked')) { 
+      $('#same_as_main').attr('name', 'same_as_main');
+       $('#other_main').attr('name', 'other_main');  
+       $('#country_id').attr('name', 'other_country');
+       $('#company_country_id').attr('name', 'country_id');
+       $('#state_id').attr('name', 'other_state');
+       $('#company_state_id').attr('name', 'state_id');
+       $('#district_id').attr('name', 'other_district');
+       $('#company_district_id').attr('name', 'district_id');
         $('input[name="address"]').prop('readonly', true).val(''); 
         $('#country_id').prop('disabled', true);
         $('#state_id').prop('disabled', true);
@@ -490,8 +498,7 @@ $('.same_as_main').change(function () {
             $('#country_id').val(data.country_id);
             $('#company_country_id').val(data.country_id);
             $('#state_id').val(data.state_id);
-            getDistricts(data.state_id);
-  
+            getDistricts(data.state_id);  
             $('#district_id').val(data.district_id);
             $('#company_state_id').val(data.state_id);
             //$('#district_id').val(let[0].district_id);
@@ -501,7 +508,15 @@ $('.same_as_main').change(function () {
             
         }
     });
-    } else {
+    } else {    
+      $('#same_as_main').attr('name', 'other_main');
+       $('#other_main').attr('name', 'same_as_main');          
+        $('#country_id').attr('name', 'country_id');
+        $('#company_country_id').attr('name', 'other_country');
+        $('#state_id').attr('name', 'state_id');
+        $('#company_state_id').attr('name', 'other_state');
+        $('#district_id').attr('name', 'district_id');
+        $('#company_district_id').attr('name', 'other_district');
         $('input[name="address"]').prop('readonly', false).val('');
         $('#country_id').prop('disabled', false);
         $('#state_id').prop('disabled', false);
@@ -510,6 +525,12 @@ $('.same_as_main').change(function () {
         $('input[name="pincode"]').prop('readonly', false).val('');
     }
 }); 
+
+
+$("input[type='checkbox']").on('change', function(){
+  $(this).val(this.checked ? "TRUE" : "FALSE");
+});
+
 
 </script>
 <?php $this->load->view('opportunities/selectSpocs'); ?>

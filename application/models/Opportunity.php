@@ -585,7 +585,8 @@ class Opportunity extends MY_Model
                                       cb.district_id,
                                       d.name AS district,
                                       cb.city,
-                                      cb.pincode                                  
+                                      cb.pincode,
+                                      cb.same_as_main                                  
                                   FROM neo_customer.customer_branches AS cb
                                   LEFT JOIN neo_master.states AS s ON s.id=cb.state_id
                                   LEFT JOIN neo_master.country AS c ON c.id=cb.country_id
