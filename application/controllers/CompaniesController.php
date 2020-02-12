@@ -12,6 +12,7 @@ class CompaniesController extends MY_Controller {
     $this->load->model('Company', 'company');
     $this->load->model('Candidate', 'candidate');
     $this->load->model('Sale', 'sale');
+    $this->load->helper('download');
    // $this->load->library('CSVReader');
     //$this->load->library('M_pdf','mpdf');
   }
@@ -214,68 +215,22 @@ class CompaniesController extends MY_Controller {
 		$contract_results=$this->company->getContractData($company_id);
 		echo json_encode($contract_results);
   }
-  
+
   public function exportDataCsv($company_id=0) {
-      $storData = array();
-      $metaData[] = array('company_name' => 'Company Name', 'opportunity_code' => 'Opportunity Code','spoc_name' => 'SPOC Name','spoc_email' => 'SPOC Email','spoc_phone' => 'SPOC Phone','business_vertical' => 'Product','industry' => 'Industry','labournet_entity' => 'Labournet Entity','created_at' => 'Created Date',);       
-      //$this->company->setStatus(1);
-      $opportunity_results=$this->company->getOpportunityList($company_id);      
-      foreach($opportunity_results as $key=>$element) {
-          $storData[] = array(
-              'company_name' => $element['company_name'],
-              'opportunity_code' => $element['opportunity_code'],
-              'spoc_name' => $element['spoc_name'],
-              'spoc_email' => $element['spoc_email'],
-              'spoc_phone' => $element['spoc_phone'],
-              'business_vertical' => $element['business_vertical'],
-              'industry' => $element['industry'],
-              'labournet_entity' => $element['labournet_entity'],
-              'created_at' => $element['created_at'],
-          );
-      }
-      $data = array_merge($metaData,$storData);
-      header("Content-type: application/csv");
-      header("Content-Disposition: attachment; filename=\"Opportunity List".".csv\"");
-      header("Pragma: no-cache");
-      header("Expires: 0");
-      $handle = fopen('php://output', 'w');
-      foreach ($data as $data) {
-          fputcsv($handle, $data);
-      }
-          fclose($handle);
-      exit;
+    $opportunity_results=$this->company->getOpportunityList($company_id);
+    $this->downloadRequest('Opportunity', $opportunity_results);
   }
 
   public function exportContractDataCsv($company_id=0) {
-    $storData = array();
-    $metaData[] = array('company_name' => 'Company Name', 'contract_id' => 'Contract ID','spoc_name' => 'SPOC Name','spoc_email' => 'SPOC Email','spoc_phone' => 'SPOC Phone','business_vertical' => 'Product','industry' => 'Industry','labournet_entity' => 'Labournet Entity','created_at' => 'Created Date',);       
-    //$this->company->setStatus(1);
-    $opportunity_results=$this->company->getContractList($company_id);      
-    foreach($opportunity_results as $key=>$element) {
-        $storData[] = array(
-            'company_name' => $element['company_name'],
-            'contract_id' => $element['contract_id'],
-            'spoc_name' => $element['spoc_name'],
-            'spoc_email' => $element['spoc_email'],
-            'spoc_phone' => $element['spoc_phone'],
-            'business_vertical' => $element['business_vertical'],
-            'industry' => $element['industry'],
-            'labournet_entity' => $element['labournet_entity'],
-            'created_at' => $element['created_at'],
-        );
-    }
-    $data = array_merge($metaData,$storData);
-    header("Content-type: application/csv");
-    header("Content-Disposition: attachment; filename=\"Contract List".".csv\"");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    $handle = fopen('php://output', 'w');
-    foreach ($data as $data) {
-        fputcsv($handle, $data);
-    }
-        fclose($handle);
-    exit;
-}
+    $opportunity_results=$this->company->getContractList($company_id);
+    $this->downloadRequest('Opportunity', $opportunity_results);
+  }
 
+  private function downloadRequest($file_name, $data) {
+    $name = $file_name.'-'.date('d-M-Y').'.csv';
+    force_download($name, $data);
+    exit;
+  }
+  
 
 }
