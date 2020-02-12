@@ -18,6 +18,7 @@ class Company extends MY_Model
       $this->current_timestamp = date('Y-m-d H:i:s');
       $this->load->model('Location', 'location');
       $this->load->database();
+      $this->load->dbutil();
     }
 
     public function find($company_id) {
@@ -477,26 +478,15 @@ class Company extends MY_Model
   }
   
   public function getOpportunityList($company_id=0) {
-    $query = $this->db->query("SELECT o.id,
-                                      c.company_name,
+    $query = $this->db->query("SELECT c.company_name,
                                       o.opportunity_code,
-                                      o.contract_id,
-                                      CD.file_name,
-                                      o.is_paid,
-                                      o.lead_status_id,
                                       ls.name AS lead_status_name,
-                                      o.business_vertical_id,
                                       bv.name AS business_vertical,
-                                      o.industry_id,
                                       i.name AS industry,
-                                      o.labournet_entity_id,
                                       le.name AS labournet_entity,
                                       B.spoc_name,      
                                       B.spoc_email,      
-                                      B.spoc_phone,
-                                      o.created_by,
-                                      o.created_at, 
-                                      o.is_contract                                      
+                                      B.spoc_phone                                  
                                   FROM neo_customer.opportunities AS O
                                   LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
                                   LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
@@ -507,38 +497,27 @@ class Company extends MY_Model
                                   LEFT JOIN
                                         (
                                           SELECT 	CB.opportunity_id,
-                                                  STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                  STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                  STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                                  STRING_AGG(t->>'spoc_name','|') AS spoc_name,
+                                                  STRING_AGG(t->>'spoc_email','|') AS spoc_email,
+                                                  STRING_AGG(t->>'spoc_phone','|') AS spoc_phone
                                           FROM 	neo_customer.customer_branches AS CB
                                           CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
                                           GROUP BY CB.opportunity_id
                                         ) AS B ON 	B.opportunity_id=o.id
                                   WHERE c.id=? AND o.is_contract=FALSE",array($company_id));      
-       return $query->result_array();
+       return $this->dbutil->csv_from_result($query);
   }
 
   public function getContractList($company_id=0) {
-    $query = $this->db->query("SELECT o.id,
-                                      c.company_name,
-                                      o.opportunity_code,
+    $query = $this->db->query("SELECT c.company_name,
                                       o.contract_id,
-                                      CD.file_name,
-                                      o.is_paid,
-                                      o.lead_status_id,
                                       ls.name AS lead_status_name,
-                                      o.business_vertical_id,
                                       bv.name AS business_vertical,
-                                      o.industry_id,
                                       i.name AS industry,
-                                      o.labournet_entity_id,
                                       le.name AS labournet_entity,
                                       B.spoc_name,      
                                       B.spoc_email,      
-                                      B.spoc_phone,
-                                      o.created_by,
-                                      o.created_at, 
-                                      o.is_contract                                      
+                                      B.spoc_phone                                  
                                   FROM neo_customer.opportunities AS O
                                   LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
                                   LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
@@ -549,15 +528,15 @@ class Company extends MY_Model
                                   LEFT JOIN
                                         (
                                           SELECT 	CB.opportunity_id,
-                                                  STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                  STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                  STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                                  STRING_AGG(t->>'spoc_name','|') AS spoc_name,
+                                                  STRING_AGG(t->>'spoc_email','|') AS spoc_email,
+                                                  STRING_AGG(t->>'spoc_phone','|') AS spoc_phone
                                           FROM 	neo_customer.customer_branches AS CB
                                           CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
                                           GROUP BY CB.opportunity_id
                                         ) AS B ON 	B.opportunity_id=o.id
                                   WHERE c.id=? AND o.is_contract",array($company_id));      
-       return $query->result_array();
+       return $this->dbutil->csv_from_result($query);
   }
 
   public function getOpportunityList_pdf_download($company_id=0) {
