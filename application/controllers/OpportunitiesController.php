@@ -210,6 +210,7 @@ class OpportunitiesController extends MY_Controller {
           $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
           $data['potential_number'] = $this->input->post('potential_number');
           $data['business_vertical_id'] = $this->input->post('product_selector');
+          $data['remarks'] = '';
           $data = $this->addFileInfo($data);
           $status = $this->opportunity->updateLeadStatusProposal($data);
         }
