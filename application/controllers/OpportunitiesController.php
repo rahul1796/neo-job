@@ -330,4 +330,13 @@ class OpportunitiesController extends MY_Controller {
           echo json_encode($result);
       }
 
+
+      public function getCompanyAddress($company_id=0)
+      {
+        //$this->pramaan->_check_module_task_auth(false);
+        $address_results=$this->opportunity->getCompanyAddressDetail($company_id);
+        echo json_encode($address_results);
+        exit;
+      }
+      
 }

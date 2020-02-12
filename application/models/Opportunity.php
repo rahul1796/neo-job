@@ -574,4 +574,25 @@ class Opportunity extends MY_Model
   }
 
 
+  public function getCompanyAddressDetail($company_id=0) 
+  {
+    $query = $this->db->query("SELECT cb.customer_id,
+                                      cb.address,
+                                      cb.country_id,
+                                      c.name AS country,
+                                      cb.state_id,
+                                      s.name AS state,
+                                      cb.district_id,
+                                      d.name AS district,
+                                      cb.city,
+                                      cb.pincode                                  
+                                  FROM neo_customer.customer_branches AS cb
+                                  LEFT JOIN neo_master.states AS s ON s.id=cb.state_id
+                                  LEFT JOIN neo_master.country AS c ON c.id=cb.country_id
+                                  LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
+                                  WHERE cb.customer_id =? AND cb.is_main_branch",array($company_id));      
+       return $query->result_array();
+  }
+
+
 }
