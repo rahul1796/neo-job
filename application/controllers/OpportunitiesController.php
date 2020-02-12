@@ -102,6 +102,7 @@ class OpportunitiesController extends MY_Controller {
     $data['user_det'] = $this->session->userdata('usr_authdet');
     $data['data']['fields'] = $this->saleData($this->opportunity->fillable, $id);
     $data['data']['location_fields'] = $this->locationData($this->location->fillable, $id);
+    $data['data']['managed_by_options'] = $this->opportunity->getCurrentHierarchy($this->session->userdata('usr_authdet')['id'], 3);
     $data['data']['lead_status_options'] = $this->opportunity->getLeadStatuses();
     $data['data']['lead_source_options'] = $this->opportunity->getLeadSources();
     $data['data']['industry_options'] = $this->opportunity->getIndustries();
@@ -210,6 +211,7 @@ class OpportunitiesController extends MY_Controller {
           $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
           $data['potential_number'] = $this->input->post('potential_number');
           $data['business_vertical_id'] = $this->input->post('product_selector');
+          $data['remarks'] = '';
           $data = $this->addFileInfo($data);
           $status = $this->opportunity->updateLeadStatusProposal($data);
         }
