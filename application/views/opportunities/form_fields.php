@@ -174,7 +174,7 @@
             <?php //$x++; ?>
             <?php continue;?>
           <?php endif; ?>
-        <div class="form-group row" id="spoc_<?= $x;?>">
+        <div class="form-group row" data-val="<?= $x;?>" id="spoc_<?= $x;?>">
 
                                 <div class="col-xs-3">
                                         <div class="input-group">
@@ -406,48 +406,55 @@ var maxField = 100; //Input fields increment limitation
 
     $(addDiv).click(function()
     { //Once add button is clicked
-      var varInputLength =  $('input[name*=spoc_phone').length;
+      let varInputLength = 1;
+      if($('#spoc-field-container').children('.form-group').length>0) {
+        let parent = $('#spoc-field-container').children('.form-group').last('');
+         varInputLength =  parseInt(parent.attr('data-val'))+1;
+      }
+      
+      // let containerRow=$('#spoc-field-container').children('.form-group row').count();
+      // let containerRow
+      //alert(varInputLength);
       if (varInputLength>=maxField) return;
+    
 
 
-
-
-      for(x=0; x<100; x++)
-      {
+      // for(x=0; x<100; x++)
+      // {
         //var varInp = document.getElementsByName();
-        var varChkInputs = document.getElementsByName('spoc_detail['+x+'][spoc_name]');
-        if (varChkInputs.length < 1)
-        {
-          fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
+        //var varChkInputs = document.getElementsByName('spoc_detail['+(varInputLength-1)+'][spoc_name]');
+        // if (varChkInputs.length < 1)
+        // {
+          fieldSET = '<div class="form-group row" data-val="'+varInputLength+'" id="spoc_'+varInputLength+'">';
 		      fieldSET +=           '<div class="col-xs-3">\
 					        <div class="input-group">\
-					            <input type="text" class="form-control" name="spoc_detail['+x+'][spoc_name]" value="" placeholder="Enter Spoc Name" />\
+					            <input type="text" class="form-control" name="spoc_detail['+varInputLength+'][spoc_name]" value="" placeholder="Enter Spoc Name" />\
 					        </div>\
 					 </div>\
                                          <div class="col-xs-3">\
 					        <div class="input-group">\
-					            <input type="email" class="form-control" name="spoc_detail['+x+'][spoc_email]" value="" placeholder="Enter Spoc Email" />\
+					            <input type="email" class="form-control" name="spoc_detail['+varInputLength+'][spoc_email]" value="" placeholder="Enter Spoc Email" />\
 					        </div>\
 					 </div>\
                                          <div class="col-xs-2">\
 					        <div class="input-group">\
-					            <input type="text" maxlength="10" class="form-control" name="spoc_detail['+x+'][spoc_phone]" value="" placeholder="Enter Spoc Phone" />\
+					            <input type="text" maxlength="10" class="form-control" name="spoc_detail['+varInputLength+'][spoc_phone]" value="" placeholder="Enter Spoc Phone" />\
 					        </div>\
 					 </div>\
            <div class="col-xs-3">\
               <div class="input-group">\
-                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+x+'][spoc_designation]" value="" placeholder="Spoc Designation" />\
+                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+varInputLength+'][spoc_designation]" value="" placeholder="Spoc Designation" />\
               </div>\
             </div>\
             <div class="col-xs-1">\
-                    <span class="input-group-btn"><button class="btn btn-danger remove_div" data-value='+x+' type="button"><i class="fa fa-trash"></i></button></span>\
+                    <span class="input-group-btn"><button class="btn btn-danger remove_div" data-value='+varInputLength+' type="button"><i class="fa fa-trash"></i></button></span>\
                     </div>\
             </div>';
 
             $(wrapper1).append(fieldSET); // Add field html
             return;
-        }
-      }
+        // }
+     // }
     });
 
     $(wrapper1).on('click', '.remove_div', function(e)
