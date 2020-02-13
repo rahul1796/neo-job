@@ -32,6 +32,7 @@
          <option value="<?php echo $option->user_name; ?>" <?= (trim(strtolower($fields['managed_by']))==trim(strtolower($option->user_name))) ? 'selected' : '' ?> ><?php echo $option->user_name.' - '.$option->user_role; ?></option>
      <?php endforeach; ?>
    </select>
+   <?php echo form_error('managed_by'); ?>
 </div>
 </div>
 
