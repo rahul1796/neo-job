@@ -185,11 +185,14 @@ class OpportunitiesController extends MY_Controller {
       $this->form_validation->set_rules('country_id', 'Country', 'required|is_natural_no_zero', array('is_natural_no_zero'=>'Select value from dropdown'));
 
       //Multiple Spoc Validation
-      foreach($this->input->post('spoc_detail') as $i=>$spoc) {
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_name]", 'Spoc Name', 'required');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_email]", 'Spoc Email', 'required|valid_email|callback_check_duplicate_fields');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_phone]", 'Spoc Phone', 'required|is_natural_no_zero|exact_length[10]|callback_check_duplicate_fields');
-        $this->form_validation->set_rules("spoc_detail[{$i}][spoc_designation]", 'Spoc Designation', 'required|max_length[30]');
+      if (isset($_POST['spoc_detail']) && count($_POST['spoc_detail']) > 0)
+      {
+        foreach($this->input->post('spoc_detail') as $i=>$spoc) {
+          $this->form_validation->set_rules("spoc_detail[{$i}][spoc_name]", 'Spoc Name', 'required');
+          $this->form_validation->set_rules("spoc_detail[{$i}][spoc_email]", 'Spoc Email', 'required|valid_email|callback_check_duplicate_fields');
+          $this->form_validation->set_rules("spoc_detail[{$i}][spoc_phone]", 'Spoc Phone', 'required|is_natural_no_zero|exact_length[10]|callback_check_duplicate_fields');
+          $this->form_validation->set_rules("spoc_detail[{$i}][spoc_designation]", 'Spoc Designation', 'required|max_length[30]');
+        }
       }
       return $this->form_validation->run();
     }
