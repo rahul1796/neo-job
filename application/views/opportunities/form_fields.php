@@ -219,8 +219,8 @@
 
 
 
-<input type="checkbox" class="same_as_main" name="same_as_main" <?php echo ($location_fields['same_as_main']==TRUE) ? 'checked' : '' ?> id="same_as_main"><label> Same As Company</label>
-<input type="checkbox" class="same_as_main" id="other_main" name="other_main" checked value="FALSE" hidden>
+<!-- <input type="checkbox" class="same_as_main" name="same_as_main" <?php //echo ($location_fields['same_as_main']==TRUE) ? 'checked' : '' ?> id="same_as_main"><label> Same As Company</label>
+<input type="checkbox" class="same_as_main" id="other_main" name="other_main" checked value="FALSE" hidden> -->
 <div class="form-group row">
    <div class="col-md-12">
      <label for="address" class="label">Branch Address:</label>
@@ -396,6 +396,7 @@ $('#company_name').bind('keypress', company_name);
 <script>
 var maxField = 100; //Input fields increment limitation
     var x = <?= (empty($location_fields['spoc_detail'])) ? 1 : count($location_fields['spoc_detail']); ?> || 1; //Initial field counter is 1
+    
     var addButton = $('.add-button'); //Add button selector
     var addDiv = $('.add-div'); //Add button selector
     var wrapper1 = $('#spoc-field-container'); //Input field wrapper
@@ -405,11 +406,20 @@ var maxField = 100; //Input fields increment limitation
 
     $(addDiv).click(function()
     { //Once add button is clicked
-         if(x < maxField)
-        { //Check maximum number of input fields
-            //Increment field counter
-        fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
-		fieldSET +=           '<div class="col-xs-3">\
+      var varInputLength =  $('input[name*=spoc_phone').length;
+      if (varInputLength>=maxField) return;
+
+
+
+
+      for(x=0; x<100; x++)
+      {
+        //var varInp = document.getElementsByName();
+        var varChkInputs = document.getElementsByName('spoc_detail['+x+'][spoc_name]');
+        if (varChkInputs.length < 1)
+        {
+          fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
+		      fieldSET +=           '<div class="col-xs-3">\
 					        <div class="input-group">\
 					            <input type="text" class="form-control" name="spoc_detail['+x+'][spoc_name]" value="" placeholder="Enter Spoc Name" />\
 					        </div>\
@@ -434,9 +444,10 @@ var maxField = 100; //Input fields increment limitation
                     </div>\
             </div>';
 
-        $(wrapper1).append(fieldSET); // Add field html
-         x++;
-    }
+            $(wrapper1).append(fieldSET); // Add field html
+            return;
+        }
+      }
     });
 
     $(wrapper1).on('click', '.remove_div', function(e)
@@ -463,10 +474,7 @@ var maxField = 100; //Input fields increment limitation
       });
     });
 
-    function removediv() {
-      $("#div1").remove();
-}
-
+    
 $(".same_as_main").change(function() {
      var is_checked = $(this).is(":checked");
      if(!is_checked) {
@@ -539,22 +547,6 @@ $("input[type='checkbox']").on('change', function(){
   $(this).val(this.checked ? "TRUE" : "FALSE");
 });
 
-if ( $('input[name="same_as_main"]').is(':checked') ) {
-  $('input[name="address"]').prop('readonly', true);
-        $('#country_id').prop('disabled', true);
-        $('#state_id').prop('disabled', true);
-        $('#district_id').prop('disabled', true);
-        $('input[name="city"]').prop('readonly', true);
-        $('input[name="pincode"]').prop('readonly', true);
-}
-else {
-  $('input[name="address"]').prop('readonly', false);
-        $('#country_id').prop('disabled', false);
-        $('#state_id').prop('disabled', false);
-        $('#district_id').prop('disabled', false);
-        $('input[name="city"]').prop('readonly', false);
-        $('input[name="pincode"]').prop('readonly', false);
-}
 
 </script>
 <?php $this->load->view('opportunities/selectSpocs'); ?>
