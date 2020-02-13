@@ -169,7 +169,7 @@ class OpportunitiesController extends MY_Controller {
       $this->form_validation->set_error_delimiters('<span class="text text-danger">', '</span>');
 
       $this->form_validation->set_rules('company_id', 'Lead Type', 'required|is_natural_no_zero');
-      $this->form_validation->set_rules('managed_by', 'Managed By', '');
+      $this->form_validation->set_rules('managed_by', 'Managed By', 'required');
       $this->form_validation->set_rules('lead_status_id', 'Lead Status', 'required|is_natural_no_zero');
       $this->form_validation->set_rules('business_vertical_id', 'Product', 'required|is_natural_no_zero');
       $this->form_validation->set_rules('functional_area_id', 'Functional Area', 'required|is_natural');
