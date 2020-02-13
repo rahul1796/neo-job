@@ -531,6 +531,22 @@ $("input[type='checkbox']").on('change', function(){
   $(this).val(this.checked ? "TRUE" : "FALSE");
 });
 
+if ( $('input[name="same_as_main"]').is(':checked') ) {
+  $('input[name="address"]').prop('readonly', true); 
+        $('#country_id').prop('disabled', true);
+        $('#state_id').prop('disabled', true);
+        $('#district_id').prop('disabled', true);
+        $('input[name="city"]').prop('readonly', true);
+        $('input[name="pincode"]').prop('readonly', true);
+} 
+else {
+  $('input[name="address"]').prop('readonly', false);
+        $('#country_id').prop('disabled', false);
+        $('#state_id').prop('disabled', false);
+        $('#district_id').prop('disabled', false);
+        $('input[name="city"]').prop('readonly', false);
+        $('input[name="pincode"]').prop('readonly', false);
+}
 
 </script>
 <?php $this->load->view('opportunities/selectSpocs'); ?>
