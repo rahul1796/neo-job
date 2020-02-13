@@ -98,7 +98,11 @@ function btnSelect_OnClick()
         let spoc_json=varSpocArray[i];
 
         var varIndex = '';
-        var varMaxNumber = 0;
+        let varMaxNumber = 1;
+        if($('#spoc-field-container').children('.form-group').length>0) {
+            let parent = $('#spoc-field-container').children('.form-group').last('');
+            varMaxNumber =  parseInt(parent.attr('data-val'))+1;
+        }
         var varFilledInExisting = false;
 
         if (varInputs.length > 0)
@@ -123,7 +127,7 @@ function btnSelect_OnClick()
                         if ($(varChkSpocNames[0]).val().trim()=='' 
                             && $(varChkSpocEmails[0]).val().trim()=='' 
                             && $(varChkSpocPhones[0]).val().trim()=='' 
-                            && $(varChkSpocNames[0]).val().trim()=='')
+                            && $(varChkSpocDesigs[0]).val().trim()=='')
                             {
                                 $(varChkSpocNames[0]).val(varSpocArray[i].SpocName);
                                 $(varChkSpocEmails[0]).val(varSpocArray[i].SpocEmail);
@@ -139,7 +143,7 @@ function btnSelect_OnClick()
             if (!varFilledInExisting)
             {
                 varMaxNumber++;
-                fieldSET = '<div class="form-group row" id="spoc_'+varMaxNumber+'">';
+                fieldSET = '<div class="form-group row" data-val="'+varMaxNumber+'" id="spoc_'+varMaxNumber+'">';
                 fieldSET += '<div class="col-xs-3">\
                                 <div class="input-group">\
                                     <input type="text" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" readonly/>\
