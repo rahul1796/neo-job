@@ -12,6 +12,9 @@ class CompaniesController extends MY_Controller {
     $this->load->model('Company', 'company');
     $this->load->model('Candidate', 'candidate');
     $this->load->model('Sale', 'sale');
+    $this->load->helper('download');
+   // $this->load->library('CSVReader');
+    //$this->load->library('M_pdf','mpdf');
   }
 
   public function index() {
@@ -211,6 +214,23 @@ class CompaniesController extends MY_Controller {
 		//$this->pramaan->_check_module_task_auth(false);
 		$contract_results=$this->company->getContractData($company_id);
 		echo json_encode($contract_results);
-	}
+  }
+
+  public function exportDataCsv($company_id=0) {
+    $opportunity_results=$this->company->getOpportunityList($company_id);
+    $this->downloadRequest('Opportunity', $opportunity_results);
+  }
+
+  public function exportContractDataCsv($company_id=0) {
+    $opportunity_results=$this->company->getContractList($company_id);
+    $this->downloadRequest('Opportunity', $opportunity_results);
+  }
+
+  private function downloadRequest($file_name, $data) {
+    $name = $file_name.'-'.date('d-M-Y').'.csv';
+    force_download($name, $data);
+    exit;
+  }
+  
 
 }

@@ -569,19 +569,20 @@ $(document).ready(function () {
                   var company=data.company_detail;
                   var slno=1;
                   opportunity_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
-                  
+                  opportunity_list_html += '<button type="button" class="btn btn-success" name="button" onclick="export_opportunity_pdf('+company_id+');" style="float: right;    margin-top: -40px;" title="export pdf"><i class="fa fa-file-pdf-o"> PDF</i></button>';
+                  opportunity_list_html += '<button type="button" class="btn btn-primary" name="button" onclick="export_opportunity_csv('+company_id+');" style="float: right;     margin-right: 85px;   margin-top: -40px;" title="export csv"><i class="fa fa-file-excel-o"> CSV</i></button>';
                   opportunity_list_html += '<div class="row">';
                   opportunity_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
                   opportunity_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
-                  opportunity_list_html += '<tr><th>Sl No.</th><th>Opportunity Code</th><th>Product</th><th>Contract ID</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
+                  opportunity_list_html += '<tr><th>Sl No.</th><th>Opportunity Code</th><th>Product</th><th>Created On</th><th>Spoc Name</th><th>Spoc Email</th><th>Spoc Phone</th></tr>';
 
                   $.each(data.opportunity_detail,function(a,b)
                   {
-                    opportunity_list_html += '<tr><td>'+slno+'</td><td>'+b.opportunity_code+'</td><td>'+b.business_vertical+'</td><td>'+b.contract_id+'</td><td>'+b.created_at+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td></tr>';
+                    opportunity_list_html += '<tr><td>'+slno+'</td><td>'+b.opportunity_code+'</td><td>'+b.business_vertical+'</td><td>'+b.created_at+'</td><td>'+b.spoc_name+'</td><td>'+b.spoc_email+'</td><td>'+b.spoc_phone+'</td></tr>';
                     slno++;
                   });
 
-                  opportunity_list_html += '</table>';
+                  opportunity_list_html += '</table>';                  
                   opportunity_list_html += '</div></div>'; 
               }
               $('.opportunity_detail').html(opportunity_list_html);
@@ -595,6 +596,19 @@ $(document).ready(function () {
       });
       $('#modal_view_opportunity').modal('show'); // show bootstrap modal when complete loaded
   }
+
+  function export_opportunity_csv(company_id)
+  {
+    window.location=base_url+'companiescontroller/exportDataCsv/'+company_id;   
+  }
+
+  function export_opportunity_pdf(company_id)
+  {
+    window.location=base_url+'pdf/index/'+company_id;   
+  }
+
+
+
 
   function view_contract(company_id)
   {
@@ -611,7 +625,8 @@ $(document).ready(function () {
                   var company=data.company_detail;
                   var slno=1;
                   contract_list_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+company.company_name+"</span></div>";
-                  
+                  contract_list_html += '<button type="button" class="btn btn-success" name="button" onclick="export_contract_pdf('+company_id+');" style="float: right;    margin-top: -40px;" title="export pdf"><i class="fa fa-file-pdf-o"> PDF</i></button>';
+                  contract_list_html += '<button type="button" class="btn btn-primary" name="button" onclick="export_contract_csv('+company_id+');" style="float: right;     margin-right: 85px;   margin-top: -40px;" title="export csv"><i class="fa fa-file-excel-o"> CSV</i></button>';
                   contract_list_html += '<div class="row">';
                   contract_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 400px;">';
                   contract_list_html += '<table id="tblApplicationTrackerDetails" class="table table-striped table-bordered display responsive nowrap">';
@@ -636,6 +651,16 @@ $(document).ready(function () {
           }
       });
       $('#modal_view_contract').modal('show'); // show bootstrap modal when complete loaded
+  }
+
+  function export_contract_csv(company_id)
+  {
+    window.location=base_url+'companiescontroller/exportContractDataCsv/'+company_id;   
+  }
+
+  function export_contract_pdf(company_id)
+  {
+    window.location=base_url+'pdf/contract/'+company_id;   
   }
 </script>
 <div id="modal_view_opportunity" class="modal fade bs-example-modal-xl" role="dialog">

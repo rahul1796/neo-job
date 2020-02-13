@@ -102,6 +102,7 @@ class OpportunitiesController extends MY_Controller {
     $data['user_det'] = $this->session->userdata('usr_authdet');
     $data['data']['fields'] = $this->saleData($this->opportunity->fillable, $id);
     $data['data']['location_fields'] = $this->locationData($this->location->fillable, $id);
+    $data['data']['managed_by_options'] = $this->opportunity->getCurrentHierarchy($this->session->userdata('usr_authdet')['id'], 3);
     $data['data']['lead_status_options'] = $this->opportunity->getLeadStatuses();
     $data['data']['lead_source_options'] = $this->opportunity->getLeadSources();
     $data['data']['industry_options'] = $this->opportunity->getIndustries();
@@ -193,7 +194,7 @@ class OpportunitiesController extends MY_Controller {
         $data['customer_id']= $this->input->post('customer_id');
         $data['created_by'] = $this->session->userdata('usr_authdet')['id'];
         $data['is_paid'] = $this->input->post('is_paid') ?? -1;
-
+        $status = false;
         if($data['lead_status_id']!=8){
           $data['remarks'] = $this->input->post('remark');
           if($this->input->post('schedule_date') != '') {
@@ -203,14 +204,18 @@ class OpportunitiesController extends MY_Controller {
             $data['city'] = $this->input->post('city');
             $data['address'] = $this->input->post('address');
           }
+          $status = $this->opportunity->updateLeadStatus($data);
         } else {
-          $data['remarks'] = $this->input->post('remarks');
+          $data['proposal_shared_to'] = $this->input->post('proposal_shared_to');
           $data['schedule_date'] = $this->input->post('schedule_date');
           $data['potential_order_value_per_month'] = $this->input->post('potential_order_value_per_month');
           $data['potential_number'] = $this->input->post('potential_number');
+          $data['business_vertical_id'] = $this->input->post('product_selector');
+          $data['remarks'] = '';
           $data = $this->addFileInfo($data);
+          $status = $this->opportunity->updateLeadStatusProposal($data);
         }
-        $status = $this->opportunity->updateLeadStatus($data);
+
         if ($status) {
           $this->msg = 'Opportunity Status updated successfully';
         } else {
@@ -286,6 +291,14 @@ class OpportunitiesController extends MY_Controller {
           $response['status'] = $status;
           $response['msg'] = $this->msg;
           echo json_encode($response);
+          exit;
+        }
+
+        public function getCurrentProduct($opportunity_id) {
+          $data['status'] = true;
+          $data['data'] = $this->opportunity->find($opportunity_id);
+          $data['message'] = 'Request Reached Successfully';
+          echo json_encode($data);
           exit;
         }
 

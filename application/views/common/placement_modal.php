@@ -511,7 +511,7 @@
                     <div class="form-group" style="display:block;">
                         <label for="txtCustomerName" class="col-sm-2 control-label" style="margin-top: 5px;">Customer Name</label>
                         <div class="col-sm-10" style="margin-bottom: 10px;">
-                            <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->customer_name ?? 'N/A' ; ?>" onkeydown="return false;" disabled="disabled"/>
+                            <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->company_name ?? 'N/A' ; ?>" onkeydown="return false;" disabled="disabled"/>
                         </div>
                     </div>
                     <div class="form-group" style="display:block;">

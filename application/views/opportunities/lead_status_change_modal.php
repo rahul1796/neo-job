@@ -35,13 +35,23 @@
          <div class="hidden form-group row" id="proposal_shared_input_container">
            <form class="form-group" id="proposal_form" enctype="multipart/form-data">
              <br>
+             <div class="col-md-12">
+               <h5 id="current-product-label"></h5>
+               <label for="product_selector">Change Product</label>
+               <select class="form-control" id="product_selector" placeholder="Change Product" name="product_selector">
+               <?php foreach($business_vertical_options as $option): ?>
+                 <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
+               <?php endforeach; ?>
+               </select>
+             </div>
+             <br>
              <div class="col-md-6">
                <label for="" class="label">Proposal Date</label>
                <input type="text" id="proposal_date_input" name="schedule_date" class="form-control feedback-date"  value="">
              </div>
              <div class="col-md-6">
                <label for="" class="label">Proposal Shared to</label>
-               <input type="text" class="form-control" name="remarks" id="proposal_shared_to_input" value="" >
+               <input type="text" class="form-control" name="proposal_shared_to" id="proposal_shared_to_input" value="" >
              </div>
              <div class="col-md-6">
                <label for="" class="label">Potential Numbers</label>
@@ -177,6 +187,7 @@ $(document).ready(function() {
         $('.lead_feedback_input_container').addClass('hidden');
       }
       if(value==8) {
+        get_product_opportunity();
         $('#proposal_shared_input_container').removeClass('hidden');
       } else {
         $('#proposal_shared_input_container').addClass('hidden');
@@ -447,5 +458,19 @@ function changeLeadStatus() {
     return pattern.test(value);
   }
 
+  function get_product_opportunity() {
+    let opp_id=$('#proposal_customer_id').val();
+    $.ajax({
+      url:'<?= base_url('opportunitiesController/getCurrentProduct/'); ?>'+opp_id,
+      async: false,
+    }).done(function(data, textStatus, jqXHR ) {
+      let reponse = JSON.parse(data);
+      $('#product_selector').val(reponse.data.business_vertical_id);
+      let status_text = $('#product_selector').find(':selected').text();
+        $('#current-product-label').html('Current Product: '+status_text );
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+      $('#product_selector').val(0);
+    });
+  }
 
 </script>
