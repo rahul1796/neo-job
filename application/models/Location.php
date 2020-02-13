@@ -8,8 +8,9 @@ class Location extends MY_Model
     private $current_user_id, $current_timestamp;
 
     public $fillable = ['customer_id', 'is_main_branch', 'address', 'city', 'district_id', 'state_id', 'opportunity_id',
-                                  'country_id', 'pincode', 'spoc_detail', 'created_at', 'created_by', 'updated_at', 'updated_by'];
+                                  'country_id', 'pincode', 'spoc_detail', 'created_at', 'created_by', 'updated_at', 'updated_by','same_as_main'];
 
+                                    
     public function __construct() {
       parent::__construct();
       $this->current_user_id = $this->session->userdata('usr_authdet')['id'];
