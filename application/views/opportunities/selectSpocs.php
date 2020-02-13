@@ -29,7 +29,7 @@ function selectspocmodal(company_id)
                     let id="checkbox_"+slno;
                     var varCheckBox = '<input id='+id+ ' class="checkevent" type="checkbox" name="spoc">';
                     var varDuplicateStatus = false;
-                    for(var i=1; i<varInputCount; i++)
+                    for(var i=0; i<varInputCount; i++)
                     {
                         if (b.spoc_phone == $('input[name="spoc_detail['+i+'][spoc_phone]"]').val())
                         {

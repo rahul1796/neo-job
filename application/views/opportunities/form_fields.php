@@ -25,13 +25,8 @@
    <input type="text" class="form-control" id="company_name" placeholder="" readonly value="<?= $company['company_name']; ?>">
  </div>
  <div class="col-md-6">
-   <label for="placement_officers" class="label">Managed By:</label>
-   <select class="neo-select2 form-control" id="managed_by" name="managed_by">
-     <option value=''>Choose Managed By</option>
-     <?php foreach($managed_by_options as $option): ?>
-         <option value="<?php echo $option->user_name; ?>" <?= (trim(strtolower($fields['managed_by']))==trim(strtolower($option->user_name))) ? 'selected' : '' ?> ><?php echo $option->user_name.' - '.$option->user_role; ?></option>
-     <?php endforeach; ?>
- </select>
+  <label for="managed_by" class="">Managed By:</label>
+  <input type="text" class="form-control" id="managed_by" name="managed_by" placeholder="" value="<?= $fields['managed_by']; ?>">
 </div>
 </div>
 
@@ -85,34 +80,35 @@
   <input type="hidden" name="company_id" value="<?= ($fields['company_id']=='')? $company['id'] : $fields['company_id'] ?>">
   <input type="hidden" name="lead_status_id" value="<?= ($fields['lead_status_id']=='')? '1': $fields['lead_status_id'] ?>">
 </div>
-<!--
+<!-- 
 <?php
   //$input_count = count($location_fields['spoc_detail']);
   //$readonlytext = $input_count>0 ? "readonly" : "";
 ?>
 -->
-
+<h4 style="color:#000;">Opportunity Spoc Details:</h4>
+<hr>
 <div class="form-group row">
   <div class="col-md-3">
-    <label for="spoc_name" class="label">Opportunity Spoc Name:</label>
+    <label for="spoc_name" class="label">Spoc Name:</label>
     <!--<input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
     <?php //echo form_error("spoc_detail[0][spoc_name]"); ?>-->
   </div>
 
   <div class="col-md-3">
-    <label for="spoc_email" class="label">Opportunity Spoc Email:</label>
+    <label for="spoc_email" class="label">Spoc Email:</label>
     <!--<input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
     <?php ///echo form_error("spoc_detail[0][spoc_email]"); ?>-->
   </div>
 
   <div class="col-md-2">
-    <label for="spoc_phone" class="label">Opportunity Spoc Phone:</label>
+    <label for="spoc_phone" class="label">Spoc Phone:</label>
    <!-- <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
     <?php //echo form_error("spoc_detail[0][spoc_phone]"); ?>-->
   </div>
 
   <div class="col-md-3">
-    <label for="spoc_designation" class="label">Opportunity Spoc Designation:</label>
+    <label for="spoc_designation" class="label">Spoc Designation:</label>
    <!-- <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
     <?php //echo form_error("spoc_detail[0][spoc_designation]"); ?>-->
   </div>
@@ -121,42 +117,42 @@
   </div>-->
    </div>
 
-
+ 
 <?php
   $input_count = count($location_fields['spoc_detail']);
   $readonlytext = $input_count>0 ? "readonly" : "";
 ?>
 
-
+ 
 <div class="form-group row"  id="div1">
   <div class="col-md-3">
-
-    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" >
+    
+    <input type="text" class="form-control" id="spoc_name" placeholder="Enter Spoc Name" name="spoc_detail[0][spoc_name]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_name'] ?? $fields['spoc_name'] ?? ''; ?>" <?php echo $readonlytext?>>
     <?php echo form_error("spoc_detail[0][spoc_name]"); ?>
   </div>
 
   <div class="col-md-3">
-
-    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" >
+   
+    <input type="email" class="form-control" id="spoc_email" placeholder="Enter Spoc Email" name="spoc_detail[0][spoc_email]" value="<?php echo $location_fields['spoc_detail'][0]['spoc_email'] ?? $fields['spoc_email'] ?? ''; ?>" <?php echo $readonlytext?>>
     <?php echo form_error("spoc_detail[0][spoc_email]"); ?>
   </div>
 
   <div class="col-md-2">
-
-   <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" >
-    <?phpecho form_error("spoc_detail[0][spoc_phone]"); ?>
+    
+   <input type="text" class="form-control" id="spoc_phone" placeholder="Enter Spoc Phone" name="spoc_detail[0][spoc_phone]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" value="<?php echo $location_fields['spoc_detail'][0]['spoc_phone'] ?? $fields['spoc_phone'] ?? ''; ?>" <?php echo $readonlytext?>>
+    <?php echo form_error("spoc_detail[0][spoc_phone]"); ?>
   </div>
 
   <div class="col-md-3">
-
-    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" >
+   
+    <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" <?php echo $readonlytext?>>
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
   <div class="col-xs-1" style="float: right; >
           <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
   </div>
-   </div>
-
+   </div> 
+  
 
 
 <!--<h5>Add Additional Spoc Details</h5>
@@ -216,43 +212,46 @@
 <hr>
 
 
-<div class="form-group row">
 
+<input type="checkbox" class="same_as_main" name="same_as_main" <?php echo ($location_fields['same_as_main']==TRUE) ? 'checked' : '' ?> id="same_as_main"><label> Same As Company</label>
+<input type="checkbox" class="same_as_main" id="other_main" name="other_main" checked value="FALSE" hidden>
+<div class="form-group row">
    <div class="col-md-12">
      <label for="address" class="label">Branch Address:</label>
-     <input type="text" class="form-control" id="address" placeholder="Enter company address" name="address" value="<?php echo $location_fields['address'] ?? ''; ?>">
+     <input type="text" class="form-control" id="address" placeholder="Enter company address" name="address" value="<?php echo $location_fields['address'] ?? ''; ?>" >
      <?php echo form_error('address'); ?>
    </div>
-
-
 </div>
 
 
 <div class="form-group row">
   <div class="col-md-4">
       <label for="country_id" class="label">Country:</label>
-      <select class="form-control" name="country_id" id="country_id">
+      <select class="form-control" name="country_id" id="country_id" >
           <option value="0">Select Country</option>
           <?php foreach($countries_options as $country_option): ?>
               <option value="<?php echo $country_option->id; ?>" <?php echo (intval($country_option->id)==99) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
           <?php endforeach; ?>
       </select>
+      <input type="hidden" id="company_country_id" name="other_country_id" value="">
       <?php echo form_error('country_id'); ?>
   </div>
 
   <div class="col-md-4">
       <label for="state_id" class="label">State:</label>
-      <select class="form-control" name="state_id" id="state_id">
+      <select class="form-control" name="state_id" id="state_id" >
           <option value="0">Select State</option>
       </select>
+      <input type="hidden" id="company_state_id" name="other_state_id" value="">
       <?php echo form_error('state_id'); ?>
   </div>
 
   <div class="col-md-4">
       <label for="district_id" class="label">District/City:</label>
-      <select class="form-control" name="district_id" id="district_id">
+      <select class="form-control" name="district_id" id="district_id" >
           <option value="0">Select District/City</option>
       </select>
+      <input type="hidden" id="company_district_id" name="other_district_id" value="">
       <?php echo form_error('district_id'); ?>
   </div>
 
@@ -263,28 +262,26 @@
 
     <div class="col-md-4">
    <label for="city" class="">Town / Village:</label>
-   <input type="text" class="form-control" id="city" placeholder="Enter City" name="city" value="<?php echo $location_fields['city']; ?>">
+   <input type="text" class="form-control" id="city" placeholder="Enter City" name="city" value="<?php echo $location_fields['city']; ?>" >
    <?php echo form_error('city'); ?>
  </div>
 
    <div class="col-md-4">
      <label for="landline" class="label">Pincode:</label>
-     <input type="text" class="form-control" id="pincode" placeholder="Enter Pincode" name="pincode" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "6"  value="<?php echo $location_fields['pincode']; ?>">
+     <input type="text" class="form-control" id="pincode" placeholder="Enter Pincode" name="pincode" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "6"  value="<?php echo $location_fields['pincode']; ?>" >
      <?php echo form_error('pincode'); ?>
    </div>
 
 </div>
 
 
-<button type="submit" class="btn btn-primary" id="form-submit">Submit</button>
+<button type="submit" class="btn btn-primary" id="form-submit" onclick="myGeeks()">Submit</button>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/datatables.min.css'?>">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url().'adm-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css'?>">
 <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/datatables.min.js'?>"></script>
 <script src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js" type="text/javascript"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
 <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
@@ -333,17 +330,13 @@ $(document).ready(function() {
      }
    });
 
-   $('.neo-select2').select2({
-         placeholder: 'Select an option',
-         allowClear: true
-     });
-
  });
 
  function getDistricts(id){
    var request = $.ajax({
      url: "<?= base_url(); ?>master/getDistricts/"+id,
      type: "GET",
+     async: false,
    });
 
    request.done(function(msg) {
@@ -389,13 +382,12 @@ $('#company_name').bind('keypress', company_name);
    request.fail(function(jqXHR, textStatus) {
      alert( "Select Valid Value for the Country" );
    });
-
  }
 </script>
 
 <script>
 var maxField = 100; //Input fields increment limitation
-    var x = <?= (empty($location_fields['spoc_detail'])) ? 2 : count($location_fields['spoc_detail']); ?> || 2; //Initial field counter is 1
+    var x = <?= (empty($location_fields['spoc_detail'])) ? 1 : count($location_fields['spoc_detail']); ?> || 1; //Initial field counter is 1
     var addButton = $('.add-button'); //Add button selector
     var addDiv = $('.add-div'); //Add button selector
     var wrapper1 = $('#spoc-field-container'); //Input field wrapper
@@ -467,8 +459,94 @@ var maxField = 100; //Input fields increment limitation
       $("#div1").remove();
 }
 
+$(".same_as_main").change(function() {
+     var is_checked = $(this).is(":checked");
+     if(!is_checked) {
+      $("#district_id").val(0);
+      $("#state_id").val(0);
+     }
+     $("#district_id").prop("readonly", !is_checked);
+     $("#state_id").prop("readonly", !is_checked);
+});
+
+$('.same_as_main').change(function () {
+    if ($(this).is(':checked')) { 
+      $('#same_as_main').attr('name', 'same_as_main');
+       $('#other_main').attr('name', 'other_main');  
+       $('#country_id').attr('name', 'other_country');
+       $('#company_country_id').attr('name', 'country_id');
+       $('#state_id').attr('name', 'other_state');
+       $('#company_state_id').attr('name', 'state_id');
+       $('#district_id').attr('name', 'other_district');
+       $('#company_district_id').attr('name', 'district_id');
+        $('input[name="address"]').prop('readonly', true).val(''); 
+        $('#country_id').prop('disabled', true);
+        $('#state_id').prop('disabled', true);
+        $('#district_id').prop('disabled', true);
+        $('input[name="city"]').prop('readonly', true).val('');
+        $('input[name="pincode"]').prop('readonly', true).val('');
+        var track_url=base_url+'opportunitiescontroller/getCompanyAddress/'+<?= ($fields['company_id']=='')? $company['id'] : $fields['company_id'] ?>;
+        $.ajax({
+        url: track_url,
+        type: 'POST',
+        dataType: 'json',
+        success: function (response) {
+          //alert(JSON.stringify(response)); 
+           let data = response[0];  
+           console.log(data);
+            $('input[name="address"]').val(data.address);            
+            $('#country_id').val(data.country_id);
+            $('#company_country_id').val(data.country_id);
+            $('#state_id').val(data.state_id);
+            getDistricts(data.state_id);  
+            $('#district_id').val(data.district_id);
+            $('#company_state_id').val(data.state_id);
+            //$('#district_id').val(let[0].district_id);
+            $('#company_district_id').val(data.district_id);
+            $('input[name="city"]').val(data.city);
+            $('input[name="pincode"]').val(data.pincode);
+            
+        }
+    });
+    } else {    
+      $('#same_as_main').attr('name', 'other_main');
+       $('#other_main').attr('name', 'same_as_main');          
+        $('#country_id').attr('name', 'country_id');
+        $('#company_country_id').attr('name', 'other_country');
+        $('#state_id').attr('name', 'state_id');
+        $('#company_state_id').attr('name', 'other_state');
+        $('#district_id').attr('name', 'district_id');
+        $('#company_district_id').attr('name', 'other_district');
+        $('input[name="address"]').prop('readonly', false).val('');
+        $('#country_id').prop('disabled', false);
+        $('#state_id').prop('disabled', false);
+        $('#district_id').prop('disabled', false);
+        $('input[name="city"]').prop('readonly', false).val('');
+        $('input[name="pincode"]').prop('readonly', false).val('');
+    }
+}); 
 
 
+$("input[type='checkbox']").on('change', function(){
+  $(this).val(this.checked ? "TRUE" : "FALSE");
+});
+
+if ( $('input[name="same_as_main"]').is(':checked') ) {
+  $('input[name="address"]').prop('readonly', true); 
+        $('#country_id').prop('disabled', true);
+        $('#state_id').prop('disabled', true);
+        $('#district_id').prop('disabled', true);
+        $('input[name="city"]').prop('readonly', true);
+        $('input[name="pincode"]').prop('readonly', true);
+} 
+else {
+  $('input[name="address"]').prop('readonly', false);
+        $('#country_id').prop('disabled', false);
+        $('#state_id').prop('disabled', false);
+        $('#district_id').prop('disabled', false);
+        $('input[name="city"]').prop('readonly', false);
+        $('input[name="pincode"]').prop('readonly', false);
+}
 
 </script>
 <?php $this->load->view('opportunities/selectSpocs'); ?>
