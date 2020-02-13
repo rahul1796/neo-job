@@ -102,7 +102,13 @@ class OpportunitiesController extends MY_Controller {
     $data['user_det'] = $this->session->userdata('usr_authdet');
     $data['data']['fields'] = $this->saleData($this->opportunity->fillable, $id);
     $data['data']['location_fields'] = $this->locationData($this->location->fillable, $id);
-    $data['data']['managed_by_options'] = $this->opportunity->getCurrentHierarchy($this->session->userdata('usr_authdet')['id'], 3);
+    $group_id = 3;
+    if($this->session->userdata['usr_authdet']['user_group_id']==1) {
+      $group_id = 1;
+    } else if ($this->session->userdata['usr_authdet']['user_group_id']==2) {
+      $group_id = 2;
+    }
+    $data['data']['managed_by_options'] = $this->opportunity->getCurrentHierarchy($this->session->userdata('usr_authdet')['id'], $group_id);
     $data['data']['lead_status_options'] = $this->opportunity->getLeadStatuses();
     $data['data']['lead_source_options'] = $this->opportunity->getLeadSources();
     $data['data']['industry_options'] = $this->opportunity->getIndustries();
@@ -351,5 +357,5 @@ class OpportunitiesController extends MY_Controller {
         echo json_encode($address_results);
         exit;
       }
-      
+
 }
