@@ -126,7 +126,7 @@
 
 <?php
   $input_count = count($location_fields['spoc_detail']);
-  $readonlytext = $input_count>0 ? "readonly" : "";
+  $readonlytext = $input_count>0 ? "" : "";
 ?>
 
 
@@ -154,7 +154,7 @@
     <input type="text" class="form-control" id="spoc_designation" placeholder="Spoc Designation" name="spoc_detail[0][spoc_designation]" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "30" value="<?php echo $location_fields['spoc_detail'][0]['spoc_designation'] ?? $fields['spoc_designation'] ?? ''; ?>" <?php echo $readonlytext?>>
     <?php echo form_error("spoc_detail[0][spoc_designation]"); ?>
   </div>
-  <div class="col-xs-1" style="float: right; >
+  <div class="col-xs-1" style="float: right;" >
           <span class="input-group-btn"><button class="btn btn-danger" type="button" id="remove"><i class="fa fa-trash"></i></button></span>
   </div>
    </div>
@@ -396,7 +396,7 @@ $('#company_name').bind('keypress', company_name);
 <script>
 var maxField = 100; //Input fields increment limitation
     var x = <?= (empty($location_fields['spoc_detail'])) ? 1 : count($location_fields['spoc_detail']); ?> || 1; //Initial field counter is 1
-    
+
     var addButton = $('.add-button'); //Add button selector
     var addDiv = $('.add-div'); //Add button selector
     var wrapper1 = $('#spoc-field-container'); //Input field wrapper
@@ -411,12 +411,12 @@ var maxField = 100; //Input fields increment limitation
         let parent = $('#spoc-field-container').children('.form-group').last('');
          varInputLength =  parseInt(parent.attr('data-val'))+1;
       }
-      
+
       // let containerRow=$('#spoc-field-container').children('.form-group row').count();
       // let containerRow
       //alert(varInputLength);
       if (varInputLength>=maxField) return;
-    
+
 
 
       // for(x=0; x<100; x++)
@@ -481,7 +481,7 @@ var maxField = 100; //Input fields increment limitation
       });
     });
 
-    
+
 $(".same_as_main").change(function() {
      var is_checked = $(this).is(":checked");
      if(!is_checked) {
