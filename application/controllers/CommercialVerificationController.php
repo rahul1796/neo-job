@@ -88,7 +88,7 @@ class CommercialVerificationController extends MY_Controller {
       if ($this->commercial->verfied_customer($customer_id, $request)) {
         $data['status'] = true;
         if($request['status']=='accept') {
-            $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+            $this->msg = 'Documents & Commercials Approved. Opportunity Converted to Contract';
             $data['message'] = $this->msg ;
         } else {
           $this->msg = 'Documents & Commercials Rejected. Resubmission of commercial required';
