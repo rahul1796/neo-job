@@ -42,7 +42,7 @@ class OpportunitiesController extends MY_Controller {
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->opportunity->save($data)) {
-        $this->msg = 'opportunity created successfully';
+        $this->msg = 'Opportunity created successfully';
       } else {
         $this->msg = 'Error creating opportunity, please try again after sometime';
       }
