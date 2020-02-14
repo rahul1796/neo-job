@@ -5,7 +5,7 @@ function selectspocmodal(company_id)
   $.ajax({
         url : track_url,
         type: "GET",
-        dataType: "JSON",        
+        dataType: "JSON",
         success: function(data)
         {
             var customer_detail_html='';
@@ -15,8 +15,8 @@ function selectspocmodal(company_id)
 
                 var employer=data.employer_detail;
                 var slno=1;
-                customer_detail_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+employer.company_name+"</span></div>"; 
-                
+                customer_detail_html += "<div  style='margin-bottom: 10px'>Company Name: <span style='font-weight: bold;'>"+employer.company_name+"</span></div>";
+
                 customer_detail_html += '<div class="row">';
                 customer_detail_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; ">';
                 customer_detail_html += '<table id="tblApplicationTrackerDetails" class="table table-bordered display responsive nowrap">';
@@ -41,21 +41,21 @@ function selectspocmodal(company_id)
                         {
                             varCheckBox = '';
                             break;
-                        }                        
+                        }
                     }*/
-                  
+
                     customer_detail_html += '<tr id="trSpocs"><td class="spocchecktd">'+varCheckBox+'</td><td class="spocnametd">'+b.spoc_name+'</td><td class="spocemailtd">'+b.spoc_email+'</td><td class="spocphonetd">'+b.spoc_phone+'</td><td class="spocdesignationtd">'+b.spoc_designation+'</td></tr>';
                     slno++;
                 });
                 //<td><a class="btn btn-success mr-1 mb-1" onclick="ShowOpportunityDetails('+b.id+')">'+b.opportunity_count+'</a></td>
                 customer_detail_html += '</tbody>';
                 customer_detail_html += '</table>';
-                customer_detail_html += '</div></div>'; 
+                customer_detail_html += '</div></div>';
             }
             $('.candidate_job_status').html(customer_detail_html);
 
             $("#tblCustomerDetails").DataTable();
-            
+
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
@@ -85,14 +85,14 @@ function GetSpocSelectedStatus(varSpocPhone)
 
 
 function btnSelect_OnClick()
-{   
+{
     //let x =  $('#spoc-field-container').children().length;
-    var varInputs =  $('input[name*=spoc_phone');        
+    var varInputs =  $('input[name*=spoc_phone');
     var varInputCount =  varInputs.length;
     if (varInputCount > 0) varInputCount--;
     var x =varInputCount;
 
-    var varSpocArray = GetSpocArray(); 
+    var varSpocArray = GetSpocArray();
     for(let i=0;i<varSpocArray.length;i++)
     {
         let spoc_json=varSpocArray[i];
@@ -106,7 +106,7 @@ function btnSelect_OnClick()
         var varFilledInExisting = false;
 
         if (varInputs.length > 0)
-        {            
+        {
             for(var j=0; j<varInputs.length; j++)
             {
                 //alert(varInputs[j].name);
@@ -114,7 +114,7 @@ function btnSelect_OnClick()
                 var varIndex = ExtractNumberFromText(varInputs[j].name);
                 if (varIndex != '')
                 {
-                    if (varMaxNumber < parseInt(varIndex)) varMaxNumber=parseInt(varIndex);                    
+                    if (varMaxNumber < parseInt(varIndex)) varMaxNumber=parseInt(varIndex);
 
                     var varChkSpocPhones = document.getElementsByName('spoc_detail['+varIndex+'][spoc_phone]');
                     if (varChkSpocPhones.length > 0)
@@ -122,11 +122,11 @@ function btnSelect_OnClick()
                         var varChkSpocNames = document.getElementsByName('spoc_detail['+varIndex+'][spoc_name]');
                         var varChkSpocEmails = document.getElementsByName('spoc_detail['+varIndex+'][spoc_email]');
                         var varChkSpocDesigs = document.getElementsByName('spoc_detail['+varIndex+'][spoc_designation]');
-                        
+
                         //alert(varIndex);
-                        if ($(varChkSpocNames[0]).val().trim()=='' 
-                            && $(varChkSpocEmails[0]).val().trim()=='' 
-                            && $(varChkSpocPhones[0]).val().trim()=='' 
+                        if ($(varChkSpocNames[0]).val().trim()==''
+                            && $(varChkSpocEmails[0]).val().trim()==''
+                            && $(varChkSpocPhones[0]).val().trim()==''
                             && $(varChkSpocDesigs[0]).val().trim()=='')
                             {
                                 $(varChkSpocNames[0]).val(varSpocArray[i].SpocName);
@@ -137,7 +137,7 @@ function btnSelect_OnClick()
                                 break;
                             }
                     }
-                }                
+                }
             }
 
             if (!varFilledInExisting)
@@ -146,22 +146,22 @@ function btnSelect_OnClick()
                 fieldSET = '<div class="form-group row" data-val="'+varMaxNumber+'" id="spoc_'+varMaxNumber+'">';
                 fieldSET += '<div class="col-xs-3">\
                                 <div class="input-group">\
-                                    <input type="text" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" readonly/>\
+                                    <input type="text" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" />\
                                 </div>\
                         </div>\
                                             <div class="col-xs-3">\
                                 <div class="input-group">\
-                                    <input type="email" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" readonly/>\
+                                    <input type="email" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" />\
                                 </div>\
                         </div>\
                                             <div class="col-xs-2">\
                                 <div class="input-group">\
-                                    <input type="text" maxlength="10" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" readonly/>\
+                                    <input type="text" maxlength="10" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" />\
                                 </div>\
                         </div>\
                     <div class="col-xs-3">\
                         <div class="input-group">\
-                            <input type="text" maxlength="30" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" readonly/>\
+                            <input type="text" maxlength="30" class="form-control" name="spoc_detail['+varMaxNumber+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" />\
                         </div>\
                         </div>\
                 <div class="col-xs-1">\
@@ -182,22 +182,22 @@ function btnSelect_OnClick()
                     fieldSET = '<div class="form-group row" id="spoc_'+j+'">';
                     fieldSET += '<div class="col-xs-3">\
                                     <div class="input-group">\
-                                        <input type="text" class="form-control" name="spoc_detail['+j+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" readonly/>\
+                                        <input type="text" class="form-control" name="spoc_detail['+j+'][spoc_name]" value="'+varSpocArray[i].SpocName+'" placeholder="Enter Spoc Name" />\
                                     </div>\
                             </div>\
                                                 <div class="col-xs-3">\
                                     <div class="input-group">\
-                                        <input type="email" class="form-control" name="spoc_detail['+j+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" readonly/>\
+                                        <input type="email" class="form-control" name="spoc_detail['+j+'][spoc_email]" value="'+varSpocArray[i].SpocEmail+'" placeholder="Enter Spoc Email" />\
                                     </div>\
                             </div>\
                                                 <div class="col-xs-2">\
                                     <div class="input-group">\
-                                        <input type="text" maxlength="10" class="form-control" name="spoc_detail['+j+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" readonly/>\
+                                        <input type="text" maxlength="10" class="form-control" name="spoc_detail['+j+'][spoc_phone]" value="'+varSpocArray[i].SpocPhone+'" placeholder="Enter Spoc Phone" />\
                                     </div>\
                             </div>\
                         <div class="col-xs-3">\
                             <div class="input-group">\
-                                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+j+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" readonly/>\
+                                <input type="text" maxlength="30" class="form-control" name="spoc_detail['+j+'][spoc_designation]" value="'+varSpocArray[i].SpocDesignation+'" placeholder="Spoc Designation" />\
                             </div>\
                             </div>\
                     <div class="col-xs-1">\
@@ -210,7 +210,7 @@ function btnSelect_OnClick()
                 }
             }
         }
-        
+
 
 
 
@@ -227,9 +227,9 @@ function btnSelect_OnClick()
 
             if (varChkSpocNames.length > 0)
             {
-                if ($(varChkSpocNames[0]).val().trim()=='' 
-                    && $(varChkSpocEmails[0]).val().trim()=='' 
-                    && $(varChkSpocPhones[0]).val().trim()=='' 
+                if ($(varChkSpocNames[0]).val().trim()==''
+                    && $(varChkSpocEmails[0]).val().trim()==''
+                    && $(varChkSpocPhones[0]).val().trim()==''
                     && $(varChkSpocNames[0]).val().trim()=='')
                     {
                         $(varChkSpocNames[0]).val(varSpocArray[i].SpocName);
@@ -241,7 +241,7 @@ function btnSelect_OnClick()
             }
             else
             {
-                
+
             }
          }
 
@@ -256,7 +256,7 @@ function btnSelect_OnClick()
             $('input[name="spoc_detail['+x+'][spoc_designation]"]').val(varSpocArray[i].SpocDesignation);
         }
         else
-        {                
+        {
             fieldSET = '<div class="form-group row" id="spoc_'+x+'">';
 		    fieldSET += '<div class="col-xs-3">\
 					        <div class="input-group">\
@@ -287,21 +287,21 @@ function btnSelect_OnClick()
         }
 
            x++; */
-      
+
     }
-     
+
     //alert(JSON.stringify(varSpocArray));
 }
 
 function ExtractNumberFromText(varText) {
-    var matches = varText.match(/(\d+)/); 
-        
+    var matches = varText.match(/(\d+)/);
+
     if (matches) {
         return matches[0];
-    } 
+    }
 
     return '';
-} 
+}
 
 function GetSpocArray()
 {
@@ -320,12 +320,12 @@ function GetSpocArray()
             {
                 var varSpoc = {};
                 for(var j=1; j < varTdList.length; j++)
-                {        
+                {
                     varSpoc[varColumnS[j]] = varTdList[j].innerText;
                 }
                 varSpocArray.push(varSpoc);
             }
-        }        
+        }
     }
 
     return varSpocArray;
@@ -346,7 +346,7 @@ function GetSpocArray()
             <div class="modal-body candidate_job_status">
                 -No records found-
             </div>
-           
+
             <div class="modal-footer">
                  <button type="button" class="btn btn-primary" onclick="btnSelect_OnClick();" data-dismiss="modal">Select</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" >Close</button>

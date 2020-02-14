@@ -223,7 +223,7 @@ class CompaniesController extends MY_Controller {
 
   public function exportContractDataCsv($company_id=0) {
     $opportunity_results=$this->company->getContractList($company_id);
-    $this->downloadRequest('Opportunity', $opportunity_results);
+    $this->downloadRequest('Contract', $opportunity_results);
   }
 
   private function downloadRequest($file_name, $data) {
@@ -231,6 +231,6 @@ class CompaniesController extends MY_Controller {
     force_download($name, $data);
     exit;
   }
-  
+
 
 }
