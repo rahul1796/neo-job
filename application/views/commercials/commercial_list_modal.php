@@ -32,7 +32,7 @@
         }
         function getCommercials(customer_id) {
           $.ajax({
-            'url' : '<?= base_url("/salescontroller/getCommercialsByCustomerID/"); ?>'+customer_id,
+            'url' : '<?= base_url("/CommercialVerificationController/getCommercialsByCustomerID/"); ?>'+customer_id,
             type: "GET",
           }).done(function(response) {
             let data = JSON.parse(response);

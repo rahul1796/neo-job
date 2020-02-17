@@ -94,7 +94,8 @@
 //            }
 //            varReturnValue=false;
 //        }
-        if($("#employer_contact_phone").val().trim() == '')
+
+        if($("#employer_contact_phone").val() == null || $("#employer_contact_phone").val()==undefined || parseInt($("#employer_contact_phone").val()) < 1)
         {
             $("#lblEmployerPhone").show();
             if (!varFocus)
@@ -104,6 +105,7 @@
             }
             varReturnValue=false;
         }
+
 
         if($("#employer_location").val().trim() == '')
         {
@@ -405,10 +407,16 @@
                             </select>
                             <label id="lblEmploymentTypeError" style="color:red;display: none;">* Select Employment Type!</label>
                         </div>
+
                         <div class="col-md-3">
                             <label for="employer_contact_phone" class="label">Employer Phone:</label>
-                            <input type="text" class="form-control" id="employer_contact_phone" placeholder="Enter Employer Phone" name="employer_contact_phone" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  maxlength = "10" value="">
-                            <label id="lblEmployerPhone" style="color:red;display: none;">* Please Enter Employer Phone</label>
+                            <select class="form-control" name="employer_contact_phone" id="employer_contact_phone">
+                                <option value="0">Select Employer Phone</option>
+                                <?php foreach($employer_phone as $option): ?>
+                                    <option value="<?php echo $option->spoc_phone; ?>"><?php echo $option->spoc_phone; ?></option>
+                                <?php endforeach; ?>
+                            </select>                           
+                            <label id="lblEmployerPhone" style="color:red;display: none;">* Select Employer Phone!</label>
                         </div>
 
                         <div class="col-md-3">
@@ -503,7 +511,7 @@
                     <div class="form-group" style="display:block;">
                         <label for="txtCustomerName" class="col-sm-2 control-label" style="margin-top: 5px;">Customer Name</label>
                         <div class="col-sm-10" style="margin-bottom: 10px;">
-                            <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->customer_name ?? 'N/A' ; ?>" onkeydown="return false;" disabled="disabled"/>
+                            <input type="text" class="form-control" id="customer_name"  name="customer_name" value="<?= $job->company_name ?? 'N/A' ; ?>" onkeydown="return false;" disabled="disabled"/>
                         </div>
                     </div>
                     <div class="form-group" style="display:block;">

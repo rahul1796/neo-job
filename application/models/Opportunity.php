@@ -31,11 +31,50 @@ class Opportunity extends MY_Model
       return $query->get()->result();
     }
 
-    public function getSpocsByOpportunityID($id) {
-      $spocs = $this->db->select('spoc_detail')->where('opportunity_id', $id)->get('neo_customer.customer_branches')->row_array();
-      $spoc_array = json_decode($spocs['spoc_detail']);
-      return array_unique($spoc_array, SORT_REGULAR);
+    public function getCurrentHierarchy($user_id, $manager_role) {
+      $query = $this->db->query("SELECT * FROM neo_user.fn_get_current_coo_reportees(?,?) WHERE user_role_id IN ?",
+                [
+                  $user_id,
+                  $manager_role,
+                  [0,1,2,3,4,5,7,8,14,18,19],
+                ]);
+      return $query->result();
     }
+
+    public function getSpocsByOpportunityID($id) {
+      $query = $this->db->query("SELECT 	DISTINCT	cb.customer_id,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+                                            COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+                                            COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation
+                                      FROM 		neo_customer.customer_branches cb
+                                      CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+                                      WHERE 		(cb.is_main_branch AND cb.customer_id IN (SELECT B.customer_id FROM neo_customer.customer_branches AS B WHERE B.opportunity_id=$id))
+                                      OR          (cb.is_main_branch=FALSE AND cb.opportunity_id=$id)
+                                      ORDER BY	2,4");
+      return $query->result();
+    }
+
+    public function getSpocsByJobID($id) {
+      $query = $this->db->query("  SELECT 	DISTINCT	cb.customer_id,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+                                            COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+                                            COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+                                            initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation
+                                      FROM 		neo_customer.customer_branches AS CB
+                                      LEFT JOIN   neo_job.jobs AS j ON j.opportunity_id=cb.opportunity_id
+                                      CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+                                      WHERE 		(cb.is_main_branch AND cb.customer_id IN (SELECT B.customer_id FROM neo_job.jobs AS B WHERE B.id=409))
+                                      OR          (cb.is_main_branch AND cb.opportunity_id=409)
+                                      ORDER BY	2,4");
+      return $query->result();
+    }
+
+    // public function getSpocsByOpportunityID($id) {
+    //   $spocs = $this->db->select('spoc_detail')->where('opportunity_id', $id)->get('neo_customer.customer_branches')->row_array();
+    //   $spoc_array = json_decode($spocs['spoc_detail']);
+    //   return array_unique($spoc_array, SORT_REGULAR);
+    // }
 
     public function save($data) {
       $data = $this->makeTimeStamp($data, 'save');
@@ -45,6 +84,7 @@ class Opportunity extends MY_Model
       $this->createOrUpdateLocation($data['opportunity_id'], $data, 'save');
       $data = $this->generateOpportunityCodes($data);
       $this->db->where('id', $data['opportunity_id'])->update($this->tableName, $this->getFillable($data));
+      $this->createInitialOpportunityLog($data);
       $this->db->trans_complete();
 
       return $this->db->trans_status();
@@ -92,14 +132,23 @@ class Opportunity extends MY_Model
       return $data;
     }
 
+    //opportunity identified log
+    public function createInitialOpportunityLog($data) {
+      $logs_data['customer_id'] = $data['opportunity_id'];
+      $logs_data['created_by'] = $data['created_by'];
+      $logs_data['lead_status_id'] = 1;
+      $this->db->reset_query();
+      $this->db->insert('neo_customer.lead_logs', $logs_data);
+    }
+
     //generates contract code as well
     private function generateOpportunityCodes($data) {
       $result = $this->db->select('COM.company_name, BV.code', false)->from($this->tableName)
               ->join('neo_customer.companies AS COM', "COM.id={$this->tableName}.company_id", 'LEFT', FALSE)
               ->join('neo_master.business_verticals AS BV', "BV.id={$this->tableName}.business_vertical_id", 'LEFT', FALSE)
               ->where("{$this->tableName}.id", $data['opportunity_id'])->get()->row_array();
-      $data['opportunity_code'] = 'OPP-'.strtoupper(substr($result['company_name'], 0, (strlen($result['company_name'])>3 ? 4 : 3))).'-'.$result['code'].'-'.$data['opportunity_id'];
-      $data['contract_id'] = 'CON-'.strtoupper(substr($result['company_name'], 0, (strlen($result['company_name'])>3 ? 4 : 3))).'-'.$data['opportunity_id'];;
+      $data['opportunity_code'] = 'OPP-'.strtoupper(substr(trim($result['company_name']), 0, (strlen(trim($result['company_name']))>3 ? 4 : 3))).'-'.$result['code'].'-'.$data['opportunity_id'];
+      $data['contract_id'] = 'CON-'.strtoupper(substr(trim($result['company_name']), 0, (strlen(trim($result['company_name']))>3 ? 4 : 3))).'-'.$data['opportunity_id'];;
       return $data;
     }
 
@@ -107,20 +156,22 @@ class Opportunity extends MY_Model
       $this->db->trans_start();
       $this->db->where('id', $data['customer_id']);
       $maindata['lead_status_id'] = $data['lead_status_id'];
+      $maindata['updated_by'] = $data['created_by'];
+      $maindata['updated_at'] = date('Y-m-d H:i:s');
       if($data['is_paid']!=-1){
         $maindata['is_paid'] = $data['is_paid'];
         if($data['lead_status_id']==16 && $maindata['is_paid']==0) {
            $maindata['is_contract'] = true;
+           unset($data['is_paid']);
+           $this->db->update($this->tableName, $maindata);
+
+           $this->db->reset_query();
+           $this->createLeadLog($data, "Free Opportunity");
+
+           $maindata['lead_status_id'] = 22;
+           $data['lead_status_id']=22;
+           $this->db->reset_query();
         }
-        unset($data['is_paid']);
-        $this->db->update($this->tableName, $maindata);
-
-        $this->db->reset_query();
-        $this->createLeadLog($data, "Free Opportunity");
-
-        $maindata['lead_status_id'] = 22;
-        $data['lead_status_id']=22;
-        $this->db->reset_query();
       }
       unset($data['is_paid']);
       $this->db->where('id', $data['customer_id']);
@@ -133,11 +184,71 @@ class Opportunity extends MY_Model
       return $this->db->trans_status();
     }
 
+    public function updateLeadStatusProposal($data) {
+      $this->db->trans_start();
+      $opportunity = $this->find($data['customer_id']);
+
+      $maindata['lead_status_id'] = $data['lead_status_id'];
+      $maindata['updated_by'] = $data['created_by'];
+      $maindata['updated_at'] = date('Y-m-d H:i:s');
+      $maindata['business_vertical_id'] = $data['business_vertical_id'];
+
+      $this->db->reset_query();
+      $this->db->where('id', $data['customer_id']);
+      $this->db->update($this->tableName, $maindata);
+
+      if(intval($opportunity['business_vertical_id'])!=intval($data['business_vertical_id'])){
+        $maindata['opportunity_id'] = $data['customer_id'];
+        $maindata = $this->generateOpportunityCodes($maindata);
+        unset($maindata['opportunity_id']);
+        $this->db->reset_query();
+        $this->db->where('id', $data['customer_id']);
+        $this->db->update($this->tableName, $maindata);
+        $data['remarks'] = 'Product Changed';
+      }
+
+      $this->db->reset_query();
+      unset($data['business_vertical_id']);
+      unset($data['is_paid']);
+      $this->createLeadLog($data, $data['remarks']);
+
+      $this->db->trans_complete();
+      return $this->db->trans_status();
+    }
+
     public function createLeadLog($data, $remark='') {
       $data['remarks'] = $remark;
       return $this->db->insert('neo_customer.lead_logs', $data);
     }
 
+    public function getLeadHistory($lead_id) {
+      return $this->db->select('logs.* , status.name as status_name')->from('neo_customer.lead_logs as logs')
+      ->join('neo_master.lead_statuses as status', 'logs.lead_status_id = status.id', 'LEFT')
+      ->order_by('logs.id', 'ASC')
+      ->where('logs.customer_id', $lead_id)->get()->result();
+    }
+
+
+      public function replaceCustomerUsers($customer_id, $created_by, $type, $data) {
+        $this->db->trans_start();
+        $this->db->reset_query();
+        $this->db->delete('neo_customer.leads_users', ['lead_id'=>$customer_id, 'user_type'=>$type]);
+        // foreach($data as $id) {
+        //   $row = array();
+          $row['user_id'] = $data;
+          $row['lead_id'] = $customer_id;
+          $row['user_type'] = $type;
+          $row['created_by'] = $created_by;
+          $this->db->reset_query();
+          $this->db->insert('neo_customer.leads_users', $row);
+        // }
+        $this->db->trans_complete();
+        return $this->db->trans_status();
+      }
+
+      public function getAssociatedPO($id){
+        return array_column($this->db->where('lead_id', $id)->where('user_type', 'Placement Officer')->get('neo_customer.leads_users')->result_array(), 'user_id');
+      }
 
     //sumit's code
 
@@ -305,7 +416,7 @@ class Opportunity extends MY_Model
                                         o.created_by,
                                         (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids
                                 FROM    neo_customer.opportunities AS o
-                                WHERE o.is_contract=false 
+                                WHERE o.is_contract=false
                             )
                             SELECT  COUNT(id) AS total_recs
                             FROM    R
@@ -474,18 +585,19 @@ class Opportunity extends MY_Model
                           if( $QueryRow->lead_status_id==16 || $QueryRow->lead_status_id ==21) {
                             $Actions .= '<a class="btn btn-sm " title="Opportunity Commercials" href="'.base_url("/CommercialVerificationController/commericalsStore/".$QueryRow->id).'"  style="margin-left: 2px;color:white;background-color:#c72a9e;"><i class="fa fa-rupee"></i></a>';
                           }
-                          if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
-                            $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Lead" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
-                          }
+                           if(in_array($this->session->userdata('usr_authdet')['user_group_id'], lead_assignment_roles())) {
+                             $Actions .= '<a class="btn btn-sm btn-warning" title="Assign Opportunity" onclick="open_placement_officer_assign_model(' . $QueryRow->id . ')"  style="margin-left: 2px;color:white;"><i class="fa fa-tasks"></i></a>';
+                           }
                        // $intActiveStatus = ($QueryRow->active_status) ? 1 : 0;
                         $ResponseRow = array();
                         $SerialNumber++;
                         $ResponseRow[] = $SerialNumber;
                         $ResponseRow[] = $Actions;
                         $ResponseRow[] = $QueryRow->company_name ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
+                        $ResponseRow[] = ($QueryRow->lead_status_id==16) ? ($QueryRow->lead_status_name.' (Pending Approval)') : $QueryRow->lead_status_name;
+                        //$ResponseRow[] = $QueryRow->lead_status_name ?? 'N/A';
                         $ResponseRow[] = $QueryRow->opportunity_code ?? 'N/A';
-                        $ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
+                        //$ResponseRow[] = $QueryRow->contract_id ?? 'N/A';
                         $ResponseRow[] = $QueryRow->business_vertical ?? 'N/A';
                         $ResponseRow[] = $QueryRow->industry ?? 'N/A';
                         $ResponseRow[] = $QueryRow->labournet_entity ?? 'N/A';
@@ -503,6 +615,28 @@ class Opportunity extends MY_Model
 
       return $ResponseData;
     }
+  }
+
+
+  public function getCompanyAddressDetail($company_id=0) 
+  {
+    $query = $this->db->query("SELECT cb.customer_id,
+                                      cb.address,
+                                      cb.country_id,
+                                      c.name AS country,
+                                      cb.state_id,
+                                      s.name AS state,
+                                      cb.district_id,
+                                      d.name AS district,
+                                      cb.city,
+                                      cb.pincode,
+                                      cb.same_as_main                                  
+                                  FROM neo_customer.customer_branches AS cb
+                                  LEFT JOIN neo_master.states AS s ON s.id=cb.state_id
+                                  LEFT JOIN neo_master.country AS c ON c.id=cb.country_id
+                                  LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
+                                  WHERE cb.customer_id =? AND cb.is_main_branch",array($company_id));      
+       return $query->result_array();
   }
 
 

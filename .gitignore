@@ -8,6 +8,7 @@
 /nbproject/private/
 /nbproject
 /uploads/
+/vendor
 .htaccess
 /application/config/config.php
 web.config

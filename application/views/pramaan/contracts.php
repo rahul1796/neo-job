@@ -70,7 +70,7 @@ select.input-sm
                                         <option value="8">Industry</option>
                                     </select>
                                         <input type="text" class="form-control hidden" id="searchbox" name="searchbox" value="" placeholder="Search here" style="width: 380px; margin-top: -33px; margin-left: 270px;">
-                                        
+
                                         <select class="form-control hidden" name="opportunity_code" id="opportunity_code" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                             <option value="0">Select Opportunity Code</option>
                                             <?php foreach($opportunity_code_list_options as $option): ?>
@@ -95,7 +95,7 @@ select.input-sm
                                               <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
                                             <?php endforeach; ?>
                                           </select>
-                                         
+
                                               <div class="hidden" id="customer_list_container" style="float: right; margin-top: -35px; margin-right: -505px;">
                                               <select class="form-control select2-neo" id="customer_list" name="customer_list" style="margin-left: 270px; margin-top: -33px; width: 380px;">
                                                 <option value="">Select Customer Name</option>
@@ -131,7 +131,7 @@ select.input-sm
                                                 <?php endforeach; ?>
                                               </select>
                                             </div>
-                                             
+
                                         <label id="lblsearchbox" style="color:red; display: none;margin-left: 12%;">* Please Enter Search Value</label>
 
                                        </div>
@@ -222,7 +222,7 @@ select.input-sm
 
                 case "3":
                 varSearchValue = $("#contract_id option:selected").text();
-                break;            
+                break;
 
              case "4":
                 varSearchValue = $("#spoc_name_list option:selected").text();
@@ -235,7 +235,7 @@ select.input-sm
              case "6":
             varSearchValue = $("#spoc_phone_list option:selected").text();
             break;
-            
+
             case "7":
                 varSearchValue = $("#buisness_vertical_id").val();
                 break;
@@ -315,7 +315,7 @@ select.input-sm
                     return;
                 }
                 break;
-            
+
 
                  case "4":
                 if ($("#spoc_name_list option:selected").index() < 1)
@@ -344,7 +344,7 @@ select.input-sm
                 }
                 break;
 
-              
+
 
             case "7":
                 if ($("#buisness_vertical_id").val() == '0')
@@ -363,7 +363,7 @@ select.input-sm
                     return;
                 }
                 break;
-             
+
 
             default:
                 if (varSearchValue.trim() == '')
@@ -416,8 +416,8 @@ function ViewJoinedCandidates(Id)
 </script>
 
 </div>
-<?php $this->load->view('sales/spoc_list_modal');?>
-<?php $this->load->view('sales/commercial_list_modal');?>
+<?php $this->load->view('opportunities/spoc_list_modal');?>
+<?php $this->load->view('commercials/commercial_list_modal');?>
 <script>
 $(document).ready(function () {
         $('#search_by').change(function () {
@@ -429,8 +429,8 @@ $(document).ready(function () {
                 $('#searchbox').focus();
             }
         });
-    });    
-    
+    });
+
     $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0' || $('#search_by').val() == '1' || $('#search_by').val() == '2' || $('#search_by').val() == '3' || $('#search_by').val() == '4' || $('#search_by').val() == '5' || $('#search_by').val() == '6' || $('#search_by').val() == '8') {
@@ -453,7 +453,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
      $(document).ready(function () {
         $('#search_by').change(function () {
             if ($('#search_by').val() == '0') {
@@ -554,4 +554,4 @@ $(document).ready(function () {
       });
 </script>
 <script type="text/javascript" src="<?php echo base_url().'adm-assets/vendors/js/extensions/moment.min.js'?>"></script>
-<?php $this->load->view('sales/lead_history_modal'); ?>
+<?php $this->load->view('opportunities/lead_history_modal'); ?>

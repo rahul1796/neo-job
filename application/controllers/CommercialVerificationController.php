@@ -25,7 +25,7 @@ class CommercialVerificationController extends MY_Controller {
       //
 
       $customer = $this->opportunity->find($id);
-      // $this->commercial_redirect($customer);
+       $this->commercial_redirect($customer);
       $data = $this->set_commercial_document_data($id);
       $data['customer'] = $customer;
 
@@ -47,7 +47,7 @@ class CommercialVerificationController extends MY_Controller {
 
     public function commercials_documents($id) {
       $customer = $this->opportunity->find($id);
-      // $this->commercial_redirect($customer);
+      $this->commercial_redirect($customer);
       $data = $this->set_commercial_document_data($id);
       $data['customer'] = $customer;
       $this->loadFormViews('commercials_documents',$data);
@@ -68,7 +68,7 @@ class CommercialVerificationController extends MY_Controller {
     }
 
     public function commercial_redirect($customer) {
-      if($customer['is_customer'] == true) {
+      if($customer['is_contract'] == true) {
         $this->session->set_flashdata('status', 'You are not authorised to access that page');
         redirect('/pramaan/dashboard', 'refresh');
       } else if (!(in_array($customer['lead_status_id'], [20,21,16]))) {
@@ -88,7 +88,7 @@ class CommercialVerificationController extends MY_Controller {
       if ($this->commercial->verfied_customer($customer_id, $request)) {
         $data['status'] = true;
         if($request['status']=='accept') {
-            $this->msg = 'Documents & Commercials Approved. Lead Converted to Customer';
+            $this->msg = 'Documents & Commercials Approved. Opportunity Converted to Contract';
             $data['message'] = $this->msg ;
         } else {
           $this->msg = 'Documents & Commercials Rejected. Resubmission of commercial required';
@@ -122,7 +122,9 @@ class CommercialVerificationController extends MY_Controller {
             $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[2]}]", 'Customer', 'required|is_natural');
             $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[3]}]", 'Fee Type', 'required');
             if($this->input->post("commercial[{$i}][{$this->commercial_sub_fields[3]}]")=='0') {
-                $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[4]}]", 'Remark', 'required');
+                if($this->input->post("commercial[{$i}][{$this->commercial_sub_fields[1]}]")!=0) {
+                    $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[4]}]", 'Remark', 'required');
+                }
             } else {
               $this->form_validation->set_rules("commercial[{$i}][{$this->commercial_sub_fields[5]}]", 'Remark', '');
             }
@@ -168,7 +170,7 @@ class CommercialVerificationController extends MY_Controller {
           $this->msg = 'Error deleting document';
       }
       $this->session->set_flashdata('status', $this->msg);
-      redirect(base_url().'leads/commercials_documents/'.$customer_id, 'refresh');
+      redirect(base_url().'CommercialVerificationController/commercials_documents/'.$customer_id, 'refresh');
     }
 
     public function addFileInfo($data) {

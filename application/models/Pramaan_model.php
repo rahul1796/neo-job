@@ -7947,7 +7947,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
     {
         $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
         $HierarchyIds= $this->session->userdata('user_hierarchy');
-        // array_push($HierarchyIds, $user_id);
+         //array_push($HierarchyIds, $user_id);
         $TeamMemberIdList = implode(",",$HierarchyIds);
         // var_dump($TeamMemberIdList);
         // exit;
@@ -7994,14 +7994,14 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         /*********************************/
 
         $user_group_id = $this->session->userdata['usr_authdet']['user_group_id'];
-
+        
         $strUserRoleCondition = 'TRUE';
 
         $sWhere = "  ";
 
         if ($active_user_role_id == 14 || $active_user_role_id == 11)
         {
-           $sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
+           //$sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
         }
 
         $sSearchVal = $_POST['search']['value'];
@@ -8020,6 +8020,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
             $HierarchyCondition = " AND ((assigned_user_ids||created_user_id) && ARRAY[$TeamMemberIdList]) ";
 
         $total_records = $this->db->query("SELECT Count(VW.*) AS total_recs FROM neo_job.vw_job_list AS VW WHERE TRUE $HierarchyCondition")->row()->total_recs;
+
+        
 
         $totalData = $total_records * 1;
         $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
@@ -8093,6 +8095,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                                               $order_by
                                               LIMIT $limit
                                               OFFSET $pg");
+
+                               
 
             $slno = $pg;
             $data = array();

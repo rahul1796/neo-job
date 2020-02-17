@@ -97,9 +97,9 @@
     </div>-->
 
     <div class="col-md-6">
-        <label for="business_vertical_id"  class="label">Business Vertical:</label>
+        <label for="business_vertical_id"  class="label">Product:</label>
         <select class="form-control" disabled  name="business_vertical_id_select" onmousedown="function(){return false;}"  id="business_vertical_id_select">
-            <option value="">Select Business Vertical</option>
+            <option value=""></option>
             <?php foreach($business_vertical_options as $bv):?>
                 <option value="<?php echo $bv->id; ?>" <?php echo ($bv->id==$fields['business_vertical_id']) ? 'selected' : '' ?> ><?php echo $bv->name; ?></option>
             <?php endforeach; ?>
@@ -316,7 +316,7 @@
       <select class="form-control" name="country_id" id="country_id">
           <option value="0">Select Country</option>
           <?php foreach($countries_options as $country_option): ?>
-              <option value="<?php echo $country_option->id; ?>" <?php echo ($country_option->id==$fields['country_id']) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
+              <option value="<?php echo $country_option->id; ?>" <?php echo (intval($country_option->id)==99) ? 'selected' : '' ?> ><?php echo $country_option->name; ?></option>
           <?php endforeach; ?>
       </select>
       <?php echo form_error('country_id'); ?>
@@ -460,7 +460,7 @@
 </script>
  <script type="text/javascript">
 
-  var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 0 ?>;
+  var country_id = <?= (!empty($fields['country_id'])) ? $fields['country_id'] : 99 ?>;
   var state_id = <?= (!empty($fields['state_id'])) ? $fields['state_id'] : 0 ?>;
   var district_id = <?= (!empty($fields['district_id'])) ? $fields['district_id'] : 0 ?>;
   var customer_id = <?= (!empty($fields['customer_id'])) ? $fields['customer_id'] : 0 ?>;
@@ -622,7 +622,7 @@
      $('#client_manager_name').html('');
      $('#client_manager_name').append($('<option>').text('').attr('value', 0).prop('selected', true));
      response.forEach(function(spoc) {
-        $('#client_manager_name').append($('<option>').text(spoc.spoc_name).attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
+        $('#client_manager_name').append($('<option>').text(spoc.spoc_name+' ('+spoc.spoc_phone+')').attr('value', spoc.spoc_name).attr('data-spocemail', spoc.spoc_email).attr('data-spocphone', spoc.spoc_phone));
      });
      $('#client_manager_name').val(client_manager_name).change();
    });

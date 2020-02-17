@@ -12,10 +12,14 @@ class CompaniesController extends MY_Controller {
     $this->load->model('Company', 'company');
     $this->load->model('Candidate', 'candidate');
     $this->load->model('Sale', 'sale');
+    $this->load->helper('download');
+   // $this->load->library('CSVReader');
+    //$this->load->library('M_pdf','mpdf');
   }
 
-  public function index() {   
-    $data['company_name_options'] = $this->sale->getCompanyNames();  
+  public function index() {
+    $this->authorize(company_view_roles());
+    $data['company_name_options'] = $this->sale->getCompanyNames();
     $data['lead_source_options'] = $this->sale->getLeadSources();
     $data['state_options'] = $this->sale->getStates();
     $data['spoc_name_list_options'] = $this->sale->getCompanySpocName();
@@ -24,16 +28,18 @@ class CompaniesController extends MY_Controller {
     $data['industries_list_options'] = $this->sale->getIndustries();
     $data['functional_area_list_options'] = $this->sale->getFunctionalAreas();
     $this->loadFormViews('index', $data);
-   
+
   }
 
   public function create() {
+    $this->authorize(company_add_roles());
     $data = $this->setData();
     $data['data']['action'] = 'create';
     $this->loadFormViews('create', $data);
   }
 
   public function store() {
+    $this->authorize(company_add_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->company->save($data)) {
@@ -51,18 +57,20 @@ class CompaniesController extends MY_Controller {
   }
 
   public function edit($company_id) {
+    $this->authorize(company_update_roles());
     $data = $this->setData($company_id);
     $data['id'] = $company_id;
     $this->loadFormViews('edit', $data);
   }
 
   public function update($company_id) {
+    $this->authorize(company_update_roles());
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->company->update($company_id, $data)) {
-        $this->msg = 'Lead updated successfully';
+        $this->msg = 'Company updated successfully';
       } else {
-        $this->msg = 'Error Lead candidate, please try again after sometime';
+        $this->msg = 'Error Company updating, please try again after sometime';
       }
       $this->session->set_flashdata('status', $this->msg);
       redirect($this->redirectUrl, 'refresh');
@@ -200,12 +208,29 @@ class CompaniesController extends MY_Controller {
 		$opportunity_results=$this->company->getOpportunityData($company_id);
 		echo json_encode($opportunity_results);
   }
-  
+
   public function getContractDetail($company_id=0)
 	{
 		//$this->pramaan->_check_module_task_auth(false);
 		$contract_results=$this->company->getContractData($company_id);
 		echo json_encode($contract_results);
-	}
+  }
+
+  public function exportDataCsv($company_id=0) {
+    $opportunity_results=$this->company->getOpportunityList($company_id);
+    $this->downloadRequest('Opportunity', $opportunity_results);
+  }
+
+  public function exportContractDataCsv($company_id=0) {
+    $opportunity_results=$this->company->getContractList($company_id);
+    $this->downloadRequest('Contract', $opportunity_results);
+  }
+
+  private function downloadRequest($file_name, $data) {
+    $name = $file_name.'-'.date('d-M-Y').'.csv';
+    force_download($name, $data);
+    exit;
+  }
+
 
 }

@@ -2348,6 +2348,13 @@ return false;
           redirect('/pramaan/dashboard', 'refresh');
         }
 	 }	 
+
+	 public function companySpocDetails($company_id=0)
+	{
+		//$this->pramaan->_check_module_task_auth(false);
+		$customer_results=$this->partner->getCompanySpoc($company_id);
+		echo json_encode($customer_results);
+	}
 	 
     
 }

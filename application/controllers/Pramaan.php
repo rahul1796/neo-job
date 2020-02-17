@@ -25,6 +25,7 @@ class Pramaan extends CI_Controller
         $this->load->model('Sale', 'sale');
         $this->load->model('Candidate', 'candidate');
         $this->load->model("User", "user");
+        $this->load->model('Opportunity', 'opportunity');
         $this->load->helper('form');
         $this->load->library('form_validation');
     }
@@ -80,6 +81,7 @@ class Pramaan extends CI_Controller
         $data['data']['total_leads'] = $this->dashboard->getLeadCount();
         $data['data']['total_companies'] = $this->dashboard->getCompanyCount();
         $data['data']['total_opportunities'] = $this->dashboard->getOpportunityCount();
+        $data['data']['total_contracts'] = $this->dashboard->getContractCount();
 
         $data['data']['interested_candidates'] = $this->dashboard->getInterestedCandidatesCount();
         $data['data']['pending_candidates'] = $this->dashboard->getPendingCandidatesCount();
@@ -7788,6 +7790,7 @@ die;*/
         $data['page']      = 'candidate_joined_customerwise';
         $data['employer_type_list'] = $this->db->query("SELECT id,name FROM neo_master.employment_type WHERE is_active=TRUE AND name!='Self Employed' ORDER BY name")->result_array();
         $data['title']     = 'Joined Candidates';
+        $data['employer_phone'] = $this->opportunity->getSpocsByJobID($id);
         $customer_details = array(
             'company_name' => '',
             'spoc_email' => '',
@@ -7839,6 +7842,7 @@ die;*/
         $data['page']      = 'candidate_joined_jobwise';
         $data['title']     = 'Joined Candidates';
         $data['is_filled']=$this->candidate->getJobVacancyDetail($job_id);
+        $data['employer_phone'] = $this->opportunity->getSpocsByJobID($job_id);
         $job_details;
 
         $Query = "SELECT    J.job_title,

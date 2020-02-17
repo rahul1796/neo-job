@@ -2151,7 +2151,7 @@ class Partner_model extends CI_Model
 	}
 
 	public function getQualificationPack() {
-		$query = $this->db->select("DISTINCT(qualification_pack)")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
+		$query = $this->db->select("DISTINCT(qualification_pack)")->where("qualification_pack<>''")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
 		return $query->result();
 		}
 
@@ -2160,6 +2160,71 @@ class Partner_model extends CI_Model
 		$query = $this->db->select("DISTINCT(enrollment_no)")->order_by('enrollment_no')->get('neo.vw_self_employed_candidate_list');
 		return $query->result();
 		}
+
+
+		function getCompanySpoc($company_id=0)
+	    {
+		$employer_det_rec=$this->db->query("SELECT company_name FROM neo_customer.companies WHERE id=?",$company_id);
+
+		// $customer_det_rec=$this->db->query("SELECT cb.customer_id,
+		// 									initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+		// 									COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+		// 									COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+		// 									initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS
+		// 									spoc_designation,
+		// 									c.is_customer
+		// 									FROM neo_customer.customer_branches cb
+		// 									LEFT JOIN neo_customer.customers c ON c.id = cb.customer_id
+		// 									CROSS JOIN LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+		// 									WHERE cb.customer_id=$company_id");
+
+
+			$customer_det_rec=$this->db->query("WITH RES AS
+													(
+														WITH SPOC AS
+														(
+															SELECT 		cb.customer_id,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+																		COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+																		COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation            
+															FROM 		neo_customer.customer_branches cb
+															INNER JOIN 	neo_customer.companies c ON c.id = cb.customer_id
+															CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+															WHERE 		cb.customer_id={$company_id}
+														)
+														SELECT 	 SPOC.customer_id,
+																SPOC.spoc_name,
+																SPOC.spoc_email,
+																SPOC.spoc_phone,
+																SPOC.spoc_designation,
+																ROW_NUMBER() OVER(PARTITION BY SPOC.customer_id,SPOC.spoc_phone ORDER BY SPOC.customer_id,SPOC.spoc_phone) AS counter
+														FROM	 SPOC
+														ORDER BY 1,4
+													)
+													SELECT 	 RES.customer_id,
+																RES.spoc_name,
+																RES.spoc_email,
+																RES.spoc_phone,
+																RES.spoc_designation
+													FROM	 RES
+													WHERE	 RES.counter=1
+													ORDER BY 2");
+
+		if($employer_det_rec->num_rows())
+		{
+			$output['status']=true;
+			$output['employer_detail']=$employer_det_rec->row_array();
+			if($customer_det_rec->num_rows())
+				$output['customer_detail']=$customer_det_rec->result_array();
+			else
+				$output['customer_detail']=array();
+		}
+		else
+			$output['status']=false;
+		return $output;
+	}
+	
 
 
 }

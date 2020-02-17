@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lead History</h3>
+                <h3 class="modal-title">Opportunity History</h3>
             </div>
             <div class="modal-body form">
                 <div id="msgDisplay"></div>
@@ -19,15 +19,16 @@
                                 <tr>
                                     <th>Status</th>
                                     <th>Date</th>
-                                    <th>Note</th>
+                                    <th>Remarks</th>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Address</th>
                                     <th>City</th>
+                                    <th>Proposal Shared To</th>
                                     <th>POV Per Month</th>
                                     <th>Potential Number</th>
                                     <th>Attachment</th>
-                                    <th>Status Updated Date</th>
+                                    <th>Updated At</th>
                                     <!--<th>Action </th>-->
                                 </tr>
                                 </thead>
@@ -63,7 +64,7 @@
   function getLeadHistory(lead_id) {
       $('#historytblBody').html('');
       $.ajax({
-      url: "<?= base_url('salescontroller/getLeadHistory/')?>"+lead_id,
+      url: "<?= base_url('opportunitiescontroller/getLeadHistory/')?>"+lead_id,
       dataType: 'script',
       type: "GET",
       success: function(response) {
@@ -75,15 +76,16 @@
             $('#historytblBody').append('<td>'+history.status_name+'</td>');
             if(history.lead_status_id == 8){
               $('#historytblBody').append('<td>'+('Proposal Shared Date: '+history.schedule_date)+'</td>');
-              $('#historytblBody').append('<td>'+('Proposal Shared To: '+history.remarks)+'</td>');
             } else {
               $('#historytblBody').append('<td>'+((history.schedule_date!=null && history.schedule_date!='')? 'Meeting Date: '+history.schedule_date : 'N/A')+'</td>');
-              $('#historytblBody').append('<td>'+((history.remarks!='')? 'Remarks: '+history.remarks : 'N/A')+'</td>');
             }
+            $('#historytblBody').append('<td>'+((history.remarks!='')? history.remarks : 'N/A')+'</td>');
+
             $('#historytblBody').append('<td>'+((history.name!=null && history.name!='')? history.name : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.phone!=null && history.phone!='')? history.phone : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.address!=null && history.address!='')? history.address : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.city!=null && history.city!='')? history.city : 'N/A')+'</td>');
+            $('#historytblBody').append('<td>'+((history.proposal_shared_to!=null && history.proposal_shared_to!='')? history.proposal_shared_to : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.potential_order_value_per_month!=null && history.potential_order_value_per_month!='') ? history.potential_order_value_per_month : 'N/A')+'</td>');
             $('#historytblBody').append('<td>'+((history.potential_number!=null && history.potential_number!='') ? history.potential_number : 'N/A')+'</td>');
 

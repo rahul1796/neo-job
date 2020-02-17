@@ -79,8 +79,8 @@
                                         <option value="1">Company Name</option>
                                         <option value="2">Status</option>
                                         <option value="3">Opportunity Code</option>
-                                        <option value="4">Contract Id</option>                                        
-                                        <option value="5">Product</option>                                        
+                                        <!-- <option value="4">Contract Id</option>                                         -->
+                                        <option value="5">Product</option>
                                         <option value="6">Industry</option>
                                         <option value="7">Labournet Entity</option>
 
@@ -120,7 +120,7 @@
                                             </div>
 
                                              <select class="form-control hidden" name="buisness_vertical" id="buisness_vertical" style="margin-left: 270px; margin-top: -33px; width: 380px;">
-                                                <option value="0">Select Buisness Vertical</option>
+                                                <option value="0">Select Product</option>
                                                 <?php foreach($business_vertical_options as $option): ?>
                                                   <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
                                                 <?php endforeach; ?>
@@ -162,7 +162,7 @@
                                     <th>Company Name</th>
                                     <th>Status</th>
                                     <th>Oppurtunity Code</th>
-                                    <th>Contract id</th>
+                                    <!-- <th>Contract id</th> -->
                                     <th>Product</th>
                                     <th>Industry</th>
 				                    <th>Labournet Entity</th>
@@ -551,4 +551,5 @@ $(document).ready(function () {
 
 <?php $this->load->view('opportunities/lead_history_modal'); ?>
 <?php $this->load->view('opportunities/spoc_list_modal'); ?>
-<?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options]); ?>
+<?php $this->load->view('opportunities/lead_status_change_modal', ['lead_status_options'=>$lead_status_options, 'business_vertical_options'=>$business_vertical_options]); ?>
+<?php $this->load->view('opportunities/placement_officer_select_modal', $data); ?>
