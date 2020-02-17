@@ -12,7 +12,7 @@
             return false;
         });
     });
-    
+
     $(document).ready(function() {
     $(".dropdown-toggle").dropdown();
 });
@@ -51,9 +51,9 @@
     }
 </style>
 
-<footer class="footer navbar-fixed-bottom footer-light" style="background-color: #fff;padding: 10px;font-size:12px;">
+<footer class="footer navbar-fixed-bottom footer-light" style="background-color: #fff;padding: 10px;font-size:12px;z-index: 9999;">
     <a href="javascript:void(0);" id="scroll" title="Scroll to Top" style="display: none;">Top<span></span></a>
-<div class="pull-right hidden-xs"> <b>Version</b> 1.2.0</div>
+<div class="pull-right hidden-xs"> <b>Version</b> 1.3.0</div>
 <strong>Copyright © <?php echo date("Y"); ?>. <a href="https://labournet.in" style="color: #ef7f1a;">LabourNet</a>, All Rights Reserved.</strong>
 
 </footer>

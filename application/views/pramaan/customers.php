@@ -30,7 +30,7 @@ select.input-sm
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><?php echo anchor("pramaan/dashboard","Dashboard");?></a>
                 </li>
-                <li class="breadcrumb-item active">Customer List
+                <li class="breadcrumb-item active">Contract List
                 </li>
             </ol>
         </div>
@@ -41,7 +41,7 @@ select.input-sm
             <div class="col-xs-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Customer List</h4>
+                        <h4 class="card-title">Contract List</h4>
                         <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
@@ -165,16 +165,14 @@ select.input-sm
                                     <th>SNo.</th>
                                     <th>Actions</th>
                                     <th>Customer Name</th>
-                                    <th>Customer Type</th>
-                                    <th>Source</th>
+                                    <th>Opportunity Code</th>
+                                    <th>Contract ID</th>
                                     <th>SPOC Name</th>
                                     <th>SPOC Email</th>
                                     <th>SPOC Phone</th>
-                                    <th>State</th>
-                                    <th>District</th>
                                     <th>Buisness Vertical</th>
                                     <th>Industry</th>
-                                    <th>Functional Area</th>
+                                    <!-- <th>Functional Area</th> -->
                                 </tr>
                                 </thead>
                                 <tbody>

@@ -120,6 +120,7 @@ select.input-sm
 .nav-tabs > li > a > span {display:none;}	
 .nav-tabs > li > a {padding: 5px 5px;}
 }
+
 </style>
 <?php
 $options_sectors=array(''=>'-Select Sector-');
@@ -174,6 +175,10 @@ $options_orgTypes=array(''=>'-Select Org type-');
             
              <?php if (in_array($user['user_group_id'], application_tracker_region_roles())): ?>
             <li role="presentation"><a href="#center" aria-controls="center" role="center" data-toggle="tab"><i class="fa fa-map-pin"></i>  <span>Center-Wise</span></a></li>
+            <?php endif; ?>
+
+            <?php if (in_array($user['user_group_id'], application_tracker_self_employed_roles())): ?>
+            <li role="presentation"><a href="#selfemployed" aria-controls="selfemployed" role="selfemployed" data-toggle="tab"><i class="fa fa-user"></i>  <span>Self Employed</span></a></li>
             <?php endif; ?>
 
 
@@ -324,6 +329,90 @@ $options_orgTypes=array(''=>'-Select Org type-');
                                       <th>Offer<br>Rejected</th>
                                       <th>Joined</th>
                                       <th>Not<br>Joined</th>                                
+                                  </tr>
+                              </thead>                            
+                              <tbody> 
+                                 
+                              </tbody>
+                          </table>
+              </div>
+
+              <!-- Self Employed Application Tracker -->
+              <div role="tabpanel" class="tab-pane" id="selfemployed">
+              <form id="form-filter" style="margin-top: -22px;">
+              <div class="form-row col-md-12">
+                     <!-- <div class="form-group col-md-3">
+                    <label for="employment_start_date">From</label>
+                    <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="employment_start_date" placeholder="Select From Date" name="employment_start_date" value="">
+                    </div>
+                    <div class="form-group col-md-3">
+                    <label for="employment_end_date">To</label>
+                    <input type="text" data-provide="datepicker" data-date-format="dd-M-yyyy" class="form-control" id="employment_end_date" placeholder="Select From Date" name="employment_end_date" value="">
+                    </div>  -->
+                    <div class="form-group col-md-6">
+                    <label for="center_name">Center Name</label>
+                    <select class="form-control select2-neo" name="center_name" id="center_name">
+                    <option value="0">Select Center Name</option>
+                    <?php foreach($center_name as $option): ?>
+                        <option value="<?php echo $option->center_name; ?>"><?php echo $option->center_name; ?></option>
+                    <?php endforeach; ?>
+                    </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                    <label for="batch_code">Batch Code</label>
+                    <select class="form-control select2-neo" name="batch_code" id="batch_code">
+                    <option value="0">Select Batch Code</option>
+                    <?php foreach($batch_code as $option): ?>
+                        <option value="<?php echo $option->batch_code; ?>"><?php echo $option->batch_code; ?></option>
+                    <?php endforeach; ?>
+                    </select>
+                    </div>
+                </div>
+                <div class="form-row col-md-12">
+                    
+                    <div class="form-group col-md-8">
+                    <label for="qualification_pack">QP</label>
+                    <select class="form-control select2-neo" name="qualification_pack" id="qualification_pack">
+                    <option value="0">Select QP</option>
+                    <?php foreach($qualification_pack as $option): ?>
+                        <option value="<?php echo $option->qualification_pack; ?>"><?php echo $option->qualification_pack; ?></option>
+                    <?php endforeach; ?>
+                    </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                    <label for="enrollment_no">Enrollment ID</label>
+                    <select class="form-control select2-neo" name="enrollment_no" id="enrollment_no">
+                    <option value="0">Select Enrollment Id</option>
+                    <?php foreach($enrollment_no as $option): ?>
+                        <option value="<?php echo $option->enrollment_no; ?>"><?php echo $option->enrollment_no; ?></option>
+                    <?php endforeach; ?>
+                    </select>
+                    </div>                   
+                </div>
+                <div class="form-row col-md-12">
+                    <div class="text-center" style="margin-left: 675px;" name="search_btn" id="search_btn">
+                        <button type="button" id="btn-filter" class="btn btn-primary">Search</button>
+                        <button type="button" id="btn-reset" class="btn btn-default">Reset</button>  
+                        <!-- <a class="btn btn-success btn-md" href='<?php //echo base_url('selfemployedcontroller/export_csv/');?>' style="color: white; cursor: pointer;"><i class="fa fa-download "></i> Download</a> -->
+                    </div>
+                </div>
+                       
+               </form>
+                   <table id="tableSelfEmployed" class="table table-striped table-bordered">
+                              <thead>
+                                  <tr>
+                                      <th>SNo.</th>
+                                      <th>Region </th>
+                                      <th>Batch Code</th>
+                                      <th>Center Name</th>
+                                      <th>Enrollment ID</th>
+                                      <th>Batch Customer Name</th>
+                                      <th>Candidate Name </th>
+                                      <th>Qualification pack</th>
+                                      <th>EMP Start Date</th>
+                                      <th>Document Updated on</th>
+                                      <th>Document download Link</th>
+                                                                
                                   </tr>
                               </thead>                            
                               <tbody> 
@@ -686,4 +775,74 @@ $options_orgTypes=array(''=>'-Select Org type-');
       });
       $('#modal_form_tracker_center').modal('show'); // show bootstrap modal when complete loaded
   }
+ 
+    $(document).ready(function() {
+        $('.select2-neo').select2({ width: '100%' });
+        });
+    $('#employment_start_date').on('changeDate', function(ev){
+        $(this).datepicker('hide');
+    });
+    $('#employment_end_date').on('changeDate', function(ev){
+        $(this).datepicker('hide');
+    });
   </script>
+
+<script type="text/javascript">
+  var table;
+  
+ $(document).ready(function() {
+  
+     //datatables
+     table = $('#tableSelfEmployed').DataTable({ 
+        
+         "processing": true, //Feature control the processing indicator.
+         "serverSide": true, //Feature control DataTables' server-side processing mode.
+         "order": [], //Initial no order.
+         "scrollX": true,
+         //"scrollY": "400px",
+         "searching": false,
+         "aLengthMenu": [[10, 25, 50, 100, 200, -1],[10, 25, 50, 100, 200, "All"]],
+          "pageLength": 10,
+         "language": { processing: '<div style="margin-left:-800px;margin-top:40px;font-size:15px;"><img src="<?php echo base_url('/assets/images/loading.gif');?>"></div> '},
+         // Load data for the table's content from an Ajax source
+         "ajax": {
+             "url": "<?php echo site_url('selfemployedcontroller/selfemployedlist')?>",
+             "type": "POST",
+             "data": function ( data ) {
+                 data.employment_start_date = $('#employment_start_date').val();
+                 data.center_name = $('#center_name').val();
+                 data.batch_code = $('#batch_code').val();
+                 data.qualification_pack = $('#qualification_pack').val();
+                 data.enrollment_no = $('#enrollment_no').val();
+             }
+         },
+  
+         //Set column definition initialisation properties.
+         "columnDefs": [
+         { 
+             "targets": [ 0 ], //first column / numbering column
+             "orderable": false, //set not orderable
+         },
+         ],
+         "dom":  "<'row'<'col-md-4'l><'col-md-8 searchprint'Bfr>><'row'<'col-md-12't>><'row'<'col-md-4'i><'col-md-8'p>>",
+         buttons: []
+
+        
+     });
+     
+    
+
+     $('#btn-filter').click(function(){ //button filter event click
+         table.ajax.reload();  //just reload table
+     });
+     $('#btn-reset').click(function(){ //button reset event click
+         $('#form-filter')[0].reset();
+         table.ajax.reload();  //just reload table
+     });
+  
+ });
+ 
+  
+ </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>

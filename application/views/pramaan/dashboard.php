@@ -12,28 +12,71 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="row">
-                                                <div class="col-xl-3 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+					<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
-								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
-									<span class="info" style="font-weight: bolder; font-size: 16px;">Vacancies</span>                                                                        
-                                                                        <h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, job_view_roles())) ? base_url('/pramaan/pramaan_jobs') : '#';?>"> <?php echo ($total_openings); ?></a></h3>
+								<div class="card-header mb-2 pt-0"style="border-bottom: none;">
+									<span class="deep-orange" style="font-weight: bolder; font-size: 16px;">Companies</span>
+									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, customer_view_roles())) ? base_url('companiescontroller/index') : '#';?>"><?php echo number_format($total_companies); ?> </a></h3>
 								</div>
-								<!-- <div class="card-body">
-									<input type="text" value="65" class="knob hide-value responsive angle-offset" data-angleOffset="40" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#00BCD4" data-knob-icon="icon-user5">
+								<div class="card-body">
+									<!-- <input type="text" value="70" class="knob hide-value responsive angle-offset" data-angleOffset="0" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#FF5722" data-knob-icon="icon-users">
 									<ul class="list-inline clearfix mt-1 mb-0">
 										<li class="border-right-grey border-right-lighten-2 pr-2">
-											<h2 class="grey darken-1 text-bold-400">65%</h2>
+											<h2 class="grey darken-1 text-bold-400">60%</h2>
 											<span class="success">Completed</span>
 										</li>
 										<li class="pl-2">
-											<h2 class="grey darken-1 text-bold-400">35%</h2>
+											<h2 class="grey darken-1 text-bold-400">40%</h2>
 											<span class="danger">Remaining</span>
 										</li>
-									</ul>
-								</div> -->
+									</ul> -->
+								</div>
 							</div>
 						</div>
-                                            
+						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+							<div class="my-1 text-xs-center">
+								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
+									<span class="success" style="font-weight: bolder; font-size: 16px;">Opportunities</span>
+									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, lead_view_roles())) ? base_url('opportunitiescontroller/index') : '#' ;?>"> <?php echo $total_opportunities; ?></a></h3>
+								</div>
+								<div class="card-body">
+									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
+									<ul class="list-inline clearfix mt-1 mb-0">
+										<li class="border-right-grey border-right-lighten-2 pr-2">
+											<h2 class="grey darken-1 text-bold-400">85%</h2>
+											<span class="success">Completed</span>
+										</li>
+										<li class="pl-2">
+											<h2 class="grey darken-1 text-bold-400">15%</h2>
+											<span class="danger">Remaining</span>
+										</li>
+									</ul> -->
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+							<div class="my-1 text-xs-center">
+								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
+									<span class="success" style="font-weight: bolder; font-size: 16px;">Contracts</span>
+									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, lead_view_roles())) ? base_url('pramaan/contracts') : '#' ;?>"> <?php echo $total_contracts; ?></a></h3>
+								</div>
+								<div class="card-body">
+									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
+									<ul class="list-inline clearfix mt-1 mb-0">
+										<li class="border-right-grey border-right-lighten-2 pr-2">
+											<h2 class="grey darken-1 text-bold-400">85%</h2>
+											<span class="success">Completed</span>
+										</li>
+										<li class="pl-2">
+											<h2 class="grey darken-1 text-bold-400">15%</h2>
+											<span class="danger">Remaining</span>
+										</li>
+									</ul> -->
+								</div>
+							</div>
+						</div>
+
 						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
 								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
@@ -55,54 +98,35 @@
 								</div> -->
 							</div>
 						</div>
-						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
-							<div class="my-1 text-xs-center">
-								<div class="card-header mb-2 pt-0"style="border-bottom: none;">
-									<span class="deep-orange" style="font-weight: bolder; font-size: 16px;">Employers</span>
-									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, customer_view_roles())) ? base_url('pramaan/customers') : '#';?>"><?php echo number_format($total_employer); ?> </a></h3>
-								</div>
-								<div class="card-body">
-									<!-- <input type="text" value="70" class="knob hide-value responsive angle-offset" data-angleOffset="0" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#FF5722" data-knob-icon="icon-users">
-									<ul class="list-inline clearfix mt-1 mb-0">
-										<li class="border-right-grey border-right-lighten-2 pr-2">
-											<h2 class="grey darken-1 text-bold-400">60%</h2>
-											<span class="success">Completed</span>
-										</li>
-										<li class="pl-2">
-											<h2 class="grey darken-1 text-bold-400">40%</h2>
-											<span class="danger">Remaining</span>
-										</li>
-									</ul> -->
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+
+
+                        <div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
 								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
-									<span class="success" style="font-weight: bolder; font-size: 16px;">Leads</span>
-									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, lead_view_roles())) ? base_url('leads/index/1') : '#' ;?>"> <?php echo $total_leads; ?></a></h3>
+									<span class="info" style="font-weight: bolder; font-size: 16px;">Vacancies</span>
+										<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, job_view_roles())) ? base_url('/pramaan/pramaan_jobs') : '#';?>"> <?php echo ($total_openings); ?></a></h3>
 								</div>
-								<div class="card-body">
-									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
+								<!-- <div class="card-body">
+									<input type="text" value="65" class="knob hide-value responsive angle-offset" data-angleOffset="40" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#00BCD4" data-knob-icon="icon-user5">
 									<ul class="list-inline clearfix mt-1 mb-0">
 										<li class="border-right-grey border-right-lighten-2 pr-2">
-											<h2 class="grey darken-1 text-bold-400">85%</h2>
+											<h2 class="grey darken-1 text-bold-400">65%</h2>
 											<span class="success">Completed</span>
 										</li>
 										<li class="pl-2">
-											<h2 class="grey darken-1 text-bold-400">15%</h2>
+											<h2 class="grey darken-1 text-bold-400">35%</h2>
 											<span class="danger">Remaining</span>
 										</li>
-									</ul> -->
-								</div>
+									</ul>
+								</div> -->
 							</div>
 						</div>
 
-						<div class="col-xl-3 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
+						<div class="col-xl-2 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
 							<div class="my-1 text-xs-center">
 								<div class="card-header mb-2 pt-0" style="border-bottom: none;">
 									<span class="warning" style="font-weight: bolder; font-size: 16px;">Candidates</span>
-									<h3 class="font-large-2 text-bold-200"><a href="<?= (in_array($user_group_id, candidate_view_roles())) ? base_url('/partner/candidates') : '#'; ?>"> <?php echo $total_candidates; ?></a></h3>
+									<h3 class="font-large-2 text-bold-200" style="margin-left: -15px;"><a href="<?= (in_array($user_group_id, candidate_view_roles())) ? base_url('/partner/candidates') : '#'; ?>"> <?php echo $total_candidates; ?></a></h3>
 								</div>
 								<div class="card-body">
 									<!-- <input type="text" value="81" class="knob hide-value responsive angle-offset" data-angleOffset="20" data-thickness=".15" data-linecap="round" data-width="130" data-height="130" data-inputColor="#e1e1e1" data-readOnly="true" data-fgColor="#009688" data-knob-icon="icon-search6">
@@ -376,7 +400,7 @@
 				<div class="card-body">
 					<div class="card-block">
 						<div class="media">
-								<h3> <strong>Lead Statuses</strong> </h3>
+								<h3> <strong>Opportunity Statuses</strong> </h3>
 						</div>
 				</div>
 			</div>
@@ -395,7 +419,7 @@
 								</div>
 								<div class="media-body text-xs-right">
 									<h3><?= $lead_identified; ?></h3>
-									<span>Lead Identified</span>
+									<span>Opportunity Identified</span>
 								</div>
 							</div>
 						</div>
@@ -617,7 +641,7 @@
                                                                                         </div>
                                                                                 </div>
                                                                         </div>-->
-                                                               <div class="col-xl-3 col-lg-6 col-xs-12">
+                                 <div class="col-xl-3 col-lg-6 col-xs-12">
 																		<div class="card">
 																			<div class="card-body">
 																				<div class="card-block">
@@ -634,12 +658,8 @@
 																			</div>
 																		</div>
 																	</div>
-								</div>
 
-
-
-																<div class="row" style="width:99.9%;">
-<!--																	<div class="col-xl-3 col-lg-6 col-xs-12">
+																	<div class="col-xl-3 col-lg-6 col-xs-12">
 																		<div class="card">
 																			<div class="card-body">
 																				<div class="card-block">
@@ -648,32 +668,74 @@
 																							<i class="fa fa-thumbs-o-down pink font-large-2 float-xs-left"></i>
 																						</div>
 																						<div class="media-body text-xs-right">
-																							<h3><?//= $op_lost_at_proposal_level; ?></h3>
-																							<span>Clients Opportunity Lost Status</span>
+																							<h3><?= $opportunity_lost; ?></h3>
+																							<span>Opportunity Lost</span>
 																						</div>
 																					</div>
 																				</div>
 																			</div>
 																		</div>
-																	</div>-->
+																	</div>
 
-<!--																	<div class="col-xl-3 col-lg-6 col-xs-12">
+								</div>
+
+
+
+																<div class="row" style="width:99.9%;">
+
+																	<div class="col-xl-3 col-lg-6 col-xs-12">
 																		<div class="card">
 																			<div class="card-body">
 																				<div class="card-block">
 																					<div class="media">
 																						<div class="media-left media-middle">
-																							<i class="fa fa-file success font-large-2 float-xs-left"></i>
+																							<i class="fa fa-check success font-large-2 float-xs-left"></i>
 																						</div>
 																						<div class="media-body text-xs-right">
-																							<h3><?//= $contract_not_signed; ?></h3>
-																							<span>Company not convert to Client</span>
+																							<h3><?= $legal_approved; ?></h3>
+																							<span>Legal Approval</span>
 																						</div>
 																					</div>
 																				</div>
 																			</div>
 																		</div>
-																	</div>-->
+																	</div>
+
+																	<div class="col-xl-3 col-lg-6 col-xs-12">
+																		<div class="card">
+																			<div class="card-body">
+																				<div class="card-block">
+																					<div class="media">
+																						<div class="media-left media-middle">
+																							<i class="fa fa-times danger font-large-2 float-xs-left"></i>
+																						</div>
+																						<div class="media-body text-xs-right">
+																							<h3><?= $legal_rejected; ?></h3>
+																							<span>Legal Rejected</span>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+
+																	<div class="col-xl-3 col-lg-6 col-xs-12">
+																		<div class="card">
+																			<div class="card-body">
+																				<div class="card-block">
+																					<div class="media">
+																						<div class="media-left media-middle">
+																							<i class="fa fa-file warning font-large-2 float-xs-left"></i>
+																						</div>
+																						<div class="media-body text-xs-right">
+																							<h3><?= $contract_completed; ?></h3>
+																							<span>Contract Completed</span>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
 
 																</div>
 

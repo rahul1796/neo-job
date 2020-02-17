@@ -7947,7 +7947,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
     {
         $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
         $HierarchyIds= $this->session->userdata('user_hierarchy');
-        // array_push($HierarchyIds, $user_id);
+         //array_push($HierarchyIds, $user_id);
         $TeamMemberIdList = implode(",",$HierarchyIds);
         // var_dump($TeamMemberIdList);
         // exit;
@@ -7994,14 +7994,14 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         /*********************************/
 
         $user_group_id = $this->session->userdata['usr_authdet']['user_group_id'];
-
+        
         $strUserRoleCondition = 'TRUE';
 
         $sWhere = "  ";
 
         if ($active_user_role_id == 14 || $active_user_role_id == 11)
         {
-           $sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
+           //$sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
         }
 
         $sSearchVal = $_POST['search']['value'];
@@ -8020,6 +8020,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
             $HierarchyCondition = " AND ((assigned_user_ids||created_user_id) && ARRAY[$TeamMemberIdList]) ";
 
         $total_records = $this->db->query("SELECT Count(VW.*) AS total_recs FROM neo_job.vw_job_list AS VW WHERE TRUE $HierarchyCondition")->row()->total_recs;
+
+        
 
         $totalData = $total_records * 1;
         $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
@@ -8094,6 +8096,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                                               LIMIT $limit
                                               OFFSET $pg");
 
+                               
+
             $slno = $pg;
             $data = array();
 
@@ -8111,9 +8115,9 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
              // {
                 $Actions = '';
                 if(in_array($user_group_id, job_status_change_roles())) {
-                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px; background-color:#273c75;border-color: #192a56;"><i class="fa fa-pencil-square-o"></i></button>';
                 }
-                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white;"><i class="icon-android-create"></i></a>';
+                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white; background-color:#33d9b2;border-color: #218c74;"><i class="icon-android-create"></i></a>';
               //}
 //              else
 //              {
@@ -12683,7 +12687,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         );
 
         //Change query here for total record
-        $strQuery = "SELECT COUNT(s.customer_id)::BIGINT AS total_record_count
+        $strQuery = "SELECT COUNT(s.company_id)::BIGINT AS total_record_count
                      FROM   users.vw_address_book_contact_list AS s WHERE TRUE ";
         $strTotalRecordCount = $this->db->query($strQuery)->row()->total_record_count;
         $intTotalRecordCount = $strTotalRecordCount * 1;
@@ -12715,7 +12719,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
 
 
             //Change query here for filtered rows
-            $strQuery = "SELECT     COUNT(s.customer_id)::BIGINT AS total_filtered_count
+            $strQuery = "SELECT     COUNT(s.company_id)::BIGINT AS total_filtered_count
                          FROM       users.vw_address_book_contact_list AS s
                          WHERE      TRUE ";
 
@@ -12738,14 +12742,15 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                 $ResponseRow = array();
                 $SerialNumber++;
                 $ResponseRow[] = $SerialNumber;
-                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->customer_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->customer_name .  '</a>';
+                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->company_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->company_name .  '</a>';
                 //$ResponseRow[] = $QueryRow->customer_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->designation ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_phone ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_email ?? 'N/A';
                 $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';
-                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->customer_id . "'" . ')"><i class="icon-android-create"></i></a>';
+                $ResponseRow[] = $QueryRow->source ?? 'N/A';
+                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->company_id . "'" . ')"><i class="icon-android-create"></i></a>';
                 $Data[] = $ResponseRow;
             }
 

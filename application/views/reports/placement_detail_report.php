@@ -45,7 +45,9 @@
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Placement</h5>
+
+                                    <h5 class="card-title">Job Posted Date</h5>
+
                                     <div class="row">
                                         <input type="hidden" name="report_id" id= "report_id" value="<?= $report; ?>">
                                         <div class="col-md-6 form-group">
@@ -58,7 +60,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
                                 <div class="card-body">
@@ -74,7 +76,7 @@
                                             </div>
                                         </div>
                                 </div>
-                            </div> 
+                            </div>
 
 
                             <div class="card" style="margin-top: 5px; padding: 16px;">
@@ -118,7 +120,7 @@
                                     <select class="form-control select2-neo" name="customer_id" id="customer_id">
                                         <option value="">Select Client</option>
                                         <?php foreach($customer_options as $customer):?>
-                                        <option value="<?php echo $customer->id; ?>" ><?php echo $customer->customer_name; ?></option>
+                                        <option value="<?php echo $customer->id; ?>" ><?php echo $customer->company_name; ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -190,9 +192,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="bv_id" class="">Select Business Vertical:</label>
+                                    <label for="bv_id" class="">Select Product:</label>
                                     <select class="form-control select2-neo" name="bv_id" id="bv_id">
-                                        <option value="">Select Business Vertical</option>
+                                        <option value="">Select Product</option>
                                         <?php foreach($business_vertical_options as $option):?>
                                         <option value="<?php echo $option->id; ?>" ><?php echo $option->name; ?></option>
                                         <?php endforeach; ?>

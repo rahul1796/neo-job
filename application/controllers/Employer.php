@@ -1047,6 +1047,15 @@ class Employer extends Pramaan
 			}
 		}
 	}
+
+
+	public function getContractsData()
+	{   
+		$user=$this->pramaan->_check_module_task_auth(true);
+		$requestData= $_REQUEST;
+		$resp_data=$this->employer->getContractsData($requestData);
+		echo json_encode($resp_data);
+	}
         
         
             
