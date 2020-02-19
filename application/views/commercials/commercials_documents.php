@@ -26,14 +26,10 @@
 </style>
 <div class="content-body" style="padding: 0px 10px 60px 10px;">
 
-    <div class="col-md-12">
-      <?php if(isset($_SESSION['status'])): ?>
-      <div class="alert alert-primary" id="commercial-alert" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5><?php echo $_SESSION['status']; ?></h5>
+<div class="row">
+      <div class="col-md-12">
+        <?php $this->load->view('layouts/errors');?>
       </div>
-      <br><br>
-      <?php endif; ?>
     </div>
 
   <div class="w3-container">

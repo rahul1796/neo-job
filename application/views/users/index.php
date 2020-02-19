@@ -25,20 +25,11 @@ select.input-sm
 }
 </style>
 <div class="content-body" style="overflow-x: hidden !important;">
-     <div class="row">
-    <div class="col-md-12">
-      <?php if(isset($_SESSION['status'])): ?>
-
-      <div class="alert alert-primary" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5><?php echo $_SESSION['status']; ?></h5>
-      </div>
-      <br><br>
-
-      <?php endif; ?>
-    </div>
-
-  </div>
+        <div class="row">
+            <div class="col-md-12">
+                <?php $this->load->view('layouts/errors');?>
+            </div>
+        </div>
 
     <div style="float:right; z-index:1000 !important;">
         <?php if (in_array($user['user_group_id'], add_edit_view_user_roles())): ?>
