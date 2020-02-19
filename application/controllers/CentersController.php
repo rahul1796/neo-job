@@ -43,6 +43,7 @@ class CentersController extends MY_Controller {
     // echo var_dump($_POST);
     // exit;
     $this->authorize(add_edit_view_center_roles());
+    $status_code = 0;
     $data = $this->setData();
     $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
     $data['data']['fields']['updated_by'] = $data['data']['fields']['created_by'];
@@ -50,10 +51,14 @@ class CentersController extends MY_Controller {
       //$center_managers = $this->input->post('center_managers');
       if($this->center->save($data['data']['fields'])) {
         $this->msg = 'Center created successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error creating Center, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
+       $status_code = 0;
       redirect($this->redirectUrl, 'refresh');
 
     } else {
@@ -71,6 +76,7 @@ class CentersController extends MY_Controller {
 
   public function update($id) {
     $this->authorize(add_edit_view_center_roles());
+    $status_code = 0;
     $data = $this->setData($id);
     $data['id'] = $id;
     if($this->validateRequest()){
@@ -78,10 +84,13 @@ class CentersController extends MY_Controller {
       $data['data']['fields']['updated_at'] = date('Y-m-d H:i:s');
       if ($this->center->update($id, $data['data']['fields'])) {
         $this->msg = 'Center updated successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error updating center, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
     $this->loadFormViews('edit', $data);

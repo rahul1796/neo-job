@@ -469,7 +469,7 @@ var maxField = 100; //Input fields increment limitation
 
     $('#form-submit').click(function(){
     if($('input[name*=spoc_phone').length == '0'){
-      swal("You have to enter/select atleast one Spoc details!");
+      swal("Atleast one SPOC details needs to be provided!");
      return false;
     //  alert('Input can not be left blank');
    }

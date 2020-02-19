@@ -22,20 +22,14 @@
 <div class="content-body" style="padding: 30px; margin-top: 10px;">
   <div class="row">
     <div class="col-md-12">
-      <?php if(isset($_SESSION['status'])): ?>
-      <div class="alert alert-primary" id="server-alert" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5><?php echo $_SESSION['status']; ?></h5>
-      </div>
-      <br><br>
-      <?php endif; ?>
+    <?php $this->load->view('layouts/errors'); ?>
     </div>
 
   </div>
 
 
     <!-- File export table -->
-    <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -34px;">
+    <div class=" breadcrumbs-top col-md-9 col-xs-12" style="margin-bottom: 10px;margin-top: -5px;">
 
       <div class="row">
         <div class="col-md-12">

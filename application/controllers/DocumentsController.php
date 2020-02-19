@@ -38,6 +38,7 @@ class DocumentsController extends MY_Controller {
     public function store($candidate_id) {
 
         $data = $this->setData($candidate_id);
+        $status_code = 0;
         $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
         if($this->validateRequest()){
 
@@ -54,10 +55,13 @@ class DocumentsController extends MY_Controller {
           // exit;
           if($this->document->save($data['data']['fields'])) {
             $this->msg = 'Document uploaded successfully';
+            $status_code = 1;
           } else {
             $this->msg = 'Error uploading document, please try again after sometime';
+            $status_code = 0;
           }
           $this->session->set_flashdata('status', $this->msg);
+          $this->session->set_flashdata('status_code', $status_code);
           redirect($this->redirectUrl.'/create/'.$data['data']['fields']['candidate_id'], 'refresh');
 
         } else {
@@ -67,10 +71,13 @@ class DocumentsController extends MY_Controller {
     }
 
     public function delete($candidate_id, $id) {
+      $status_code = 0;
       if($this->document->deleteCandidateAssociation($candidate_id, $id)) {
         $this->msg = 'Document deleted successfully';
+        $status_code = 1;
       } else {
           $this->msg = 'Error deleting document';
+          $status_code = 0;
       }
       $this->load->library('user_agent');
       $refer='';
@@ -81,9 +88,11 @@ class DocumentsController extends MY_Controller {
       if(strpos($refer, 'create'))
       {
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect($this->redirectUrl.'create/'.$candidate_id, 'refresh');
       } else {
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect('candidatescontroller/show/'.$candidate_id.'?type=doc', 'refresh');
       }
     }

@@ -34,6 +34,7 @@ class UsersController extends MY_Controller {
 
   public function store() {
     $this->authorize(add_edit_view_user_roles());
+    $status_code = 0;
     $data = $this->setData();
 
     $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
@@ -42,10 +43,13 @@ class UsersController extends MY_Controller {
       $data['data']['fields']['reporting_manager_role_id'] = (in_array((integer)$data['data']['fields']['user_role_id'], $this->adminReportees)) ? 1 : $data['data']['fields']['reporting_manager_role_id'];
       if($this->user->save($data['data']['fields'])) {
         $this->msg = 'User created successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error creating user, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
 
     } else {
@@ -68,6 +72,7 @@ class UsersController extends MY_Controller {
 
   public function update($id) {
     $this->authorize(add_edit_view_user_roles());
+    $status_code = 0;
     $data = $this->setData($id);
     $data['id'] = $id;
     //$data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
@@ -79,10 +84,13 @@ class UsersController extends MY_Controller {
       $data['data']['fields']['reporting_manager_role_id'] = (in_array((integer)$data['data']['fields']['user_role_id'], $this->adminReportees)) ? 1 : $data['data']['fields']['reporting_manager_role_id'];
       if ($this->user->update($id, $data['data']['fields'])) {
         $this->msg = 'User updated successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error updating user, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
       $reportees_count = count($this->user->findReportiesByManager($id));
