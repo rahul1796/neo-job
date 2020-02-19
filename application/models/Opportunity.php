@@ -148,7 +148,7 @@ class Opportunity extends MY_Model
               ->join('neo_master.business_verticals AS BV', "BV.id={$this->tableName}.business_vertical_id", 'LEFT', FALSE)
               ->where("{$this->tableName}.id", $data['opportunity_id'])->get()->row_array();
       $data['opportunity_code'] = 'OPP-'.strtoupper(substr(trim($result['company_name']), 0, (strlen(trim($result['company_name']))>3 ? 4 : 3))).'-'.$result['code'].'-'.$data['opportunity_id'];
-      $data['contract_id'] = 'CON-'.strtoupper(substr(trim($result['company_name']), 0, (strlen(trim($result['company_name']))>3 ? 4 : 3))).'-'.$data['opportunity_id'];;
+      $data['contract_id'] = 'CON-'.strtoupper(substr(trim($result['company_name']), 0, (strlen(trim($result['company_name']))>3 ? 4 : 3))).'-'.$result['code'].'-'.$data['opportunity_id'];;
       return $data;
     }
 

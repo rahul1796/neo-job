@@ -72,6 +72,7 @@ class JobsController extends MY_Controller {
 
     public function store() {
       $this->authorize(job_add_roles());
+      $status_code = 0;
       $data = $this->setData();
       $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
       $data['data']['fields']['updated_by'] =   $data['data']['fields']['created_by'];
@@ -79,11 +80,14 @@ class JobsController extends MY_Controller {
         $data = $this->jobStatus($data);
         $response = $this->job->save($data['data']['fields']);
         if($response['status']) {
-          $this->msg = 'Job created successfully. (Job Code: <strong>'.$response['job_code'].'</strong>)';
+          $this->msg = 'Job Code: <strong>'.$response['job_code'].'</strong>. Job created successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error creating Job, please try again after sometime';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect($this->redirectUrl, 'refresh');
 
       } else {
@@ -101,6 +105,7 @@ class JobsController extends MY_Controller {
 
     public function update($id) {
       $this->authorize(job_edit_roles());
+      $status_code = 0;
         $data = $this->setData($id);
         $data['id'] = $id;
 
@@ -110,11 +115,14 @@ class JobsController extends MY_Controller {
           $data = $this->jobStatus($data);
           $response = $this->job->update($id, $data['data']['fields']);
           if ($response['status']) {
-            $this->msg = 'Job updated successfully. (Job Code: <strong>'.$response['job_code'].'</strong>)';
+            $this->msg = 'Job Code: <strong>'.$response['job_code'].'</strong>. Job updated successfully';
+            $status_code = 1;
           } else {
             $this->msg = 'Error updating Job, please try again after sometime';
+            $status_code = 0;
           }
           $this->session->set_flashdata('status', $this->msg);
+          $this->session->set_flashdata('status_code', $status_code);
           redirect($this->redirectUrl, 'refresh');
         } else {
         $this->loadFormViews('edit', $data);

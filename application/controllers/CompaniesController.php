@@ -40,14 +40,18 @@ class CompaniesController extends MY_Controller {
 
   public function store() {
     $this->authorize(company_add_roles());
+    $status_code = 0;
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->company->save($data)) {
         $this->msg = 'Company created successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error creating company, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
     $data['data']['action'] = 'create';
@@ -65,14 +69,18 @@ class CompaniesController extends MY_Controller {
 
   public function update($company_id) {
     $this->authorize(company_update_roles());
+    $status_code = 0;
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->company->update($company_id, $data)) {
         $this->msg = 'Company updated successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error Company updating, please try again after sometime';
+        $status_code =0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
       $data = $this->setData($company_id);

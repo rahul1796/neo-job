@@ -467,7 +467,7 @@ function changeLeadStatus() {
       let reponse = JSON.parse(data);
       $('#product_selector').val(reponse.data.business_vertical_id);
       let status_text = $('#product_selector').find(':selected').text();
-        $('#current-product-label').html('Current Product: '+status_text );
+        $('#current-product-label').html('Current Product - <span class="text-success">'+status_text + '</span>');
     }).fail(function(jqXHR, textStatus, errorThrown) {
       $('#product_selector').val(0);
     });
