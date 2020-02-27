@@ -12,7 +12,7 @@
          <select class="form-control" id="commercial_status_selector" placeholder="Select Status">
            <option value="0">Select a Status</option>
            <?php foreach($commercial_options as $option): ?>
-             <option value="<?php echo $option->id; ?>" data-svalue="<?php echo $option->value; ?>" data-notification="<?php echo $option->notification_status; ?>" ><?php echo $option->name; ?></option>
+             <option value="<?php echo $option->id; ?>" data-svalue="<?php echo $option->value; ?>" data-notification="<?php echo $option->notification_status; ?>" ><?= (intval($option->id)==20) 'Approved' : 'Rejected' ?></option>
            <?php endforeach; ?>
          </select>
          <br>
