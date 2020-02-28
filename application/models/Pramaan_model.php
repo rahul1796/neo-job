@@ -12886,18 +12886,19 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         //Sorting columns
         $arrSortByColumns = array(
             0 => null,
-            1 => 'batch_code',
-            2 => 'batch_type',
-            3 => 'batch_size',
-            4 => 'customer_name',
-            5 => 'center_name',
-            6 => 'course_name',
-            7 => 'course_code',
-            8 => 'buisness_unit',
-            9 => 'trainer_email',
-            10 => 'qp_name',
-            11 => 'batch_start_date',
-            12 => 'batch_end_date'
+            1 => null,
+            2 => 'batch_code',
+            3 => 'batch_type',
+            4 => 'batch_size',
+            5 => 'customer_name',
+            6 => 'center_name',
+            7 => 'course_name',
+            8 => 'course_code',
+            9 => 'buisness_unit',
+            10 => 'trainer_email',
+            11 => 'qp_name',
+            12 => 'batch_start_date',
+            13 => 'batch_end_date'
         );
 
         //Change query here for total record
@@ -12956,6 +12957,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                 $ResponseRow = array();
                 $SerialNumber++;
                 $ResponseRow[] = $SerialNumber;
+                $ResponseRow[] = '<a class="' . ($QueryRow->is_active ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") . '" title="Toggle Active Status" onclick="batch_status(' .  $QueryRow->id .  ','   .$QueryRow->is_active . ')" style="width:80%; color:white;">' . ($QueryRow->is_active ? "Active" : "Inactive") . '</a>';
                 $ResponseRow[] = $QueryRow->batch_code ?? 'N/A';
                 $ResponseRow[] = $QueryRow->batch_type ?? 'N/A';
                 $ResponseRow[] = ($QueryRow->batch_size) ? '<center><b><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="View Batch Candidates" onclick="showBatchWiseCandidates(' . "'" . $QueryRow->id . "'" . ')">' . $QueryRow->batch_size . '</a></b></center>' : '<center>'.$QueryRow->batch_size.'</center>';
@@ -13050,6 +13052,86 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         }
 
         return $output;
+    }
+
+
+    function change_batch_status($RequestData = array())
+    {
+
+		$ResponseData = array();
+
+		if (intval($RequestData['id']) > 0)
+		{
+			$strStatus = TRUE;
+			if ($RequestData['is_active']==1)
+			{
+				$strQuery = "UPDATE neo.neo_batches";
+				$strQuery .= " SET is_active=FALSE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+			else if($RequestData['is_active']==0)
+			{
+				$strQuery = "UPDATE neo.neo_batches";
+				$strQuery .= " SET is_active=TRUE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+
+			$this->db->query($strQuery);
+			if ($this->db->affected_rows())
+			{
+				return true;
+			}
+		}
+
+		if ($strStatus == 0)
+		{
+			$ResponseData["message"] = "Batch Has Been Deactivated!";
+		}
+		else
+		{
+			$ResponseData["message"] = "Batch Has Been Activated!";
+		}
+
+		return $ResponseData;
+    }
+
+    function change_candidate_status($RequestData = array())
+    {        
+		$ResponseData = array();
+
+		if (intval($RequestData['id']) > 0)
+		{
+			$strStatus = TRUE;
+			if ($RequestData['is_active']==1)
+			{
+				$strQuery = "UPDATE neo.candidates ";
+				$strQuery .= " SET is_active=FALSE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+			else if($RequestData['is_active']==0)
+			{
+				$strQuery = "UPDATE neo.candidates ";
+				$strQuery .= " SET is_active=TRUE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+
+			$this->db->query($strQuery);
+			if ($this->db->affected_rows())
+			{
+				return true;
+			}
+		}
+
+		if ($strStatus == 0)
+		{
+			$ResponseData["message"] = "Candidate Has Been Deactivated!";
+		}
+		else
+		{
+			$ResponseData["message"] = "Candidate Has Been Activated!";
+		}
+
+		return $ResponseData;
     }
     
 }

@@ -85,7 +85,8 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child, table.dataTable.dt
                            <table id="tblSec" class="table table-striped table-bordered display responsive nowrap" style="width:100% !important;">
                                 <thead>
                                 <tr>
-                                    <th>SNo.</th>                                    
+                                    <th>SNo.</th>   
+                                    <th>Status</th>                                 
                                     <th>Batch Code</th>
                                     <th>Batch Type</th>
                                     <th style="text-align: center;">Batch Size</th>
@@ -289,6 +290,56 @@ function bulk_upload_save()
         }
     });
 
+}
+
+
+function batch_status(id, is_active) {
+    var strStatus = (is_active == 1) ? "Deactivate" : "Activate";
+    var strCompletedStatus = (is_active == 1) ? "Deactivated" : "Activated";
+    swal(
+        {
+            title: "",
+            text: "Are you sure, you want to " + strStatus + "?",
+            showCancelButton: true,
+            confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+            confirmButtonText: "Yes, " + strStatus + "!",
+            cancelButtonText: "No, Cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
+        function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "POST",
+                    url: base_url + "pramaan/change_batch_active_status",
+                    data: {
+                        'id': id,
+                        'is_active': is_active
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        swal({
+                                title: "",
+                                text: "Batch successfully " + strCompletedStatus + "!",
+                                confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+                                confirmButtonText: 'OK',
+                                closeOnConfirm: true,
+                                closeOnCancel: true
+                            },
+                            function(confirmed)
+                            {
+                                reload_table();
+                                //window.location.reload();
+                            });
+                    },
+                    error: function () {
+                        alert("Error Occurred");
+                    }
+                });
+
+            }
+        }
+    );
 }
 
 </script>
