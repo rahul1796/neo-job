@@ -18,7 +18,7 @@
 
          <div class="hidden" id="customer_commercial_input_container">
            <label for="customer_commercial_input">Choose Customer Commercial Info</label>
-           <select class="form-control " id="customer_commercial_input">
+           <select class="form-control " id="customer_commercial_input" disabled>
              <option value="-1">Select Commercial Type</option>
              <option value="0">Free</option>
              <option value="1">Commercial</option>
@@ -193,6 +193,7 @@ $(document).ready(function() {
         $('#proposal_shared_input_container').addClass('hidden');
       }
       if(value==16) {
+        get_product_commercial_type();
         $('#customer_commercial_input_container').removeClass('hidden');
       } else {
         $('#customer_commercial_input_container').addClass('hidden');
@@ -467,9 +468,27 @@ function changeLeadStatus() {
       let reponse = JSON.parse(data);
       $('#product_selector').val(reponse.data.business_vertical_id);
       let status_text = $('#product_selector').find(':selected').text();
-        $('#current-product-label').html('Current Product: '+status_text );
+        $('#current-product-label').html('Current Product - <span class="text-success">'+status_text + '</span>');
     }).fail(function(jqXHR, textStatus, errorThrown) {
       $('#product_selector').val(0);
+    });
+  }
+
+  function get_product_commercial_type() {
+    let opp_id=$('#proposal_customer_id').val();
+    $.ajax({
+      url:'<?= base_url('opportunitiesController/getCurrentProduct/'); ?>'+opp_id,
+      async: false,
+    }).done(function(data, textStatus, jqXHR ) {
+      let reponse = JSON.parse(data);
+      $('#product_selector').val();
+      if(parseInt(reponse.data.business_vertical_id)==3) {
+        $('#customer_commercial_input').val('0').change();
+      } else {
+          $('#customer_commercial_input').val('1').change();
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+
     });
   }
 
