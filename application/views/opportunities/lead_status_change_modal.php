@@ -17,7 +17,7 @@
          <br>
 
          <div class="hidden" id="customer_commercial_input_container">
-           <label for="customer_commercial_input">Choose Customer Commercial Info</label>
+           <label for="customer_commercial_input">Customer Commercial Info</label>
            <select class="form-control " id="customer_commercial_input" disabled>
              <option value="-1">Select Commercial Type</option>
              <option value="0">Free</option>
@@ -309,7 +309,8 @@ function changeLeadStatus() {
       console.log('inside2');
       return;
     } else {
-      updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+      //updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
     }
   }
   if($('#lead_status_selector').find(':selected').attr('data-notification')==1) {
@@ -333,7 +334,8 @@ function changeLeadStatus() {
       updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
   }
   if(lead_status_id==16){
-    lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    //lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
   }
   if(lead_status_id==0){
     alert('Select a Valid Value');
@@ -399,8 +401,8 @@ function changeLeadStatus() {
       let commercial_text = customer_commercial_type==0 ? 'Free' : 'Commercial';
       swal(
           {
-              title: "",
-              text: 'Are you sure on changing the commercial type for this lead to "'+commercial_text+'" !' ,
+              title: "Are you sure about the product for this opportunity?",
+              text: 'Changing Product Name would impact Commercial Type of the Product!' ,
               showCancelButton: true,
               confirmButtonText: "Yes",
               cancelButtonText: "No, Cancel!",
