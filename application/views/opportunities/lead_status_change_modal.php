@@ -402,7 +402,9 @@ function changeLeadStatus() {
       swal(
           {
               title: "Are you sure about the product for this opportunity?",
-              text: 'Changing Product Name would impact Commercial Type of the Product!' ,
+              text: ' <span style="color:#c0392b">Changing Product Name would impact<br>Commercial Type of the Product!<span>',
+              html: true,
+              //text: 'Changing Product Name would impact Commercial Type of the Product!' ,
               showCancelButton: true,
               confirmButtonText: "Yes",
               cancelButtonText: "No, Cancel!",
