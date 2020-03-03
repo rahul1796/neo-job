@@ -23,7 +23,7 @@ class CommercialVerificationController extends MY_Controller {
       //echo var_dump($this->input->post());
     //  $data = $this->input->post('commercial');
       //
-
+      $status_code = 0;
       $customer = $this->opportunity->find($id);
        $this->commercial_redirect($customer);
       $data = $this->set_commercial_document_data($id);
@@ -35,10 +35,13 @@ class CommercialVerificationController extends MY_Controller {
         $data_document = $this->addFileInfo($data_document);
         if ($this->commercial->saveCommercials($id, $data['commercials'], $data_document)) {
           $this->msg = 'Commercial data updated successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error saving commercial, please try again after sometime';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect(base_url().'CommercialVerificationController/commercials_documents/'.$id, 'refresh');
       }
       $this->loadFormViews('commercials_documents',$data);
@@ -81,6 +84,7 @@ class CommercialVerificationController extends MY_Controller {
     }
 
     public function verify_documents_commercial() {
+      $status_code = 0;
       $customer_id = $this->input->post('customer_id');
       $request['status'] = $this->input->post('status');
       $request['remarks'] = $this->input->post('remarks');
@@ -89,9 +93,11 @@ class CommercialVerificationController extends MY_Controller {
         $data['status'] = true;
         if($request['status']=='accept') {
             $this->msg = 'Documents & Commercials Approved. Opportunity Converted to Contract';
+            $status_code = 1;
             $data['message'] = $this->msg ;
         } else {
           $this->msg = 'Documents & Commercials Rejected. Resubmission of commercial required';
+          $status_code = 0;
           $data['message'] = $this->msg ;
         }
       } else {
@@ -99,6 +105,7 @@ class CommercialVerificationController extends MY_Controller {
         $data['message'] = $this->msg ;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       echo json_encode($data);
       exit;
     }
@@ -164,12 +171,16 @@ class CommercialVerificationController extends MY_Controller {
     }
 
     public function document_delete($customer_id, $document_id) {
+      $status_code =0;
       if($this->commercial->deleteCustomerDocument($customer_id, $document_id)) {
         $this->msg = 'Document deleted successfully';
+        $status_code =1;
       } else {
           $this->msg = 'Error deleting document';
+          $status_code =0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect(base_url().'CommercialVerificationController/commercials_documents/'.$customer_id, 'refresh');
     }
 

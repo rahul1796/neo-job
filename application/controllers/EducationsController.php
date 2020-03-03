@@ -34,14 +34,18 @@ protected $redirectUrl = 'educationscontroller/';
 
     public function store($candidate_id) {
       $data = $this->setData($candidate_id);
+      $status_code = 0;
       $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
       if($this->validateRequest()){
         if($this->education->save($data['data']['fields'])) {
           $this->msg = 'Education Added Successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error Adding Education, please try again after sometime';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect($this->redirectUrl.'/create/'.$data['data']['fields']['candidate_id'], 'refresh');
 
       } else {
@@ -60,6 +64,7 @@ protected $redirectUrl = 'educationscontroller/';
     public function update($candidate_id, $id) {
 
       $data = $this->setData($candidate_id, $id);
+      $status_code = 0;
       $data['id'] = $id;
 
       if($this->validateRequest()){
@@ -67,10 +72,13 @@ protected $redirectUrl = 'educationscontroller/';
         // exit;
         if ($this->education->update($id, $data['data']['fields'])) {
           $this->msg = 'Education updated successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error updating Education, please try again after sometime';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         //echo $this->redirectUrl.'create/'.$data['data']['fields']['candidate_id'];
         redirect($this->redirectUrl.'create/'.$data['data']['fields']['candidate_id'], 'refresh');
       } else {
@@ -79,10 +87,13 @@ protected $redirectUrl = 'educationscontroller/';
     }
 
     public function delete($candidate_id, $id) {
+      $status_code = 0;
       if($this->education->deleteCandidateAssociation($candidate_id, $id)) {
         $this->msg = 'Education details deleted successfully';
+        $status_code = 1;
       } else {
           $this->msg = 'Error deleting details';
+          $status_code = 0;
       }
       $this->load->library('user_agent');
       $refer='';
@@ -93,9 +104,11 @@ protected $redirectUrl = 'educationscontroller/';
       if(strpos($refer, 'create'))
       {
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect($this->redirectUrl.'create/'.$candidate_id, 'refresh');
       } else {
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect('candidatescontroller/show/'.$candidate_id, 'refresh');
       }
     }

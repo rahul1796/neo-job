@@ -39,14 +39,18 @@ class OpportunitiesController extends MY_Controller {
 
   public function store($customer_id) {
     $this->authorize(lead_add_roles());
+    $status_code = 0;
     if($this->validateRequest()){
       $data = $this->input->post();
       if($this->opportunity->save($data)) {
         $this->msg = 'Opportunity created successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error creating opportunity, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
     $data['data']['action'] = 'create';
@@ -67,14 +71,18 @@ class OpportunitiesController extends MY_Controller {
 
   public function update($opportunity_id) {
     $this->authorize(lead_update_roles());
+    $status_code = 0;
     if($this->validateRequest()){
       $data = $this->input->post();
       if ($this->opportunity->update($opportunity_id, $data)) {
         $this->msg = 'Opportunity updated successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error updating Opportunity, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
       $data = $this->setData($opportunity_id);
@@ -203,6 +211,7 @@ class OpportunitiesController extends MY_Controller {
         $data['customer_id']= $this->input->post('customer_id');
         $data['created_by'] = $this->session->userdata('usr_authdet')['id'];
         $data['is_paid'] = $this->input->post('is_paid') ?? -1;
+        $status_code = 0;
         $status = false;
         if($data['lead_status_id']!=8){
           $data['remarks'] = $this->input->post('remark');
@@ -227,10 +236,13 @@ class OpportunitiesController extends MY_Controller {
 
         if ($status) {
           $this->msg = 'Opportunity Status updated successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error updating Opportunity Status';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         $response['status'] = $status;
         $response['msg'] = 'request reached successfully';
         echo json_encode($response);

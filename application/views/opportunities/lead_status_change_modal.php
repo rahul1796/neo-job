@@ -17,8 +17,8 @@
          <br>
 
          <div class="hidden" id="customer_commercial_input_container">
-           <label for="customer_commercial_input">Choose Customer Commercial Info</label>
-           <select class="form-control " id="customer_commercial_input">
+           <label for="customer_commercial_input">Customer Commercial Info</label>
+           <select class="form-control " id="customer_commercial_input" disabled>
              <option value="-1">Select Commercial Type</option>
              <option value="0">Free</option>
              <option value="1">Commercial</option>
@@ -38,7 +38,7 @@
              <div class="col-md-12">
                <h5 id="current-product-label"></h5>
                <label for="product_selector">Change Product</label>
-               <select class="form-control" id="product_selector" placeholder="Change Product" name="product_selector">
+               <select class="form-control" id="product_selector" data-bv-value="" placeholder="Change Product" name="product_selector">
                <?php foreach($business_vertical_options as $option): ?>
                  <option value="<?php echo $option->id; ?>"><?php echo $option->name; ?></option>
                <?php endforeach; ?>
@@ -193,6 +193,7 @@ $(document).ready(function() {
         $('#proposal_shared_input_container').addClass('hidden');
       }
       if(value==16) {
+        get_product_commercial_type();
         $('#customer_commercial_input_container').removeClass('hidden');
       } else {
         $('#customer_commercial_input_container').addClass('hidden');
@@ -308,7 +309,11 @@ function changeLeadStatus() {
       console.log('inside2');
       return;
     } else {
-      updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      if($('#product_selector').val() == $('#product_selector').attr('data-bv-value')) {
+        updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
+      } else {
+        lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+      }
     }
   }
   if($('#lead_status_selector').find(':selected').attr('data-notification')==1) {
@@ -332,7 +337,8 @@ function changeLeadStatus() {
       updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
   }
   if(lead_status_id==16){
-    lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    //lead_commercial_confirm(lead_status_id, form_data, customer_commercial_type, employer_id);
+    updateLeadStatus(lead_status_id, form_data, customer_commercial_type, employer_id);
   }
   if(lead_status_id==0){
     alert('Select a Valid Value');
@@ -398,8 +404,10 @@ function changeLeadStatus() {
       let commercial_text = customer_commercial_type==0 ? 'Free' : 'Commercial';
       swal(
           {
-              title: "",
-              text: 'Are you sure on changing the commercial type for this lead to "'+commercial_text+'" !' ,
+              title: "Are you sure about changing the product for this opportunity?",
+              text: ' <span style="color:#c0392b">Changing Product Name would impact<br>Commercial Type of the Product!<span>',
+              html: true,
+              //text: 'Changing Product Name would impact Commercial Type of the Product!' ,
               showCancelButton: true,
               confirmButtonText: "Yes",
               cancelButtonText: "No, Cancel!",
@@ -465,11 +473,30 @@ function changeLeadStatus() {
       async: false,
     }).done(function(data, textStatus, jqXHR ) {
       let reponse = JSON.parse(data);
+      $('#product_selector').attr('data-bv-value', reponse.data.business_vertical_id);
       $('#product_selector').val(reponse.data.business_vertical_id);
       let status_text = $('#product_selector').find(':selected').text();
-        $('#current-product-label').html('Current Product: '+status_text );
+        $('#current-product-label').html('Current Product - <span class="text-success">'+status_text + '</span>');
     }).fail(function(jqXHR, textStatus, errorThrown) {
       $('#product_selector').val(0);
+    });
+  }
+
+  function get_product_commercial_type() {
+    let opp_id=$('#proposal_customer_id').val();
+    $.ajax({
+      url:'<?= base_url('opportunitiesController/getCurrentProduct/'); ?>'+opp_id,
+      async: false,
+    }).done(function(data, textStatus, jqXHR ) {
+      let reponse = JSON.parse(data);
+      $('#product_selector').val();
+      if(parseInt(reponse.data.business_vertical_id)==3) {
+        $('#customer_commercial_input').val('0').change();
+      } else {
+          $('#customer_commercial_input').val('1').change();
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+
     });
   }
 
