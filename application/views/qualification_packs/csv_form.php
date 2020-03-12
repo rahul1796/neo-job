@@ -184,15 +184,17 @@ function showBatchWiseCandidates(id)
             if(data.status)
             {
                 var slno=1;
+
                 candidate_list_html += '<div class="row">';
                 candidate_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 200px;">';
                 candidate_list_html += '<table class="table table-striped">';
-                candidate_list_html += '<tr><th>SNo</th><th>Candidate Name</th><th>Mobile</th><th>Email</th></tr>';
+                candidate_list_html += '<tr><th>SNo</th><th>Candidate Name</th><th>Mobile</th><th>Email</th><th>Status</th></tr>';
 
                 $.each(data.candidate_detail,function(a,b)
                 {
-                  candidate_list_html += '<tr><td>'+slno+'</td><td>'+b.candidate_name+'</td><td>'+b.mobile+'</td><td>'+ b.email + '</td></tr>';
-                  slno++;
+                    var varStatusColor = b.active_status.toUpperCase() == 'ACTIVE' ? 'green' : 'red';
+                    candidate_list_html += '<tr><td>'+slno+'</td><td>'+b.candidate_name+'</td><td>'+b.mobile+'</td><td>'+ b.email + '</td><td><span style="background-color:'+ varStatusColor +';color:white;padding:5px;border-radius: 4px;">'+ b.active_status + '</span></td></tr>';
+                    slno++;
                 });
 
                 candidate_list_html += '</table>';

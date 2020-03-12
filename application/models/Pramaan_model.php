@@ -13038,7 +13038,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                                                                 c.id,
                                                                 c.candidate_name,
                                                                 COALESCE(NULLIF(c.mobile,'') , '-NA-' ) as mobile,
-                                                                COALESCE(NULLIF(c.email,'') , '-NA-' ) as email
+                                                                COALESCE(NULLIF(c.email,'') , '-NA-' ) as email,
+                                                                CASE c.is_active WHEN TRUE THEN 'Active' ELSE 'Inactive' END AS active_status
                                                 FROM    	neo.candidates c
                                                 LEFT JOIN 	neo.candidate_qp_details AS CB ON CB.candidate_id=C.id
                                                 LEFT JOIN 	neo.neo_batches AS B ON UPPER(TRIM(B.batch_code))=UPPER(TRIM(CB.batch_code))
