@@ -85,7 +85,8 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child, table.dataTable.dt
                            <table id="tblSec" class="table table-striped table-bordered display responsive nowrap" style="width:100% !important;">
                                 <thead>
                                 <tr>
-                                    <th>SNo.</th>                                    
+                                    <th>SNo.</th>   
+                                    <th>Status</th>                                 
                                     <th>Batch Code</th>
                                     <th>Batch Type</th>
                                     <th style="text-align: center;">Batch Size</th>
@@ -183,15 +184,17 @@ function showBatchWiseCandidates(id)
             if(data.status)
             {
                 var slno=1;
+
                 candidate_list_html += '<div class="row">';
                 candidate_list_html += '<div class="col-sm-12 col-md-12" style="overflow-x: auto; height: 200px;">';
                 candidate_list_html += '<table class="table table-striped">';
-                candidate_list_html += '<tr><th>SNo</th><th>Candidate Name</th><th>Mobile</th><th>Email</th></tr>';
+                candidate_list_html += '<tr><th>SNo</th><th>Candidate Name</th><th>Mobile</th><th>Email</th><th>Status</th></tr>';
 
                 $.each(data.candidate_detail,function(a,b)
                 {
-                  candidate_list_html += '<tr><td>'+slno+'</td><td>'+b.candidate_name+'</td><td>'+b.mobile+'</td><td>'+ b.email + '</td></tr>';
-                  slno++;
+                    var varStatusColor = b.active_status.toUpperCase() == 'ACTIVE' ? 'green' : 'red';
+                    candidate_list_html += '<tr><td>'+slno+'</td><td>'+b.candidate_name+'</td><td>'+b.mobile+'</td><td>'+ b.email + '</td><td><span style="background-color:'+ varStatusColor +';color:white;padding:5px;border-radius: 4px;">'+ b.active_status + '</span></td></tr>';
+                    slno++;
                 });
 
                 candidate_list_html += '</table>';
@@ -289,6 +292,56 @@ function bulk_upload_save()
         }
     });
 
+}
+
+
+function batch_status(id, is_active) {
+    var strStatus = (is_active == 1) ? "Deactivate" : "Activate";
+    var strCompletedStatus = (is_active == 1) ? "Deactivated" : "Activated";
+    swal(
+        {
+            title: "",
+            text: "Are you sure, you want to " + strStatus + "?",
+            showCancelButton: true,
+            confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+            confirmButtonText: "Yes, " + strStatus + "!",
+            cancelButtonText: "No, Cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
+        function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "POST",
+                    url: base_url + "pramaan/change_batch_active_status",
+                    data: {
+                        'id': id,
+                        'is_active': is_active
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        swal({
+                                title: "",
+                                text: "Batch successfully " + strCompletedStatus + "!",
+                                confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+                                confirmButtonText: 'OK',
+                                closeOnConfirm: true,
+                                closeOnCancel: true
+                            },
+                            function(confirmed)
+                            {
+                                reload_table();
+                                //window.location.reload();
+                            });
+                    },
+                    error: function () {
+                        alert("Error Occurred");
+                    }
+                });
+
+            }
+        }
+    );
 }
 
 </script>
