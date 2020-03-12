@@ -85,6 +85,7 @@ table tr{margin-bottom: 5px;}
 {
   padding-left: 20px;
 }
+
 </style>
 
 <?php
@@ -95,7 +96,7 @@ table tr{margin-bottom: 5px;}
     }
 ?>
 
-<div class="content-body" style="padding: 10px;">
+<div class="content-body" style="padding: 10px; /*overflow-y:hidden*/ ">
     <div class="row">
         <div class="col-md-12">
             <?php $this->load->view('layouts/errors'); ?>
@@ -336,7 +337,8 @@ function candidate_list_inner_content(resp,colcount)
           candidate_list_html += '<div class="row">';
           candidate_list_html += '<div class="col-sm-2 col-md-2 vcenter">';
           candidate_list_html += '<img src='+base_url+'/adm-assets/images/portrait/small/blank_avatar.png '+' onerror=this.src='+"'"+base_url+'adm-assets/images/portrait/small/blank_avatar.png'+"'"+' class=img-thumbnail height=75 width=75>';
-          candidate_list_html += '</div> ';
+          candidate_list_html += '<a class="' + (b.is_active ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") + '" title="Toggle Active Status" onclick="candidate_status(' +  b.id +  ','   +b.is_active + ')" style="width: 56%; color: white; margin-top: 12px; height: 27px; font-weight: 600;">' + (b.is_active ? "Active" : "Inactive") + '</a>';
+          candidate_list_html += '</div> ';         
           candidate_list_html += '<div class="col-sm-7 col-md-7">';
           candidate_list_html += '<ul>'+
                                     '<li><b class="text-uppercase text-success">'+ b.full_name + '</b></li>'+
@@ -366,6 +368,7 @@ function candidate_list_inner_content(resp,colcount)
                   <?php endif; ?>
          // candidate_list_html += '<a class="btn mr-1 mb-1 btn-default" style="background-color: #008074; color: white;" href="'+base_url + 'candidate/edit/' + b.id + '" title="Edit Candidate Details" style="margin-top: 30px;"><i class="icon-edit"></i> Edit Candidate Details</a></p>';
           candidate_list_html += '<a class="btn mr-1 mb-1 btn-info" href="'+base_url + 'candidatescontroller/show/' + b.id + '" title="Candidate Detail" style="width: 183px;margin-top: 30px;"><i class="fa fa-id-card-o"></i> View Profile</a></p>';
+          
           candidate_list_html += '  </div> ';
           candidate_list_html += '  </div> ';
     });
@@ -506,6 +509,7 @@ function bulk_upload_save()
 
 }
 
+
 function aadhar_verify(candidate_id)
 {
   var url = base_url+"pramaan/aadhar_verify";
@@ -570,6 +574,55 @@ $(document).keypress(
       event.preventDefault();
     }
 });
+
+function candidate_status(id, is_active) {
+    var strStatus = (is_active == 1) ? "Deactivate" : "Activate";
+    var strCompletedStatus = (is_active == 1) ? "Deactivated" : "Activated";
+    swal(
+        {
+            title: "",
+            text: "Are you sure, you want to " + strStatus + "?",
+            showCancelButton: true,
+            confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+            confirmButtonText: "Yes, " + strStatus + "!",
+            cancelButtonText: "No, Cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
+        function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "POST",
+                    url: base_url + "pramaan/change_candidate_active_status",
+                    data: {
+                        'id': id,
+                        'is_active': is_active
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        swal({
+                                title: "",
+                                text: "Candidate successfully " + strCompletedStatus + "!",
+                                confirmButtonColor: ((is_active == 1) ? "#d9534f" : "#5cb85c"),
+                                confirmButtonText: 'OK',
+                                closeOnConfirm: true,
+                                closeOnCancel: true
+                            },
+                            function(confirmed)
+                            {
+                                reload_candidates();
+                                //window.location.reload();
+                            });
+                    },
+                    error: function () {
+                        alert("Error Occurred");
+                    }
+                });
+
+            }
+        }
+    );
+}
 </script>
 
 <!-- Bootstrap modal -->
