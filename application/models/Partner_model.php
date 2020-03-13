@@ -583,8 +583,9 @@ class Partner_model extends CI_Model
                                         VW.company_name,
                                         VW.location,
                                         VW.candidate_enrollment_id,
-																				VW.igs_customer_name,
-																				VW.igs_contract_id
+										VW.igs_customer_name,
+										VW.igs_contract_id,
+										VW.is_active::INTEGER AS is_active
                                 FROM	users.fn_get_candidate_data($qualification_pack,$education,$search_by_index,'$search_text',$limit,$pg) AS VW";
                     //echo $Query;
                    // exit;

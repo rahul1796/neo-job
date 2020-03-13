@@ -8015,4 +8015,28 @@ die;*/
         $this->load->view('index',$data);
     }
 
+    public function change_batch_active_status()
+    {
+        //$this->pramaan->_check_module_task_auth(false);
+        $RequestData = array(
+            'id' => $this->input->post('id'),
+            'is_active' => $this->input->post('is_active')
+        );
+
+        $Response = $this->pramaan->change_batch_status($RequestData);
+        echo json_encode($Response);
+    }
+
+    public function change_candidate_active_status()
+    {
+        //$this->pramaan->_check_module_task_auth(false);
+        $RequestData = array(
+            'id' => $this->input->post('id'),
+            'is_active' => $this->input->post('is_active')
+        );
+       
+        $Response = $this->pramaan->change_candidate_status($RequestData);
+        echo json_encode($Response);
+    }
+
 }
