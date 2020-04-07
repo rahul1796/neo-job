@@ -13,7 +13,7 @@ class ApiAnalytics extends CI_Controller {
 
   public function authoriseAPI() {
     $headers = $this->input->request_headers();
-    if(empty($headers['api-token']) || $this->input->request_headers()['api-token'] != $this->token) // && $this->input->request_headers()['api-token'] != $this->token
+    if(empty($headers['Api-Token']) || $this->input->request_headers()['Api-Token'] != $this->token) // && $this->input->request_headers()['api-token'] != $this->token
     {
       $data['code'] = '401';
       $data['status'] = 'fail';
