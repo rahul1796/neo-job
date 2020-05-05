@@ -6,7 +6,8 @@ class Reports extends MY_Controller {
   private $reports = ['getUserLogInReport' => 'User Login Activity Report',
                       'getUsabilityReport' => 'User Usability Report',
                       'getLeadDetailsReport' => 'Lead Details Report',
-                      'getClientTrackerReport'=>'Client Tracker Report',
+                      //'getClientTrackerReport'=>'Client Tracker Report',
+                      'getClientOpportunityTrackerReport'=>'Client Opportunity Tracker Report',
                       'getPlacementDetailReport' => 'Placement Detail Report',
                       'getJobDetailedReport' => 'Job Detailed Report',
                       'getSelfEmployedCandidatesReport' => 'Self Employed Candidates Report'];
@@ -66,6 +67,11 @@ class Reports extends MY_Controller {
     $this->downloadRequest('ClientTrackerReport', $data);
   }
 
+  public function getClientOpportunityTrackerReport() {
+    $data = $this->report->getClientOpportunityTrackerReport();
+    $this->downloadRequest('getClientOpportunityTrackerReport', $data);
+  }
+
   public function getPlacementDetailReport() {
     $data = $this->report->getPlacementDetailReport($this->searchFiltersPlacementReport());
     $this->downloadRequest('PlacementDetailReport', $data);
@@ -102,7 +108,7 @@ class Reports extends MY_Controller {
   }
 
   private function placementReportSearchOptions($data) {
-    $data['customer_options'] = $this->report->allCustomers();
+    $data['customer_options'] = $this->report->allCompanies();
     $data['gender_options'] = $this->report->getGenders();
     $data['candidate_statuses_options'] = $this->report->getCandidateStatuses();
     $data['employment_type_options'] = $this->report->getEmploymentTypes();
@@ -114,7 +120,7 @@ class Reports extends MY_Controller {
   }
 
   public function jobDetailReportSearchOptions($data) {
-    $data['customer_options'] = $this->report->allCustomers();
+    $data['customer_options'] = $this->report->allCompanies();
     $data['qp_options'] = $this->report->getQualificationPacks();
     $data['industry_options'] = $this->report->getIndustries();
     $data['business_vertical_options'] = $this->report->getBusinessVerticals();

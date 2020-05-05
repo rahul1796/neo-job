@@ -40,8 +40,8 @@ class Report extends MY_Model {
 
     $select_column = "sr_no as \"SR NO\", user_name as \"USER NAME\", user_email as \"USER EMAIL\",
                       user_role_name as \"USER ROLE\", log_date as \"DATE\", login_count as \"#LOGGED IN\",
-                      lead_created_count as \"#LEAD CREATED\", lead_status_changed_count as \"#LEAD STATUS CHANGED\",
-                      lead_converted_to_customer_count as \"#LEAD CONVERTED TO CUSTOMER\",
+                      lead_created_count as \"#OPPORTUNITY CREATED\", lead_status_changed_count as \"#OPPORTUNITY STATUS CHANGED\",
+                      lead_converted_to_customer_count as \"#CONTRACT COMPLETED\",
                       jobs_posted_count as \"#JOBS POSTED\", candidate_created_count as \"#CANDIDATE ADDED\",
                       jobs_applied_count as \"#JOBS APPLIED\", jobs_closed_count as \"#JOBS CLOSED\",
                       candidate_status_changed_count as \"#CANDIDATE STATUS CHANGED\"";
@@ -60,7 +60,7 @@ class Report extends MY_Model {
     $select_column = "sr_no as \"SR NO\", customer_name AS \"CUSTOMER NAME\",
                       created_user_name AS \"CUSTOMER CREATED BY\",
                       created_user_role AS \"USER ROLE\", active_status AS \"ACTIVE STATUS\",
-                      business_vertical_name AS \"BUSSINESS VERTICAL NAME\",
+                      business_vertical_name AS \"PRODUCT\",
                       business_practice_name AS \"BUSINESS PRACTICE NAME\", office_location AS \"OFFICE LOCATION\",
                       job_count AS \"JOBS COUNT\", requirement_count AS \"REQUIREMENT\",
                       interested_count AS \"INTERSTED\",
@@ -82,9 +82,50 @@ class Report extends MY_Model {
     return $this->dbutil->csv_from_result($query);
   }
 
+  public function getClientOpportunityTrackerReport() {
+    $select_column = "sr_no as \"SR NO\",
+                      customer_name AS \"COMPANY NAME\",
+                      opportunity_code AS \"OPPORTUNITY CODE\",
+                      contract_id AS \"CONTRACT ID\",
+                      created_user_name AS \"OPPORTUNITY CREATED BY\",
+                      created_user_role AS \"USER ROLE\",
+                      active_status AS \"ACTIVE STATUS\",
+                      business_vertical_name AS \"PRODUCT\",
+                      office_location AS \"OFFICE LOCATION\",
+                      job_count AS \"JOBS COUNT\",
+                      requirement_count AS \"REQUIREMENT\",
+                      interested_count AS \"INTERSTED\",
+                      profile_submitted_count AS \"PROFILE SUBMITTED\",
+                      pending_feedback_from_employer_count AS \"PENDING FEEDBACK\",
+                      profile_accepted_count AS \"PROFILE ACCEPTED\",
+                      profile_rejected_count AS \"PROFILE REJECTED\",
+                      interview_scheduled_count \"INTERVIEW SCHEDULE\",
+                      interview_attended_count AS \"INTERVIEW ATTENDED\",
+                      interview_not_attended_count AS \"INTERVIEW NOT ATTENDED\",
+                      selected_count AS \"SELECTED\",
+                      rejected_count AS \"REJECTED\",
+                      offer_in_pipeline_count AS \"OFFER IN PIPELINE\",
+                      offerred_count AS \"OFFERED\",
+                      offer_accepted_count AS \"OFFER ACCEPTED\",
+                      offer_rejected_count AS \"OFFER REJECTED\",
+                      joined_count AS \"JOINED COUNT\",
+                      not_joined_count AS \"NOT JOINED COUNT\"";
+
+    $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_client_opportunity_tracker_report_data(?)",
+                              [
+                                $this->adminCloneforReportViewer(),
+                              ]);
+
+    return $this->dbutil->csv_from_result($query);
+  }
+
   public function getLeadDetailsReport($data) {
-    $select_column = "customer_name AS \"CUSTOMER NAME\",
-		lead_status AS \"LEAD STATUS\",
+    $select_column = "customer_name AS \"COMPANY NAME\",
+    opportunity_code AS \"OPPORTUNITY CODE\",
+		lead_status AS \"OPPORTUNITY STATUS\",
+    contract_id AS \"CONTRACT ID\",
+    potential_number AS \"POTENTIAL NUMBER\",
+    potential_order_value_per_month AS \"POTENTIAL ORDER VALUE PER MONTH\",
 		created_by AS \"CREATED BY\",
 		created_on AS \"CREATED ON\",
 		modified_on AS \"MODIFIED ON\",
@@ -110,17 +151,40 @@ class Report extends MY_Model {
 
     public function getPlacementDetailReport($data) {
       $file_url = base_url("uploads/candidate/offer_letters/");
-      $select_column = "region_name AS \"REGION\", batch_code AS \"BATCH CODE\", batch_start_date AS \"BATCH START DATE\",
-                        batch_end_date AS \"BATCH END DATE\", center_name AS \"CENTER NAME\", batch_customer_name AS \"IGS CUSTOMER NAME\",
-                        batch_contract_id AS \"IGS CONTRACT ID\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NO#\", date_of_birth AS \"DATE OF BIRTH\",
-                        candidate_current_status AS \"CANDIDATE STATUS\", current_status_changed_on AS \"STATUS CHANGED ON\", contact_no AS \"CONTACT NO\", interview_date AS \"INTERVIEWED DATE\",
-                        date_of_join AS \"DATE OF JOINING\", customer_name AS \"CUSTOMER NAME\", job_location AS \"JOB LOCATION\",
-                        job_title AS \"JOB TITLE\", job_created_date AS \"JOB POSTED DATE\",
-                        job_qualification_pack AS \"JOB QP\", business_vertical AS \"BUSINESS VERTICAL\",
-                        job_created_by AS \"JOB CREATED BY\", job_created_by_user_role AS \"USER ROLE\",
-                        employment_type AS \"EMPLOYMENT TYPE\", salary AS \"SALARY (INR)\", state_name AS \"STATE\",
-                        district_name AS \"CITY\", pin_code AS \"PINCODE\", gender AS \"GENDER\",offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\",
-                        (CASE WHEN TRIM(COALESCE(offer_letter_file, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(offer_letter_file), '\",\"View Document\")') END ) AS \"OFFER LETTER FILE\", certification_status AS \"CERTIFICATION STATUS\"";
+      $select_column = "region_name AS \"REGION\",
+                        batch_code AS \"BATCH CODE\",
+                        batch_start_date AS \"BATCH START DATE\",
+                        batch_end_date AS \"BATCH END DATE\",
+                        center_name AS \"CENTER NAME\",
+                        batch_customer_name AS \"IGS CUSTOMER NAME\",
+                        batch_contract_id AS \"IGS CONTRACT ID\",
+                        candidate_name AS \"CANDIDATE NAME\",
+                        enrollment_no AS \"ENROLLMENT NO#\",
+                        date_of_birth AS \"DATE OF BIRTH\",
+                        candidate_current_status AS \"CANDIDATE STATUS\",
+                        current_status_changed_on AS \"STATUS CHANGED ON\",
+                        contact_no AS \"CONTACT NO\",
+                        interview_date AS \"INTERVIEWED DATE\",
+                        date_of_join AS \"DATE OF JOINING\",
+                        customer_name AS \"COMPANY NAME\",
+                        opportunity_code AS \"OPPORTUNITY CODE\",
+                        contract_id AS \"CONTRACT ID\",
+                        job_location AS \"JOB LOCATION\",
+                        job_title AS \"JOB TITLE\",
+                        job_created_date AS \"JOB POSTED DATE\",
+                        job_qualification_pack AS \"JOB QP\",
+                        business_vertical AS \"PRODUCT\",
+                        job_created_by AS \"JOB CREATED BY\",
+                        job_created_by_user_role AS \"USER ROLE\",
+                        employment_type AS \"EMPLOYMENT TYPE\",
+                        salary AS \"SALARY (INR)\",
+                        state_name AS \"STATE\",
+                        district_name AS \"CITY\",
+                        pin_code AS \"PINCODE\",
+                        gender AS \"GENDER\",
+                        offer_letter_uploaded_date AS \"OFFER LETTER UPLOADED DATE\",
+                        (CASE WHEN TRIM(COALESCE(offer_letter_file, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(offer_letter_file), '\",\"View Document\")') END ) AS \"OFFER LETTER FILE\",
+                        certification_status AS \"CERTIFICATION STATUS\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_placement_detail_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
@@ -150,13 +214,27 @@ class Report extends MY_Model {
 
     public function getJobDetailedReport($data) {
 
-      $select_column = "industry AS \"INDUSTRY\" , job_qp AS \"JOB QP\", job_posted_by AS \"JOB POSTED BY\",
-                        user_role AS \"USER ROLE\", job_title AS \"JOB TITLE\", business_vertical AS \"BUSINESS VERTICAL\",
-                        job_location AS \"JOB LOCATION\", pin_code AS \"PINCODE\", no_of_vacancies AS \"#NO VACANCIES\", min_salary AS \"MIN SALARY PA\",
-                        max_salary AS \"MAX SALARY PA\", education AS \"QUALIFICATION\",
-                        min_age AS \"MIN AGE\", max_age AS \"MAX AGE\", min_experience AS \"MIN EXP\",
-                        max_experience AS \"MAX EXP\", customer_name AS \"CUSTOMER\", key_skills AS \"KEY SKILLS\"";
-                        
+      $select_column = "industry AS \"INDUSTRY\" ,
+                        job_qp AS \"JOB QP\",
+                        job_posted_by AS \"JOB POSTED BY\",
+                        user_role AS \"USER ROLE\",
+                        job_title AS \"JOB TITLE\",
+                        business_vertical AS \"PRODUCT\",
+                        job_location AS \"JOB LOCATION\",
+                        pin_code AS \"PINCODE\",
+                        no_of_vacancies AS \"#NO VACANCIES\",
+                        min_salary AS \"MIN SALARY PA\",
+                        max_salary AS \"MAX SALARY PA\",
+                        education AS \"QUALIFICATION\",
+                        min_age AS \"MIN AGE\",
+                        max_age AS \"MAX AGE\",
+                        min_experience AS \"MIN EXP\",
+                        max_experience AS \"MAX EXP\",
+                        customer_name AS \"COMPANY\",
+                        opportunity_code AS \"OPPORTUNITY CODE\",
+                        contract_id AS \"CONTRACT ID\",
+                        key_skills AS \"KEY SKILLS\"";
+
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_job_detailed_report_data(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 [
@@ -185,7 +263,7 @@ class Report extends MY_Model {
       batch_contract_id AS \"BATCH CONTRACT ID\", qualification_pack AS \"QUALIFICATION PACK\", candidate_name AS \"CANDIDATE NAME\", enrollment_no AS \"ENROLLMENT NUMBER\",
       date_of_birth AS \"DATE OF BIRTH\", gender AS \"GENDER\",
       state AS \"STATE\", district AS \"DISTRICT\", certification_status AS \"CERTIFICATION STATUS\",
-      employment_type AS \"EMPLOYMENT TYPE\", self_employment_start_date AS \"SELF EMPLOYMENT START DATE\", skilling_type AS \"SKILLING TYPE\",document_uploaded_on AS \"DOCUMENT UPLOADED ON\",
+      employment_type AS \"EMPLOYMENT TYPE\", self_employment_start_date AS \"SELF EMPLOYMENT START DATE\", skilling_type AS \"SKILLING TYPE\" ,projected_earnings_per_month AS \"PROJECTED EARNINGS\",document_uploaded_on AS \"DOCUMENT UPLOADED ON\",
       (CASE WHEN TRIM(COALESCE(file_name, ''))='' THEN 'NA' ELSE CONCAT('=HYPERLINK(\"','{$file_url}', TRIM(file_name), '\",\"View Document\")') END ) AS \"DOCUMENT\"";
 
       $query = $this->db->query("SELECT {$select_column} FROM reports.fn_get_selfemployed_detail_report_data(?,?,?)",

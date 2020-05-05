@@ -30,7 +30,8 @@ class Candidate extends MY_Model {
 
         $query = $this->candidateAssociationQuery($query);
 
-        $query->where('QP.qualification_pack_id', $job->qualification_pack_id, false);
+        $query->where('QP.qualification_pack_id', $job->qualification_pack_id, false)
+              ->where('neo.neo_batches.is_active', TRUE);
 
         $query = $this->searchBuilder($query, $search_data);
 
@@ -198,7 +199,9 @@ class Candidate extends MY_Model {
                 ->join('neo_master.genders', 'neo.candidates.gender_id = neo_master.genders.id', 'LEFT')
                 ->join('neo_master.marital_statuses', 'neo.candidates.marital_status_id = neo_master.marital_statuses.id', 'LEFT')
                 ->join('neo_master.religions', 'neo.candidates.religion_id = neo_master.religions.id', 'LEFT')
-                ->join('neo_master.caste_categories', 'neo.candidates.caste_category_id = neo_master.caste_categories.id', 'LEFT');
+                ->join('neo_master.caste_categories', 'neo.candidates.caste_category_id = neo_master.caste_categories.id', 'LEFT')
+                // ->join('neo.neo_batches', 'neo.neo_batches.ln_batch_code = neo.candidates.batch_code', 'LEFT');
+                ->join('neo.neo_batches', 'neo.neo_batches.batch_code=neo.candidates.batch_code', 'LEFT');
         return $query;
     }
 
@@ -236,6 +239,7 @@ class Candidate extends MY_Model {
         if (!empty($search_data['search_batch_code'])) {
             $query = $query->like('LOWER(QP.batch_code)', strtolower($search_data['search_batch_code']), FALSE);
         }
+        $query = $query->where('neo.candidates.is_active', TRUE);
         return $query;
     }
 

@@ -307,6 +307,10 @@
 			$this->load->view(PRAMAAN_VIEW_PAGES.'customers');
 			break;
 
+			case 'contracts':
+				$this->load->view(PRAMAAN_VIEW_PAGES.'contracts');
+				break;
+
 		case 'job_applicants':
 			$this->load->view(PRAMAAN_VIEW_PAGES.'job_applicants');
 			break;

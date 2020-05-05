@@ -39,6 +39,7 @@ class CandidatesController extends MY_Controller {
     $this->load->model('Employment', 'employment');
     $this->load->model('Education', 'education');
     $this->load->model('Document', 'document');
+    $this->load->model('Opportunity', 'opportunity');
     //$this->user_logged_in = $this->session->userdata['usr_authdet'];
   }
 
@@ -58,6 +59,7 @@ class CandidatesController extends MY_Controller {
 
   public function store() {
     $this->authorize(candidate_add_roles());
+    $status_code = 0;
     $data = $this->setData();
     $data['data']['action']='create';
     $data['data']['id']=0;
@@ -65,10 +67,13 @@ class CandidatesController extends MY_Controller {
     if($this->validateRequest()){
       if($this->candidate->save(array_diff_key($data['data']['fields'], $this->exclude_fields))) {
         $this->msg = 'Candidate created successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error creating candidate, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
 
     } else {
@@ -89,6 +94,7 @@ class CandidatesController extends MY_Controller {
 
   public function update($id) {
     $this->authorize(candidate_update_roles());
+    $status_code = 0;
     $this->validateIDs($this->candidate->find($id));
     $data = $this->setData($id);
     $data['id'] = $id;
@@ -102,10 +108,13 @@ class CandidatesController extends MY_Controller {
       $data['data']['fields']['modified_at'] = date('Y-m-d H:i:s');
       if ($this->candidate->update($id, array_diff_key($data['data']['fields'], $this->exclude_fields))) {
         $this->msg = 'Candidate updated successfully';
+        $status_code = 1;
       } else {
         $this->msg = 'Error updating candidate, please try again after sometime';
+        $status_code = 0;
       }
       $this->session->set_flashdata('status', $this->msg);
+      $this->session->set_flashdata('status_code', $status_code);
       redirect($this->redirectUrl, 'refresh');
     } else {
     $this->loadFormViews('edit', $data);
@@ -284,6 +293,7 @@ class CandidatesController extends MY_Controller {
   $data['data']['search_data'] = $search_data;
 
   $data['data']['job'] = $this->job->findEmployer($id);
+  $data['data']['employer_phone'] = $this->opportunity->getSpocsByJobID($id);
   $url = base_url('CandidatesController/appliedCandidates/'.$id);
   $data['data']['education_options'] = $this->candidate->getEducations();
   $data['data']['employment_type']=$this->candidate->getEmploymentTypes();

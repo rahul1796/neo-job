@@ -25,6 +25,7 @@ class Pramaan extends CI_Controller
         $this->load->model('Sale', 'sale');
         $this->load->model('Candidate', 'candidate');
         $this->load->model("User", "user");
+        $this->load->model('Opportunity', 'opportunity');
         $this->load->helper('form');
         $this->load->library('form_validation');
     }
@@ -78,6 +79,9 @@ class Pramaan extends CI_Controller
         $data['data']['total_candidates'] = $this->dashboard->getCandidatesCount();
         $data['data']['total_jobs'] = $this->dashboard->getJobsCount();
         $data['data']['total_leads'] = $this->dashboard->getLeadCount();
+        $data['data']['total_companies'] = $this->dashboard->getCompanyCount();
+        $data['data']['total_opportunities'] = $this->dashboard->getOpportunityCount();
+        $data['data']['total_contracts'] = $this->dashboard->getContractCount();
 
         $data['data']['interested_candidates'] = $this->dashboard->getInterestedCandidatesCount();
         $data['data']['pending_candidates'] = $this->dashboard->getPendingCandidatesCount();
@@ -106,10 +110,15 @@ class Pramaan extends CI_Controller
         $data['data']['negotiation_count'] = $this->dashboard->getNegotiationCount();
         $data['data']['proposal_accepted_count'] = $this->dashboard->getProposalAcceptedCount();
         $data['data']['op_lost_at_proposal_level'] = $this->dashboard->getOpLostAtProposalLevelCount();
-        $data['data']['contract_signed'] = $this->dashboard->getContractSignedCount();
-        $data['data']['contract_not_signed'] = $this->dashboard->getContractNotSignedCount();
+        // $data['data']['contract_signed'] = $this->dashboard->getContractSignedCount();
+        // $data['data']['contract_not_signed'] = $this->dashboard->getContractNotSignedCount();
         $data['data']['lead_convert_to_client'] = $this->dashboard->getLeadConvertToClientCount();
         $data['data']['on_hold'] = $this->dashboard->getOnHoldCount();
+
+        $data['data']['opportunity_lost'] = $this->dashboard->getOpportunityLostCount();
+        $data['data']['legal_approved'] = $this->dashboard->getLegalApprovedCount();
+        $data['data']['legal_rejected'] = $this->dashboard->getLegalRejectedCount();
+        $data['data']['contract_completed'] = $this->dashboard->getContractCompletedCount();
 
         $this->load->view('index', $data);
     }
@@ -7775,38 +7784,51 @@ die;*/
         $this->load->view('index',$data);
     }
 
-    public function candidate_joined_customerwise($customer_id = 0)
+    public function candidate_joined_customerwise($id = 0)
     {
         $user              = $this->pramaan->_check_module_task_auth(true);
         $data['page']      = 'candidate_joined_customerwise';
         $data['employer_type_list'] = $this->db->query("SELECT id,name FROM neo_master.employment_type WHERE is_active=TRUE AND name!='Self Employed' ORDER BY name")->result_array();
         $data['title']     = 'Joined Candidates';
+        $data['employer_phone'] = $this->opportunity->getSpocsByJobID($id);
         $customer_details = array(
-            'customer_name' => '',
-            'hr_email' => '',
-            'hr_phone' => '',
+            'company_name' => '',
+            'spoc_email' => '',
+            'spoc_phone' => '',
             'location' => ''
         );
 
-        $Query = "SELECT        C.customer_name,
-                                C.hr_email,
-                                C.hr_phone,
-                                d.name AS location
-                    FROM 	neo_customer.customer_branches AS CB
-                    LEFT JOIN neo_customer.customers AS c ON c.id=cb.customer_id
-                    LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
-                    WHERE	C.id=?";
-        $job_rec = $this->db->query($Query, $customer_id);
+        $Query = "SELECT    C.company_name,
+                            B.spoc_name,      
+                            B.spoc_email,      
+                            B.spoc_phone,
+                            d.name AS location
+                        FROM 	neo_customer.customer_branches AS CB
+                        LEFT JOIN neo_customer.opportunities AS o ON o.id=cb.opportunity_id
+                        LEFT JOIN neo_customer.companies AS C on C.id=o.company_id
+                        LEFT JOIN neo_master.districts AS d ON d.id=cb.district_id
+                        LEFT JOIN
+                                (
+                                SELECT 	CB.opportunity_id,
+                                        STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+                                        STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+                                        STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+                                FROM 	neo_customer.customer_branches AS CB
+                                CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+                                GROUP BY CB.opportunity_id
+                                ) AS B ON 	B.opportunity_id=o.id
+                    WHERE	o.id=?";
+        $job_rec = $this->db->query($Query, $id);
         if ($job_rec->num_rows())
         {
-            $customer_details['customer_name'] = $job_rec->row()->customer_name;
-            $customer_details['hr_email'] = $job_rec->row()->hr_email;
-            $customer_details['hr_phone'] = $job_rec->row()->hr_phone;
+            $customer_details['company_name'] = $job_rec->row()->company_name;
+            $customer_details['spoc_email'] = $job_rec->row()->spoc_email;
+            $customer_details['spoc_phone'] = $job_rec->row()->spoc_phone;
             $customer_details['location'] = $job_rec->row()->location;
         }
 
         $data['customer_details'] = $customer_details;
-        $data['id'] = $customer_id;
+        $data['id'] = $id;
         $this->load->view('index', $data);
 
     }
@@ -7820,20 +7842,23 @@ die;*/
         $data['page']      = 'candidate_joined_jobwise';
         $data['title']     = 'Joined Candidates';
         $data['is_filled']=$this->candidate->getJobVacancyDetail($job_id);
+        $data['employer_phone'] = $this->opportunity->getSpocsByJobID($job_id);
         $job_details;
 
         $Query = "SELECT    J.job_title,
                             d.name AS district_name,
-                            C.customer_name,
+                            C.company_name,
                             QP.name AS qualification_pack_name,
                             QP.code AS qualification_code,
                             cp.resigned_date,
                             cp.reason_to_leave
-          FROM 	  neo_job.jobs AS J
-          LEFT JOIN neo_customer.customers AS C ON C.id=J.customer_id
-          LEFT JOIN neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-          LEFT Join neo_master.districts AS d ON d.id = j.district_id
-          LEFT JOIN neo_job.candidate_placement AS cp ON cp.job_id=j.id
+                    FROM 	  neo_job.jobs AS J
+                    LEFT JOIN neo_customer.companies AS C ON C.id=J.customer_id
+                    LEFT JOIN neo_customer.opportunities AS o ON o.company_id=c.id
+                    LEFT JOIN neo_customer.customer_branches AS cb ON cb.opportunity_id=o.id
+                    LEFT JOIN neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
+                    LEFT Join neo_master.districts AS d ON d.id = j.district_id
+                    LEFT JOIN neo_job.candidate_placement AS cp ON cp.job_id=j.id
           WHERE	  J.id=?";
         $job_rec = $this->db->query($Query, $job_id);
         if ($job_rec->num_rows())
@@ -7914,38 +7939,38 @@ die;*/
           redirect('/pramaan/dashboard', 'refresh');
         }
       }
-      
+
 
       public function changepassword($parent_id = 0)
-    {       
+    {
         $user              = $this->pramaan->_check_module_task_auth(true);
         $data['page']      = 'changepassword';
-        $data['title']     = 'Change Password'; 
+        $data['title']     = 'Change Password';
         $this->load->view('index', $data);
 
     }
-    
-    
+
+
     public function update_user_password()
     {
-       
+
         $this->load->library('form_validation');
         $this->form_validation->set_rules('oldpass', 'old password', 'trim|required|min_length[8]|max_length[30]|callback_password_check');
         $this->form_validation->set_rules('newpass', 'new password', 'trim|required|min_length[8]|max_length[30]|callback_last_passwords');
-        $this->form_validation->set_rules('passconf', 'confirm password', 'trim|required|min_length[8]|max_length[30]|matches[newpass]');       
+        $this->form_validation->set_rules('passconf', 'confirm password', 'trim|required|min_length[8]|max_length[30]|matches[newpass]');
 
         if($this->form_validation->run() == false) {
             $this->changepassword();
         }
         else {
-            $id = $this->session->userdata('usr_authdet')['id']; 
+            $id = $this->session->userdata('usr_authdet')['id'];
 
             $newpass = $this->input->post('newpass');
 
-            $this->user->updateUserPassword($id, array('pwd' => $newpass));               
+            $this->user->updateUserPassword($id, array('pwd' => $newpass));
             $this->session->set_flashdata('status', 'You have successfully changed your password');
-            redirect('/pramaan/dashboard', 'refresh');               
-            
+            redirect('/pramaan/dashboard', 'refresh');
+
         }
     }
 
@@ -7953,14 +7978,14 @@ die;*/
     {
         $id = $this->session->userdata('usr_authdet')['id'];
         $user = $this->user->getUserCurrentPassword($id);
-        if($user->pwd !== $oldpass){              
+        if($user->pwd !== $oldpass){
             $this->form_validation->set_message('password_check', 'The {field} does not match');
             return false;
-        } 
+        }
         return true;
     }
-    
-    
+
+
     public function last_passwords($oldpass)
     {
         $id = $this->session->userdata('usr_authdet')['id'];
@@ -7968,8 +7993,50 @@ die;*/
         if($current['counter'] > 0) {
             $this->form_validation->set_message('last_passwords', 'The {field} should not match last 3 password');
             return false;
-        }      
+        }
         return true;
+    }
+
+    public function contracts()
+    {
+        $this->authorize(customer_view_roles());
+        $this->pramaan->_check_module_task_auth(true);
+        $data['page']='contracts';
+        $data['title']='Contracts';
+        $data['module']="employer";
+        $data['business_vertical_options'] = $this->sale->getBusinessVerticals();
+        $data['industry_options'] = $this->sale->getIndustries();
+        $data['customer_name_options'] = $this->sale->getCustomerNamesByContracts();
+        $data['spoc_name_list_options'] = $this->sale->getCustomerSpocNameByContracts();
+        $data['spoc_email_list_options'] = $this->sale->getCustomerSpocEmailByContracts();
+        $data['spoc_phone_list_options'] = $this->sale->getCustomerSpocPhoneByContracts();
+        $data['opportunity_code_list_options'] = $this->sale->getContractOpportunity();
+        $data['contract_id_list_options'] = $this->sale->getContractIdByContract();
+        $this->load->view('index',$data);
+    }
+
+    public function change_batch_active_status()
+    {
+        //$this->pramaan->_check_module_task_auth(false);
+        $RequestData = array(
+            'id' => $this->input->post('id'),
+            'is_active' => $this->input->post('is_active')
+        );
+
+        $Response = $this->pramaan->change_batch_status($RequestData);
+        echo json_encode($Response);
+    }
+
+    public function change_candidate_active_status()
+    {
+        //$this->pramaan->_check_module_task_auth(false);
+        $RequestData = array(
+            'id' => $this->input->post('id'),
+            'is_active' => $this->input->post('is_active')
+        );
+       
+        $Response = $this->pramaan->change_candidate_status($RequestData);
+        echo json_encode($Response);
     }
 
 }

@@ -72,7 +72,7 @@ class Employer_model extends CI_Model
 	 * @author Sangamesh <sangamesh@pramaan.in>
 	 * function to get job list /*AND VW.id=509
 	*/
-    function get_job_list($job_status_id=2,$qp_id=0,$education_id=0,$pg=0,$limit=25,$user_id = 0)
+    function get_job_list_bak($job_status_id=2,$qp_id=0,$education_id=0,$pg=0,$limit=25,$user_id = 0)
 	{
 
 		$cond = '';
@@ -117,6 +117,47 @@ class Employer_model extends CI_Model
                                                              $sWhere $cond $HierarchyCondition
                                                             ORDER BY VW.id DESC
                                                             LIMIT $limit OFFSET $pg") or die('<pre>' . pg_last_error() . '</pre>');
+
+			$ttl_res_curr = $job_list_detail->num_rows();
+			$page_number = ($pg / $limit + 1);
+			$pg_count_msg = "Showing " . (1 + $pg) . " to " . ($ttl_res_curr + $pg) . " of " . $total_records;
+			$pagination = _prepare_pagination( site_url( "partner/job_board_list/$job_status_id/$qp_id/$education_id"), $total_records, $limit, 6 );
+			return array
+			(
+				'status' => 'success',
+				'rdata' => array(
+					'job_list' => $job_list_detail->result_array(),
+					'pg' => $pg,
+					'limit' => $limit,
+					'pagination' => $pagination,
+					'pg_count_msg' => $pg_count_msg,
+					'page_number' => $page_number
+				)
+			);
+		}
+	}
+
+	function get_job_list($job_status_id=2,$qp_id=0,$education_id=0,$pg=0,$limit=25,$user_id = 0)
+	{
+
+		$cond = '';
+        $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
+
+		$total_records = 0;
+		$job_list_rec = $this->db->query("SELECT COUNT(FN.id) AS total_recs 
+										  FROM neo_job.fn_get_job_list_data(?,?,?) AS FN", array($user_id, $qp_id, $job_status_id)) or die('<pre>' . pg_last_error() . '</pre>');
+
+		if ($job_list_rec->num_rows()) $total_records = $job_list_rec->row()->total_recs;
+
+		if (!$total_records)
+			return array('status' => 'error', 'message' => "<p style='text-align:center'>No result-data found</p>");
+		else
+		{
+			$job_list_detail = $this->db->query("SELECT * 
+												 FROM neo_job.fn_get_job_list_data(?,?,?) AS FN
+												 ORDER BY FN.id DESC
+                                                 LIMIT $limit 
+												 OFFSET $pg", array($user_id, $qp_id, $job_status_id)) or die('<pre>' . pg_last_error() . '</pre>');
 
 			$ttl_res_curr = $job_list_detail->num_rows();
 			$page_number = ($pg / $limit + 1);
@@ -586,7 +627,7 @@ class Employer_model extends CI_Model
 		);
 
 
-		$cond=" WHERE J.customer_id=" . $customer_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 ";
+		$cond=" WHERE J.opportunity_id=" . $customer_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 AND c.is_active	AND COALESCE(nb.is_active,TRUE)";
 
 		$total_records=$this->db->query("SELECT COUNT(*)::bigint AS total_recs
  										 FROM		neo_job.candidates_jobs AS CJ
@@ -594,8 +635,10 @@ class Employer_model extends CI_Model
 										 LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 										 LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 										 LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                         LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
+                                         LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+										 LEFT JOIN   neo_customer.companies AS cc ON cc.id=cust.company_id
                                          LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+										 LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
 										 $cond")->row()->total_recs;
 
 		$totalData=$total_records*1;
@@ -632,41 +675,45 @@ class Employer_model extends CI_Model
 											    LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 											    LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 											    LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                                LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
+                                                LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+												LEFT JOIN   neo_customer.companies AS cc ON cc.id=cust.company_id
                                                 LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+												LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
 												$sWhere")->row()->total_filtered;
 
 			$result_recs=$this->db->query("SELECT		CJ.candidate_id,
-                                                                        C.candidate_name,
-                                                                        CJ.candidate_status_id,
-                                                                        CS.name AS candidate_status,
-                                                                        C.candidate_number,
-                                                                        CJ.job_id,
-                                                                        J.job_title,
-                                                                        J.customer_id,
-                                                                         COALESCE(CUST.customer_name,'NA') AS customer_name,
-                                                                        COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
-                                                                        TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
-                                                                        TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
-                                                                        COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
-                                                                        COALESCE(CP.employer_name,'NA') AS employer_name,
-                                                                        COALESCE(CP.employer_contact_phone,'NA') AS employer_contact_phone,
-                                                                        COALESCE(CP.employer_location,'NA') AS employer_location,
-                                                                        COALESCE(CP.placement_location,'NA') AS placement_location,
-                                                                        COALESCE(ET.id,0) AS employment_type_id,
-                                                                        COALESCE(ET.name,'') AS employment_type,
-                                                                        COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
-                                                                        COALESCE(CP.ctc,'NA') AS ctc,
-                                                                        TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
-                                                                        TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
-                                                                        FROM		neo_job.candidates_jobs AS CJ
-                                                                        LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
-                                                                        LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
-                                                                        LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
-                                                                        LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                                                        LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
-                                                                        LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
-						        		LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+														C.candidate_name,
+														CJ.candidate_status_id,
+														CS.name AS candidate_status,
+														C.candidate_number,
+														CJ.job_id,
+														J.job_title,
+														J.customer_id,
+														COALESCE(cc.company_name,'NA') AS company_name,
+														COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
+														TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
+														TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
+														COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
+														COALESCE(CP.employer_name,'NA') AS employer_name,
+														COALESCE(CP.employer_contact_phone,'NA') AS employer_contact_phone,
+														COALESCE(CP.employer_location,'NA') AS employer_location,
+														COALESCE(CP.placement_location,'NA') AS placement_location,
+														COALESCE(ET.id,0) AS employment_type_id,
+														COALESCE(ET.name,'') AS employment_type,
+														COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
+														COALESCE(CP.ctc,'NA') AS ctc,
+														TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
+														TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
+														FROM		neo_job.candidates_jobs AS CJ
+														LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
+														LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
+														LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
+														LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
+														LEFT JOIN	neo_customer.opportunities AS CUST ON CUST.id=J.customer_id
+														LEFT JOIN neo_customer.companies AS cc ON cc.id=cust.company_id
+														LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+														LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+														LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
                                                                         $sWhere
 											$order_by
 											limit $limit
@@ -683,11 +730,11 @@ class Employer_model extends CI_Model
 				$slno++;
                                  $ActionColumn='';
                                 if($candidate_status->candidate_status_id !='17'|| $candidate_status->candidate_status_id !=17)
-				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
+				$ActionColumn .= '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View/Edit Details" style="margin-right: 5px;" onclick="EditDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->company_name . '\',\''. $candidate_status->job_title  . '\',\''.  $candidate_status->employment_type_id  . '\',\''.  $candidate_status->employment_type . '\',\''. $candidate_status->employer_name . '\',\''. $candidate_status->employer_contact_phone . '\',\''. $candidate_status->employer_location .'\',\''. $candidate_status->placement_location .'\',\''. $candidate_status->ctc .'\',\''. $candidate_status->date_of_join .'\',\''. $candidate_status->offer_letter_date_of_join . '\',\''. $candidate_status->offer_letter_file . '\')"><i class="fa fa-pencil"></i></a>';
 				if (trim($candidate_status->offer_letter_file)!='')
 					$ActionColumn .= '<a class="btn btn-primary btn-sm" href="'. base_url(). OFFER_LETTER_PATH .$candidate_status->offer_letter_file.'" title="Download Offer Letter"><i class="fa fa-download"></i></a>';
 					if (trim($candidate_status->resigned_date)=='')
-					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->customer_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
+					$ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Resignation/Termination Detail" onclick="ResignDetails(' . $candidate_status->candidate_id .  ',' . $candidate_status->job_id . ',\''. $candidate_status->candidate_name . '\',\''. $candidate_status->company_name . '\',\''. $candidate_status->job_title  . '\',\''. $candidate_status->date_of_join .'\',\''.  $candidate_status->resigned_date . '\',\''.  $candidate_status->reason_to_leave . '\')" style="margin-left: 5px;"><i class="fa fa-sign-out"></i></a>';
 				$row[] = $slno;
 				$row[] = $ActionColumn;
                                 $row[] = '<center><span style="border-radius:4px;color:white;padding:5px;background-color:'. $CandidateStatusColors[$candidate_status->candidate_status_id] .'">' . $candidate_status->candidate_status . '</span></center>';
@@ -725,7 +772,7 @@ class Employer_model extends CI_Model
 		$columns = array(
 			0 => null,
 			1 => null,
-                        2 => "candidate_status",
+            2 => "candidate_status",
 			3 => "candidate_name",
 			4 => "candidate_number",
 			5 => "job_title",
@@ -736,7 +783,7 @@ class Employer_model extends CI_Model
 			10 => "employment_type",
 			11 => "ctc",
 			12 => "offer_letter_uploaded_on",
-                        13 => "CP.resigned_date"
+            13 => "CP.resigned_date"
 		);
 
 		$column_search = array(
@@ -750,11 +797,11 @@ class Employer_model extends CI_Model
 			"COALESCE(CP.employment_type,'NA')",
 			"COALESCE(CP.ctc,'NA')",
 			"TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy')",
-                        "TO_CHAR(CP.resigned_date,'dd-Mon-yyyy')"
+            "TO_CHAR(CP.resigned_date,'dd-Mon-yyyy')"
 		);
 
 
-		$cond=" WHERE CJ.job_id=" . $job_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 ";
+		$cond=" WHERE CJ.job_id=" . $job_id . " AND CJ.candidate_status_id IN (15,17) AND COALESCE(CJ.candidate_id,0)>0 AND c.is_active	AND COALESCE(nb.is_active,TRUE)";
 
 		$total_records=$this->db->query("SELECT COUNT(*)::bigint AS total_recs
  										 FROM		neo_job.candidates_jobs AS CJ
@@ -764,6 +811,7 @@ class Employer_model extends CI_Model
 										 LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
                                          LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
                                          LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+										 LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
 										 $cond")->row()->total_recs;
 
 		$totalData=$total_records*1;
@@ -802,18 +850,19 @@ class Employer_model extends CI_Model
 											    LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
                                                 LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
                                                 LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+												LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
 												$sWhere")->row()->total_filtered;
 
 			$result_recs=$this->db->query("SELECT		CJ.candidate_id,
 														C.candidate_name,
-                                                                                                                CJ.candidate_status_id,
-                                                                                                                CS.name AS candidate_status,
+														CJ.candidate_status_id,
+														CS.name AS candidate_status,
 														C.candidate_number,
 														CJ.job_id,
 														J.job_title,
 														J.customer_id,
-                                                                                                                COALESCE(CUST.customer_name,'NA') AS customer_name,
-														COALESCE(QP.name,J.qualification_pack_name) AS qp_name,
+														COALESCE(CUST.company_name,'NA') AS customer_name,
+														COALESCE((CASE COALESCE(QP.name,'') WHEN '' THEN '-NA-' ELSE FORMAT('%s (%s)',QP.name,QP.code) END),J.qualification_pack_name) AS qp_name,
 														TO_CHAR(CP.date_of_join,'dd-Mon-yyyy') AS date_of_join,
 														TO_CHAR(CP.offer_letter_date_of_join,'dd-Mon-yyyy') AS offer_letter_date_of_join,
 														COALESCE(CP.offer_letter_file,'') AS offer_letter_file,
@@ -824,17 +873,18 @@ class Employer_model extends CI_Model
 														COALESCE(ET.id,0) AS employment_type_id,
 														COALESCE(ET.name,'NA') AS employment_type,
 														COALESCE(CP.reason_to_leave,'') AS reason_to_leave,
-                                                                                                                COALESCE(CP.ctc,'NA') AS ctc,
+														COALESCE(CP.ctc,'NA') AS ctc,
 														TO_CHAR(CP.offer_letter_uploaded_on,'dd-Mon-yyyy') AS offer_letter_uploaded_on,
-                                                                                                                TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
+														TO_CHAR(CP.resigned_date,'dd-Mon-yyyy') AS resigned_date
 											FROM		neo_job.candidates_jobs AS CJ
 											LEFT JOIN	neo_job.jobs AS J ON J.id=CJ.job_id
 											LEFT JOIN	neo.candidates AS C ON C.id=CJ.candidate_id
 											LEFT JOIN	neo_job.candidate_placement AS CP ON CP.candidate_id=CJ.candidate_id AND CP.job_id=CJ.job_id
 											LEFT JOIN	neo_master.qualification_packs AS QP ON QP.id=J.qualification_pack_id
-                                            LEFT JOIN	neo_customer.customers AS CUST ON CUST.id=J.customer_id
-                                            LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
-                                            LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+											LEFT JOIN	neo_customer.companies AS CUST ON CUST.id=J.customer_id
+											LEFT JOIN	neo_master.employment_type AS ET ON ET.id=CP.employment_type_id
+											LEFT JOIN	neo_master.candidate_statuses AS CS ON CS.id=CJ.candidate_status_id
+											LEFT JOIN   neo.neo_batches AS nb ON nb.batch_code = c.batch_code
 						        			$sWhere
 											$order_by
 											limit $limit
@@ -887,7 +937,7 @@ class Employer_model extends CI_Model
 		}
 	}
 
-	function get_customer_data($requestData=array())
+	function getContractsData($requestData=array())
 	{
 		$cond = '';
 		$order_by = "ORDER by created_at DESC";
@@ -901,51 +951,42 @@ class Employer_model extends CI_Model
 		$columns = array(
 			0 => null,
 			1 => null,
-			2 => "R.customer_name",
-			3 => "R.lead_type_name",
-			4 => "R.source_name",
-                        5 => "R.spoc_name",
-                        6 => "R.spoc_email",
-                        7 => "R.spoc_phone",
-                        8 => "R.state",
-                        9 => "R.district",
-                        10 => "R.buisness_vertical_name",
-                        11 => "R.industry_name",
-                        12 => "R.functional_area_name"
+			2 => "R.company_name",
+			3 => "R.opportunity_code",
+			4 => "R.contract_id",
+			5 => "R.spoc_name",
+			6 => "R.spoc_email",
+			7 => "R.spoc_phone",
+			8 => "R.buisness_vertical_name",
+			9 => "R.industry_name"
 		);
 
 		$column_search = array(
-                        1 =>"R.customer_name",
-                        2 =>"R.lead_type_id",
-                        3 =>"R.lead_source_id",
+						1 =>"R.company_name",
+						2 =>"R.opportunity_code",
+						3 =>"R.contract_id",
                         4 =>"R.spoc_name",
                         5 =>"R.spoc_email",
                         6 =>"R.spoc_phone",
-                        7 =>"R.state_id",
-                        8 =>"R.business_vertical_id",
-                        9 =>"R.industry_id",
-                        10 =>"R.functional_area_id"
+                        7 =>"R.business_vertical_id",
+                        8 =>"R.industry_id"
                );
                    // AND created_by IN ({$hierachy_ids})
 		$HierarchyCondition = " AND (R.created_by IN ($hierachy_ids) OR R.assigned_user_ids && ARRAY[$hierachy_ids]) ";
 
                 $TotalRecQuery =    "WITH R AS
-                                    (
-                                        SELECT 	C.id,
-                                                C.created_by,
-                                                CD.file_name,
-                                                lt.name AS lead_type_name,
-                                                ls.name AS source_name,
-                                                COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                        FROM 	neo_customer.customers AS C
-                                        LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                        LEFT JOIN neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                        LEFT JOIN neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                        WHERE   C.is_customer
-                                    )
-                                    SELECT 	COUNT(R.id) AS total_recs
-                                    FROM 	R
-                                    WHERE	TRUE
+										(
+											SELECT 	o.id,
+													o.created_by,
+													CD.file_name,
+													COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=o.id),ARRAY[]::INT[]) AS assigned_user_ids
+											FROM 	neo_customer.opportunities AS o
+											LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+											WHERE   o.is_contract
+										)
+										SELECT 	COUNT(R.id) AS total_recs
+										FROM 	R
+										WHERE	TRUE
                                     $HierarchyCondition";
 
 		$total_records = $this->db->query($TotalRecQuery)->row()->total_recs;
@@ -971,12 +1012,8 @@ class Employer_model extends CI_Model
                         {
                             switch($search_type_id)
                             {
-                                case 2:
-                                case 3:
                                 case 7:
                                 case 8:
-                                case 9:
-                                case 10:
                                     if ($search_value != '0')
                                     {
                                         $FilterCondition = $column_search[$search_type_id] . "=" . $search_value;
@@ -997,109 +1034,98 @@ class Employer_model extends CI_Model
                         }
 
                     $totalFiltered = $this->db->query("WITH R AS
-                                                        (
-                                                            SELECT  C.id,
-                                                                    C.customer_name,
-                                                                    C.created_by,
-                                                                    c.created_at,
-                                                                    c.lead_source_id,
-                                                                     B.spoc_name
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
-                                                                    B.spoc_email
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
-                                                                    B.spoc_phone
-                                                                    || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
-                                                                    d.name AS location,
-                                                                    C.business_vertical_id,
-                                                                    c.industry_id,
-                                                                    c.functional_area_id,
-                                                                    c.lead_type_id,
-                                                                    CB.state_id,
-                                                                    d.name AS district,
-                                                            COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                                            FROM    neo_customer.customers AS C
-                                                            LEFT JOIN   neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                                            LEFT JOIN   neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                                            LEFT JOIN   neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                                            LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
-                                                            LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id
-                                                            LEFT JOIN   neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
-                                                            LEFT JOIN   neo_master.industries AS i on i.id=c.industry_id
-                                                            LEFT JOIN   neo_master.functional_areas AS fa ON fa.id=c.functional_area_id
-                                                            LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
-                                                            LEFT JOIN
-                                                            (
-                                                            SELECT 	CB.customer_id,
-                                                                        STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                                        STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                                        STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
-                                                            FROM 	neo_customer.customer_branches AS CB
-                                                            CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
-                                                            GROUP BY CB.customer_id
-                                                            ) AS B ON 	B.customer_id=C.id
-                                                            WHERE   C.is_customer
-                                                        )
-                                                        SELECT COUNT(R.id)::bigint AS total_filtered
-                                                        FROM R
-                                                        WHERE TRUE
+															(
+															SELECT o.id,
+															o.company_id,
+																c.company_name,
+																o.opportunity_code,
+																o.contract_id,
+																CD.file_name,
+																o.is_paid,
+																o.lead_status_id,
+																ls.name AS lead_status_name,
+																o.business_vertical_id,
+																bv.name AS business_vertical,
+																o.industry_id,
+																i.name AS industry,
+																o.labournet_entity_id,
+																le.name AS labournet_entity,
+																B.spoc_name,      
+																B.spoc_email,      
+																B.spoc_phone,
+																o.created_by,
+																o.created_at,
+																(SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+															FROM neo_customer.opportunities AS O
+															LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+															LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+															LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+															LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+															LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+															LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+															LEFT JOIN
+																	(
+																	SELECT 	CB.opportunity_id,
+																			STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+																			STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+																			STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+																	FROM 	neo_customer.customer_branches AS CB
+																	CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+																	GROUP BY CB.opportunity_id
+																	) AS B ON 	B.opportunity_id=o.id
+															WHERE o.is_contract
+															)
+															SELECT  COUNT(R.id) AS total_filtered
+												  FROM    R
+												  WHERE   TRUE
                                                         $FilterCondition
                                                         $HierarchyCondition")->row()->total_filtered;
 
                     $result_recs = $this->db->query("WITH R AS
-                                                        (
-                                                              SELECT C.id,
-                                                                C.customer_name,
-                                                                C.is_paid,
-                                                                C.created_by,
-                                                                c.created_at,
-                                                                CD.file_name,
-                                                                B.spoc_name
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_name),'')<>'' THEN ','||TRIM(C.hr_name) ELSE '' END) AS spoc_name,
-                                                                B.spoc_email
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_email),'')<>'' THEN ','||TRIM(C.hr_email) ELSE '' END) AS spoc_email,
-                                                                B.spoc_phone
-                                                                || (CASE WHEN COALESCE(TRIM(C.hr_phone),'')<>'' THEN ','||TRIM(C.hr_phone) ELSE '' END) AS spoc_phone,
-                                                                d.name AS location,
-                                                                C.business_vertical_id,
-                                                                bv.name AS buisness_vertical_name,
-                                                                c.industry_id,
-                                                                i.name AS industry_name,
-                                                                c.functional_area_id,
-                                                                fa.name AS functional_area_name,
-                                                                c.lead_type_id,
-                                                                lt.name AS lead_type_name,
-                                                                c.lead_source_id,
-                                                                ls.name AS source_name,
-                                                                CB.state_id,
-                                                                s.name AS location,
-                                                                CB.district_id,
-                                                                d.name AS district,
-                                                                COALESCE((SELECT ARRAY_AGG(user_id) FROM neo_customer.leads_users WHERE lead_id=C.id),ARRAY[]::INT[]) AS assigned_user_ids
-                                                                FROM    neo_customer.customers AS C
-                                                                LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = c.id
-                                                                LEFT JOIN neo_master.lead_type AS LT ON lt.id = c.lead_type_id
-                                                                LEFT JOIN neo_master.lead_sources AS LS ON ls.id=c.lead_source_id
-                                                                LEFT JOIN   neo_customer.customer_branches AS CB ON CB.id=c.id
-                                                        LEFT JOIN   neo_master.districts AS d ON d.id=CB.district_id
-                                                        LEFT JOIN   neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
-                                                        LEFT JOIN neo_master.industries AS i on i.id=c.industry_id
-                                                        LEFT JOIN neo_master.functional_areas AS fa ON fa.id=c.functional_area_id
-                                                        LEFT JOIN   neo_master.states AS s ON s.id=CB.state_id
-                                                        LEFT JOIN
-                                                        (
-                                                        SELECT 	CB.customer_id,
-                                                                    STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                                    STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                                    STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
-                                                        FROM 	neo_customer.customer_branches AS CB
-                                                        CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
-                                                        GROUP BY CB.customer_id
-                                                        ) AS B ON 	B.customer_id=C.id
-                                                                WHERE   C.is_customer
-                                                        )
-                                                        SELECT R.*
-                                                    FROM R
-                                                    WHERE TRUE
+														(
+														SELECT o.id,
+															o.company_id,
+															c.company_name,
+															o.opportunity_code,
+															o.contract_id,
+															CD.file_name,
+															o.is_paid,
+															o.lead_status_id,
+															ls.name AS lead_status_name,
+															o.business_vertical_id,
+															bv.name AS business_vertical,
+															o.industry_id,
+															i.name AS industry,
+															o.labournet_entity_id,
+															le.name AS labournet_entity,
+															B.spoc_name,      
+															B.spoc_email,      
+															B.spoc_phone,
+															o.created_by,
+															o.created_at,
+															(SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=o.id) AS assigned_user_ids    	     	 
+														FROM neo_customer.opportunities AS O
+														LEFT JOIN neo_customer.companies AS C ON C.id=o.company_id
+														LEFT JOIN neo_master.lead_statuses AS LS ON LS.id=o.lead_status_id
+														LEFT JOIN neo_master.business_verticals AS BV ON BV.id=o.business_vertical_id
+														LEFT JOIN neo_master.industries AS i ON i.id=o.industry_id
+														LEFT JOIN neo_master.labournet_entities AS le ON le.id=o.labournet_entity_id
+														LEFT JOIN neo_customer.customer_documents AS CD ON CD.customer_id = o.id
+														LEFT JOIN
+																(
+																SELECT 	CB.opportunity_id,
+																		STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+																		STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+																		STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+																FROM 	neo_customer.customer_branches AS CB
+																CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+																GROUP BY CB.opportunity_id
+																) AS B ON 	B.opportunity_id=o.id
+														WHERE o.is_contract
+														)
+														SELECT  R.*
+														FROM    R
+														WHERE   TRUE
                                                     $FilterCondition
                                                     $HierarchyCondition
                                                     $order_by
@@ -1112,12 +1138,12 @@ class Employer_model extends CI_Model
                             $row = array();
                             $slno++;
 							 $ActionColumn = '<a class="btn btn-success btn-sm" href="javascript:void(0)" title="View Joined Candidates" onclick="ViewJoinedCandidates(' . $customer->id . ')"><i class="fa fa-eye"></i></a>';
-							 if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
-							{
-							 $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
-							}
+							//  if (in_array($this->session->userdata('usr_authdet')['user_group_id'], customer_spoc_view_roles()))
+							// {
+							//  $ActionColumn .= '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="View Spocs" onclick="showAdditionalSpocs(' . $customer->id . ')" style="margin-left:5px;"><i class="fa fa-phone" ></i></a>';
+							// }
 
-							$ActionColumn .=  '<a class="btn btn-sm btn-success" title="Lead History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;"><i class="fa fa-history"></i></a>';
+							$ActionColumn .=  '<a class="btn btn-sm btn-success" title="contract History" onclick="lead_history(' . $customer->id . ')"  style="margin-left: 2px;background-color:#34495e;border-color:#2c3e50;"><i class="fa fa-history"></i></a>';
 
 							 if (trim($customer->file_name)!='')
 							{
@@ -1136,17 +1162,14 @@ class Employer_model extends CI_Model
 
                             $row[] = $slno;
                             $row[] = $ActionColumn;
-                            $row[] = $customer->customer_name ?? 'N/A';
-                            $row[] = $customer->lead_type_name ?? 'N/A';
-                            $row[] = $customer->source_name ?? 'N/A';
+                            $row[] = $customer->company_name ?? 'N/A';
+                            $row[] = $customer->opportunity_code ?? 'N/A';
+                            $row[] = $customer->contract_id ?? 'N/A';
                             $row[] = $customer->spoc_name ?? 'N/A';
                             $row[] = $customer->spoc_email ?? 'N/A';
-                            $row[] = $customer->spoc_phone ?? 'N/A';
-                            $row[] = $customer->location == '' ? 'N/A' : $customer->location;
-                            $row[] = $customer->district == '' ? 'N/A' : $customer->district;
-                            $row[] = $customer->buisness_vertical_name ?? 'N/A';
-                            $row[] = $customer->industry_name ?? 'N/A';
-                            $row[] = $customer->functional_area_name ?? 'N/A';
+                            $row[] = $customer->spoc_phone ?? 'N/A';                           
+                            $row[] = $customer->business_vertical ?? 'N/A';
+                            $row[] = $customer->industry ?? 'N/A';
                             $data[] = $row;
                     }
                     $response_data = array(
@@ -1357,7 +1380,7 @@ class Employer_model extends CI_Model
 				$slno++;
 				$row[] = $slno;
 				$row[] = '<a class="btn btn-danger btn-sm" href="javascript:void(0)" title="Edit User" onclick="user_edit(' . $user->id . ')"><i class="fa fa-pencil"></i></a>';
-                                 $row[] = '<a class="' . ($user->is_active ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") . '" title="Toggle Active Status" onclick="user_status(' .  $user->id .  ','   .$user->is_active . ')" style="width:80%; color:white;">' . ($user->is_active ? "Active" : "Inactive") . '</a>';
+                 $row[] = '<a class="' . ($user->is_active ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") . '" title="Toggle Active Status" onclick="user_status(' .  $user->id .  ','   .$user->is_active . ')" style="width:80%; color:white;">' . ($user->is_active ? "Active" : "Inactive") . '</a>';
 				$row[] = $user->name ?? 'N/A';
 				$row[] = $user->email ?? 'N/A';
                                 $row[] = $user->user_role_name ?? 'N/A';

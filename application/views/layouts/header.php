@@ -408,12 +408,12 @@
 
 					        <li class=" navigation-header"><span data-i18n="nav.category.layouts">Content</span><i  class="icon-ellipsis"></i></li>
 
-					        <?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
-					          <li class=" nav-item"><a href="<?php echo base_url('leads/index/1');?>"><i class="icon-line-chart"></i><span data-i18n="nav.dash.main" class="menu-title">Leads</span></a></li>
-					        <?php endif; ?>
+					        <!-- <?php //if (in_array($user['user_group_id'], lead_view_roles())): ?>
+					          <li class=" nav-item"><a href="<?php //echo base_url('leads/index/1');?>"><i class="icon-line-chart"></i><span data-i18n="nav.dash.main" class="menu-title">Leads</span></a></li>
+					        <?php //endif; ?> -->
 
-									<?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
-					          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="icon-industry"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
+									<?php if (in_array($user['user_group_id'], company_view_roles())): ?>
+					          <li class=" nav-item"><a href="<?php echo base_url('companiescontroller/index');?>"><i class="fa fa-building"></i><span data-i18n="nav.dash.main" class="menu-title">Companies</span></a></li>
 					        <?php endif; ?>
 
 									<?php if (in_array($user['user_group_id'], lead_view_roles())): ?>
@@ -421,7 +421,7 @@
 					        <?php endif; ?>
 
 					        <?php if (in_array($user['user_group_id'], customer_view_roles())): ?>
-					          <li class=" nav-item"><a href="<?php echo base_url('pramaan/customers');?>"><i class="icon-android-people"></i><span data-i18n="nav.dash.main" class="menu-title">Customers</span></a></li>
+					          <li class=" nav-item"><a href="<?php echo base_url('pramaan/contracts');?>"><i class="icon-android-people"></i><span data-i18n="nav.dash.main" class="menu-title">Contracts</span></a></li>
 					        <?php endif; ?>
 
 					        <?php if (in_array($user['user_group_id'], candidate_view_roles())): ?>
@@ -457,11 +457,11 @@
 	                      <?php endif; ?>
 	                      <?php if (in_array($user['user_group_id'], reports())): ?>
 	                      <ul><li><a href="<?= base_url('reports?slug=getLeadDetailsReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Lead Details Report</span></a></li></ul>
-	                      <ul><li><a href="<?= base_url('reports?slug=getClientTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Tracker Report</span></a></li></ul>
+	                      <ul><li><a href="<?= base_url('reports?slug=getClientOpportunityTrackerReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Client Opportunity Tracker Report</span></a></li></ul>
 	                      <ul><li><a href="<?= base_url('reports?slug=getJobDetailedReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Job Detailed Report</span></a></li></ul>
 	                      <?php endif; ?>
 	                      <ul><li><a href="<?= base_url('reports?slug=getPlacementDetailReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Placement Detail Report</span></a></li></ul>
-												<ul><li><a href="<?= base_url('reports?slug=getSelfEmployedCandidatesReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Self Employed Detail Report</span></a></li></ul>                  
+												<ul><li><a href="<?= base_url('reports?slug=getSelfEmployedCandidatesReport');?>"><i class="fa fa-file-o"></i><span data-i18n="nav.dash.main" class="menu-title">Self Employed Detail Report</span></a></li></ul>
 	                                </li>
 	                  <?php endif; ?>
 

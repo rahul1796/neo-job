@@ -583,8 +583,9 @@ class Partner_model extends CI_Model
                                         VW.company_name,
                                         VW.location,
                                         VW.candidate_enrollment_id,
-																				VW.igs_customer_name,
-																				VW.igs_contract_id
+										VW.igs_customer_name,
+										VW.igs_contract_id,
+										VW.is_active::INTEGER AS is_active
                                 FROM	users.fn_get_candidate_data($qualification_pack,$education,$search_by_index,'$search_text',$limit,$pg) AS VW";
                     //echo $Query;
                    // exit;
@@ -1922,7 +1923,7 @@ class Partner_model extends CI_Model
 		$columns = array(
 			0 => null,
 			1 => 'C.center_name',
-                        2 => 'C.interested_count',
+            2 => 'C.interested_count',
 			3 => 'C.profile_submitted_count',
 			4 => 'C.pending_customer_feedback_count',
 			5 => 'C.profile_accepted_count',
@@ -2088,46 +2089,40 @@ class Partner_model extends CI_Model
 	}
 
 
-        function get_customer_details($customer_id=0)
+        function get_customer_details($company_id=0)
 	{
-		$employer_det_rec=$this->db->query("SELECT customer_name FROM neo_customer.customers WHERE id=?",$customer_id);
+		$employer_det_rec=$this->db->query("SELECT company_name FROM neo_customer.companies WHERE id=?",$company_id);
 
-		$customer_det_rec=$this->db->query("SELECT     C.id,
-                                                                COALESCE(C.customer_name,FORMAT('Customer_%s',C.id)) AS customer_name,
-                                                                COALESCE(NULLIF(t.name,'') , '-NA-' ) as customer_type,
-                                                                COALESCE(NULLIF(C.customer_description,'') , '-NA-' ) as customer_description,
-                                                                COALESCE(NULLIF(i.name,'') , '-NA-' ) as industry_name,
-                                                                 COALESCE(NULLIF(bv.name,'') , '-NA-' ) as buisness_vertical_name,
-                                                                C.lead_status_id,
-                                                                LT.name AS lead_status_name,
-                                                                COALESCE(NULLIF( B.spoc_name,'') , '-NA-' ) as spoc_name,
-                                                                COALESCE(NULLIF(B.spoc_email,'') , '-NA-' ) as spoc_email,
-                                                                COALESCE(NULLIF(B.spoc_phone,'') , '-NA-' ) as spoc_phone,
-                                                                COALESCE(NULLIF(C.lead_managed_by,'') , '-NA-' ) as lead_managed_by,
-                                                                (CASE
-                                                                    WHEN LT.value < 1 THEN 0
-                                                                    ELSE (LT.value*100/12)
-                                                                END) AS business_probability,
-                                                                COALESCE(NULLIF( LS.name,'') , '-NA-' ) as lead_source_name,
-                                                                COALESCE(NULLIF( C.customer_description,'') , '-NA-' ) as customer_description,
-                                                                (SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=C.id) AS assigned_user_ids
-                                                        FROM		neo_customer.customers AS C
-                                                        LEFT JOIN 	neo_master.lead_sources AS LS ON LS.id=C.lead_source_id
-                                                        LEFT JOIN 	neo_master.lead_statuses AS LT ON LT.id=C.lead_status_id
-                                                        LEFT JOIN        neo_master.industries AS i on i.id=c.industry_id
-                                                         LEFT JOIN       neo_master.business_verticals AS bv ON bv.id=C.business_vertical_id
-                                                         LEFT JOIN       neo_master.lead_type AS t ON t.id=C.lead_type_id
-                                                        LEFT JOIN
-                                                        (
-                                                        SELECT 	CB.customer_id,
-                                                                STRING_AGG(t->>'spoc_name',',') AS spoc_name,
-                                                                STRING_AGG(t->>'spoc_email',',') AS spoc_email,
-                                                                STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
-                                                        FROM 	neo_customer.customer_branches AS CB
-                                                        CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
-                                                        GROUP BY CB.customer_id
-                                                        ) AS B ON 	B.customer_id=C.id
-                                                        WHERE c.id=$customer_id");
+		$customer_det_rec=$this->db->query("SELECT C.id,
+													COALESCE(C.company_name,FORMAT('Customer_%s',C.id)) AS company_name,
+													(
+													SELECT count(*) AS count
+													FROM neo_customer.opportunities o
+													WHERE o.company_id = c.id
+													) AS opportunity_count,
+													COALESCE(NULLIF(t.name,'') , '-NA-' ) as company_type,
+													COALESCE(NULLIF(C.company_description,'') , '-NA-' ) as company_description,
+													COALESCE(NULLIF(i.name,'') , '-NA-' ) as industry_name,
+													COALESCE(NULLIF( B.spoc_name,'') , '-NA-' ) as spoc_name,
+													COALESCE(NULLIF(B.spoc_email,'') , '-NA-' ) as spoc_email,
+													COALESCE(NULLIF(B.spoc_phone,'') , '-NA-' ) as spoc_phone,      
+													COALESCE(NULLIF( LS.name,'') , '-NA-' ) as lead_source_name,
+													(SELECT ARRAY_AGG(LU.user_id) FROM neo_customer.leads_users AS LU WHERE LU.lead_id=C.id) AS assigned_user_ids
+											FROM		neo_customer.companies AS C
+											LEFT JOIN 	neo_master.lead_sources AS LS ON LS.id=C.lead_source_id
+											LEFT JOIN   neo_master.industries AS i on i.id=c.industry_id
+											LEFT JOIN   neo_master.lead_type AS t ON t.id=C.lead_type_id
+											LEFT JOIN
+											(
+											SELECT 	CB.customer_id,
+													STRING_AGG(t->>'spoc_name',',') AS spoc_name,
+													STRING_AGG(t->>'spoc_email',',') AS spoc_email,
+													STRING_AGG(t->>'spoc_phone',',') AS spoc_phone
+											FROM 	neo_customer.customer_branches AS CB
+											CROSS JOIN LATERAL json_array_elements(CB.spoc_detail::json) AS x(t)
+											GROUP BY CB.customer_id
+											) AS B ON 	B.customer_id=C.id
+                                             WHERE c.id=$company_id");
 
 		if($employer_det_rec->num_rows())
 		{
@@ -2143,6 +2138,94 @@ class Partner_model extends CI_Model
 		return $output;
 	}
 
+
+
+	 public function getCenterName() {
+		$query = $this->db->select("DISTINCT(center_name)")->order_by('center_name')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
+	
+
+	public function getBatchCode() {
+	$query = $this->db->select("DISTINCT(batch_code)")->order_by('batch_code')->get('neo.vw_self_employed_candidate_list');
+	return $query->result();
+	}
+
+	public function getQualificationPack() {
+		$query = $this->db->select("DISTINCT(qualification_pack)")->where("qualification_pack<>''")->order_by('qualification_pack')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
+
+
+	public function getEnrollmentId() {
+		$query = $this->db->select("DISTINCT(enrollment_no)")->order_by('enrollment_no')->get('neo.vw_self_employed_candidate_list');
+		return $query->result();
+		}
+
+
+		function getCompanySpoc($company_id=0)
+	    {
+		$employer_det_rec=$this->db->query("SELECT company_name FROM neo_customer.companies WHERE id=?",$company_id);
+
+		// $customer_det_rec=$this->db->query("SELECT cb.customer_id,
+		// 									initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+		// 									COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+		// 									COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+		// 									initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS
+		// 									spoc_designation,
+		// 									c.is_customer
+		// 									FROM neo_customer.customer_branches cb
+		// 									LEFT JOIN neo_customer.customers c ON c.id = cb.customer_id
+		// 									CROSS JOIN LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+		// 									WHERE cb.customer_id=$company_id");
+
+
+			$customer_det_rec=$this->db->query("WITH RES AS
+													(
+														WITH SPOC AS
+														(
+															SELECT 		cb.customer_id,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_name'::text), ''::text)) AS spoc_name,
+																		COALESCE(btrim(x.t ->> 'spoc_email'::text), ''::text) AS spoc_email,
+																		COALESCE(btrim(x.t ->> 'spoc_phone'::text), ''::text) AS spoc_phone,
+																		initcap(COALESCE(btrim(x.t ->> 'spoc_designation'::text), ''::text)) AS spoc_designation            
+															FROM 		neo_customer.customer_branches cb
+															INNER JOIN 	neo_customer.companies c ON c.id = cb.customer_id
+															CROSS JOIN 	LATERAL json_array_elements(cb.spoc_detail::json) x(t)
+															WHERE 		cb.customer_id={$company_id}
+														)
+														SELECT 	 SPOC.customer_id,
+																SPOC.spoc_name,
+																SPOC.spoc_email,
+																SPOC.spoc_phone,
+																SPOC.spoc_designation,
+																ROW_NUMBER() OVER(PARTITION BY SPOC.customer_id,SPOC.spoc_phone ORDER BY SPOC.customer_id,SPOC.spoc_phone) AS counter
+														FROM	 SPOC
+														ORDER BY 1,4
+													)
+													SELECT 	 RES.customer_id,
+																RES.spoc_name,
+																RES.spoc_email,
+																RES.spoc_phone,
+																RES.spoc_designation
+													FROM	 RES
+													WHERE	 RES.counter=1
+													ORDER BY 2");
+
+		if($employer_det_rec->num_rows())
+		{
+			$output['status']=true;
+			$output['employer_detail']=$employer_det_rec->row_array();
+			if($customer_det_rec->num_rows())
+				$output['customer_detail']=$customer_det_rec->result_array();
+			else
+				$output['customer_detail']=array();
+		}
+		else
+			$output['status']=false;
+		return $output;
+	}
+	
 
 
 }

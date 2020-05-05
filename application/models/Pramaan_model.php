@@ -7947,7 +7947,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
     {
         $active_user_role_id = $this->session->userdata('usr_authdet')['user_group_id'];
         $HierarchyIds= $this->session->userdata('user_hierarchy');
-        // array_push($HierarchyIds, $user_id);
+         //array_push($HierarchyIds, $user_id);
         $TeamMemberIdList = implode(",",$HierarchyIds);
         // var_dump($TeamMemberIdList);
         // exit;
@@ -7994,14 +7994,14 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         /*********************************/
 
         $user_group_id = $this->session->userdata['usr_authdet']['user_group_id'];
-
+        
         $strUserRoleCondition = 'TRUE';
 
         $sWhere = "  ";
 
         if ($active_user_role_id == 14 || $active_user_role_id == 11)
         {
-           $sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
+           //$sWhere = " AND $user_id=ANY(VW.assigned_user_ids) ";
         }
 
         $sSearchVal = $_POST['search']['value'];
@@ -8020,6 +8020,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
             $HierarchyCondition = " AND ((assigned_user_ids||created_user_id) && ARRAY[$TeamMemberIdList]) ";
 
         $total_records = $this->db->query("SELECT Count(VW.*) AS total_recs FROM neo_job.vw_job_list AS VW WHERE TRUE $HierarchyCondition")->row()->total_recs;
+
+        
 
         $totalData = $total_records * 1;
         $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
@@ -8094,6 +8096,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                                               LIMIT $limit
                                               OFFSET $pg");
 
+                               
+
             $slno = $pg;
             $data = array();
 
@@ -8111,9 +8115,9 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
              // {
                 $Actions = '';
                 if(in_array($user_group_id, job_status_change_roles())) {
-                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px;"><i class="fa fa-pencil-square-o"></i></button>';
+                   $Actions = '<button class="btn btn-sm btn-warning" title="Update Jobs Status" onclick="open_job_status_popup('. $jobs->job_id . ',' . $jobs->job_status_id .')" style="margin-left: 2px; background-color:#273c75;border-color: #192a56;"><i class="fa fa-pencil-square-o"></i></button>';
                 }
-                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white;"><i class="icon-android-create"></i></a>';
+                 $Actions .= '<a class="btn btn-sm btn-danger" title="Edit job Details" onclick="EditJobDetails(' . $jobs->job_id . ')" style="margin-left: 5px; color: white; background-color:#33d9b2;border-color: #218c74;"><i class="icon-android-create"></i></a>';
               //}
 //              else
 //              {
@@ -12683,7 +12687,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         );
 
         //Change query here for total record
-        $strQuery = "SELECT COUNT(s.customer_id)::BIGINT AS total_record_count
+        $strQuery = "SELECT COUNT(s.company_id)::BIGINT AS total_record_count
                      FROM   users.vw_address_book_contact_list AS s WHERE TRUE ";
         $strTotalRecordCount = $this->db->query($strQuery)->row()->total_record_count;
         $intTotalRecordCount = $strTotalRecordCount * 1;
@@ -12715,7 +12719,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
 
 
             //Change query here for filtered rows
-            $strQuery = "SELECT     COUNT(s.customer_id)::BIGINT AS total_filtered_count
+            $strQuery = "SELECT     COUNT(s.company_id)::BIGINT AS total_filtered_count
                          FROM       users.vw_address_book_contact_list AS s
                          WHERE      TRUE ";
 
@@ -12738,14 +12742,15 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                 $ResponseRow = array();
                 $SerialNumber++;
                 $ResponseRow[] = $SerialNumber;
-                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->customer_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->customer_name .  '</a>';
+                $ResponseRow[] = '<a title="Show Details" href="javascript:void(0);" onclick="ShowDetails(' . "'" . $QueryRow->company_id . "'" . ')" style=" font-weight: 600;">'  . $QueryRow->company_name .  '</a>';
                 //$ResponseRow[] = $QueryRow->customer_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_name ?? 'N/A';
                 $ResponseRow[] = $QueryRow->designation ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_phone ?? 'N/A';
                 $ResponseRow[] = $QueryRow->hr_email ?? 'N/A';
                 $ResponseRow[] = $QueryRow->industry_name ?? 'N/A';
-                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->customer_id . "'" . ')"><i class="icon-android-create"></i></a>';
+                $ResponseRow[] = $QueryRow->source ?? 'N/A';
+                $ResponseRow[] = '<a class="btn btn-sm btn-danger" title="Edit Contact" href="javascript:void(0);" onclick="EditContact(' . "'" . $QueryRow->company_id . "'" . ')"><i class="icon-android-create"></i></a>';
                 $Data[] = $ResponseRow;
             }
 
@@ -12881,18 +12886,19 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         //Sorting columns
         $arrSortByColumns = array(
             0 => null,
-            1 => 'batch_code',
-            2 => 'batch_type',
-            3 => 'batch_size',
-            4 => 'customer_name',
-            5 => 'center_name',
-            6 => 'course_name',
-            7 => 'course_code',
-            8 => 'buisness_unit',
-            9 => 'trainer_email',
-            10 => 'qp_name',
-            11 => 'batch_start_date',
-            12 => 'batch_end_date'
+            1 => null,
+            2 => 'batch_code',
+            3 => 'batch_type',
+            4 => 'batch_size',
+            5 => 'customer_name',
+            6 => 'center_name',
+            7 => 'course_name',
+            8 => 'course_code',
+            9 => 'buisness_unit',
+            10 => 'trainer_email',
+            11 => 'qp_name',
+            12 => 'batch_start_date',
+            13 => 'batch_end_date'
         );
 
         //Change query here for total record
@@ -12951,6 +12957,7 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                 $ResponseRow = array();
                 $SerialNumber++;
                 $ResponseRow[] = $SerialNumber;
+                $ResponseRow[] = '<a class="' . ($QueryRow->is_active ? "btn btn-sm btn-success" : "btn btn-sm btn-danger") . '" title="Toggle Active Status" onclick="batch_status(' .  $QueryRow->id .  ','   .$QueryRow->is_active . ')" style="width:80%; color:white;">' . ($QueryRow->is_active ? "Active" : "Inactive") . '</a>';
                 $ResponseRow[] = $QueryRow->batch_code ?? 'N/A';
                 $ResponseRow[] = $QueryRow->batch_type ?? 'N/A';
                 $ResponseRow[] = ($QueryRow->batch_size) ? '<center><b><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="View Batch Candidates" onclick="showBatchWiseCandidates(' . "'" . $QueryRow->id . "'" . ')">' . $QueryRow->batch_size . '</a></b></center>' : '<center>'.$QueryRow->batch_size.'</center>';
@@ -13031,7 +13038,8 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
                                                                 c.id,
                                                                 c.candidate_name,
                                                                 COALESCE(NULLIF(c.mobile,'') , '-NA-' ) as mobile,
-                                                                COALESCE(NULLIF(c.email,'') , '-NA-' ) as email
+                                                                COALESCE(NULLIF(c.email,'') , '-NA-' ) as email,
+                                                                CASE c.is_active WHEN TRUE THEN 'Active' ELSE 'Inactive' END AS active_status
                                                 FROM    	neo.candidates c
                                                 LEFT JOIN 	neo.candidate_qp_details AS CB ON CB.candidate_id=C.id
                                                 LEFT JOIN 	neo.neo_batches AS B ON UPPER(TRIM(B.batch_code))=UPPER(TRIM(CB.batch_code))
@@ -13045,6 +13053,86 @@ from users.centers AS C WHERE C.partner_id = ? ", $sourcing_partner_id);
         }
 
         return $output;
+    }
+
+
+    function change_batch_status($RequestData = array())
+    {
+
+		$ResponseData = array();
+
+		if (intval($RequestData['id']) > 0)
+		{
+			$strStatus = TRUE;
+			if ($RequestData['is_active']==1)
+			{
+				$strQuery = "UPDATE neo.neo_batches";
+				$strQuery .= " SET is_active=FALSE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+			else if($RequestData['is_active']==0)
+			{
+				$strQuery = "UPDATE neo.neo_batches";
+				$strQuery .= " SET is_active=TRUE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+
+			$this->db->query($strQuery);
+			if ($this->db->affected_rows())
+			{
+				return true;
+			}
+		}
+
+		if ($strStatus == 0)
+		{
+			$ResponseData["message"] = "Batch Has Been Deactivated!";
+		}
+		else
+		{
+			$ResponseData["message"] = "Batch Has Been Activated!";
+		}
+
+		return $ResponseData;
+    }
+
+    function change_candidate_status($RequestData = array())
+    {        
+		$ResponseData = array();
+
+		if (intval($RequestData['id']) > 0)
+		{
+			$strStatus = TRUE;
+			if ($RequestData['is_active']==1)
+			{
+				$strQuery = "UPDATE neo.candidates ";
+				$strQuery .= " SET is_active=FALSE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+			else if($RequestData['is_active']==0)
+			{
+				$strQuery = "UPDATE neo.candidates ";
+				$strQuery .= " SET is_active=TRUE";
+				$strQuery .= " WHERE id=" . $RequestData['id'];
+			}
+
+			$this->db->query($strQuery);
+			if ($this->db->affected_rows())
+			{
+				return true;
+			}
+		}
+
+		if ($strStatus == 0)
+		{
+			$ResponseData["message"] = "Candidate Has Been Deactivated!";
+		}
+		else
+		{
+			$ResponseData["message"] = "Candidate Has Been Activated!";
+		}
+
+		return $ResponseData;
     }
     
 }

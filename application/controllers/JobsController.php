@@ -11,7 +11,7 @@ class JobsController extends MY_Controller {
                            'offered_ctc_from', 'offered_ctc_to', 'shifts_available', 'preferred_nationality', 'gender_id',
                            'remarks', 'comments', 'target_employers', 'no_poach_companies', 'job_status_id',
                             'district_id', 'country_id', 'state_id','pincode', 'city',
-                           'job_expiry_date', 'qualification_pack_id'];
+                           'job_expiry_date', 'qualification_pack_id', 'opportunity_id'];
 
    protected $JobStatusColors = array (
                                1 => 'info',
@@ -29,6 +29,7 @@ class JobsController extends MY_Controller {
    $this->load->model('Job', 'job');
    $this->load->model('Sale', 'sale');
     $this->load->model('Candidate', 'candidate');
+    $this->load->model('Opportunity', 'opportunity');
    //$this->user_logged_in = $this->session->userdata['usr_authdet'];
   }
 
@@ -49,7 +50,7 @@ class JobsController extends MY_Controller {
    }
 
    public function getSpocDetails($id) {
-    echo json_encode($this->sale->getSpocsByCustomerID($id));
+    echo json_encode($this->opportunity->getSpocsByOpportunityID($id));
     exit;
   }
 
@@ -71,6 +72,7 @@ class JobsController extends MY_Controller {
 
     public function store() {
       $this->authorize(job_add_roles());
+      $status_code = 0;
       $data = $this->setData();
       $data['data']['fields']['created_by'] = $this->session->userdata('usr_authdet')['id'];
       $data['data']['fields']['updated_by'] =   $data['data']['fields']['created_by'];
@@ -78,11 +80,14 @@ class JobsController extends MY_Controller {
         $data = $this->jobStatus($data);
         $response = $this->job->save($data['data']['fields']);
         if($response['status']) {
-          $this->msg = 'Job created successfully. (Job Code: <strong>'.$response['job_code'].'</strong>)';
+          $this->msg = 'Job Code: <strong>'.$response['job_code'].'</strong>. Job created successfully';
+          $status_code = 1;
         } else {
           $this->msg = 'Error creating Job, please try again after sometime';
+          $status_code = 0;
         }
         $this->session->set_flashdata('status', $this->msg);
+        $this->session->set_flashdata('status_code', $status_code);
         redirect($this->redirectUrl, 'refresh');
 
       } else {
@@ -100,6 +105,7 @@ class JobsController extends MY_Controller {
 
     public function update($id) {
       $this->authorize(job_edit_roles());
+      $status_code = 0;
         $data = $this->setData($id);
         $data['id'] = $id;
 
@@ -109,11 +115,14 @@ class JobsController extends MY_Controller {
           $data = $this->jobStatus($data);
           $response = $this->job->update($id, $data['data']['fields']);
           if ($response['status']) {
-            $this->msg = 'Job updated successfully. (Job Code: <strong>'.$response['job_code'].'</strong>)';
+            $this->msg = 'Job Code: <strong>'.$response['job_code'].'</strong>. Job updated successfully';
+            $status_code = 1;
           } else {
             $this->msg = 'Error updating Job, please try again after sometime';
+            $status_code = 0;
           }
           $this->session->set_flashdata('status', $this->msg);
+          $this->session->set_flashdata('status_code', $status_code);
           redirect($this->redirectUrl, 'refresh');
         } else {
         $this->loadFormViews('edit', $data);
@@ -129,6 +138,7 @@ class JobsController extends MY_Controller {
     $this->load->library('form_validation');
     $this->form_validation->set_error_delimiters('<span class="text text-danger">', '</span>');
     $this->form_validation->set_rules('job_title', 'Job Title', 'required');
+    $this->form_validation->set_rules('opportunity_id', 'Contract ID', 'required|is_natural_no_zero',array('is_natural_no_zero'=>'Select a opportunity'));
     $this->form_validation->set_rules('job_description', 'Job Description', 'required');
     $this->form_validation->set_rules('no_of_position', 'No of Position', 'required|is_natural_no_zero');
     $this->form_validation->set_rules('customer_id', 'Client', 'required|is_natural');
@@ -144,7 +154,7 @@ class JobsController extends MY_Controller {
     //$this->form_validation->set_rules('job_location', 'Job Location', 'required');
     $this->form_validation->set_rules('client_manager_name', 'Client Manager', 'required');
     $this->form_validation->set_rules('applicable_consulting_fee', 'Fees', 'is_natural');
-    $this->form_validation->set_rules('business_vertical_id', 'Business Vertical', 'required|is_natural');
+    $this->form_validation->set_rules('business_vertical_id', 'Product', 'required|is_natural');
 //    $this->form_validation->set_rules('practice', 'Practice', '');
     $this->form_validation->set_rules('office_location', 'Office Location', 'required');
     $this->form_validation->set_rules('functional_area_id', 'Functional Area', 'is_natural');
@@ -250,7 +260,7 @@ class JobsController extends MY_Controller {
     $data['data']['fields'] = $this->candidateData($this->jobFields, $id);
     $data['data']['gender_options'] = $this->job->getGenders();
     $data['data']['industry_options'] = $this->job->getIndustries();
-    $data['data']['customer_options'] = $this->sale->allCustomers();
+    $data['data']['customer_options'] = $this->job->allCompanies();
     $data['data']['job_status_options'] = $this->job->getJobStatuses();
     $data['data']['qualification_pack_options'] = $this->job->getQualificationPacks();
     $data['data']['functional_area_options'] = $this->job->getFunctionalAreas();
@@ -308,6 +318,11 @@ class JobsController extends MY_Controller {
     $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
     $this->form_validation->set_rules('phone', 'Phone', 'required|is_natural|exact_length[10]');
     return $this->form_validation->run();
+  }
+
+  public function getOpportunities($company_id) {
+    echo json_encode($this->opportunity->findByCompanyID($company_id));
+    exit;
   }
 
   public function getStates($country_id) {

@@ -44,15 +44,9 @@ select.input-sm
 
 <div class="content-body" style="overflow-x: hidden !important;">
     <div class="row">
-    <div class="col-md-12">
-      <?php if(isset($_SESSION['status'])): ?>
-      <div class="alert alert-primary" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5><?php echo $_SESSION['status']; ?></h5>
-      </div>
-      <br><br>
-      <?php endif; ?>
-    </div>
+        <div class="col-md-12">
+            <?php $this->load->view('layouts/errors'); ?>
+        </div>
 
   </div>
 
@@ -174,7 +168,7 @@ select.input-sm
                                     <th>Actions</th>
                                     <th>Job Title</th>
                                     <th>Job Code</th>
-                                    <th>Customer</th>
+                                    <th>Company</th>
                                     <th>Status</th>
                                     <th>Placement Officers</th>
                                     <th>Recruiter</th>

@@ -15,9 +15,9 @@ class Job extends MY_Model
     }
 
     public function findEmployer($id) {
-      return $this->db->select('neo_job.jobs.*, neo_customer.customers.customer_name,neo_master.districts.name as district_name,neo_master.qualification_packs.name as qualification_pack_name, neo_master.qualification_packs.code AS qualification_code')
+      return $this->db->select('neo_job.jobs.*, neo_customer.companies.company_name,neo_master.districts.name as district_name,neo_master.qualification_packs.name as qualification_pack_name, neo_master.qualification_packs.code AS qualification_code')
             ->from($this->tableName)
-            ->join('neo_customer.customers', 'neo_job.jobs.customer_id=neo_customer.customers.id', 'LEFT')
+            ->join('neo_customer.companies', 'neo_job.jobs.customer_id=neo_customer.companies.id', 'LEFT')
             ->join('neo_master.districts', 'neo_job.jobs.district_id=neo_master.districts.id', 'LEFT')
             ->join('neo_master.qualification_packs', 'neo_job.jobs.qualification_pack_id=neo_master.qualification_packs.id', 'LEFT')
             ->where('neo_job.jobs.id', $id)->get()->row();
@@ -179,14 +179,14 @@ class Job extends MY_Model
   }
 
   public function createJobCode($job_id){
-    $result = $this->db->select('neo_job.jobs.id as job_id, neo_customer.customers.customer_name as customer_name,
+    $result = $this->db->select('neo_job.jobs.id as job_id, neo_customer.companies.company_name as customer_name,
                                 neo_master.business_verticals.code as code')
                         ->from('neo_job.jobs')
-                        ->join('neo_customer.customers', 'neo_customer.customers.id = neo_job.jobs.customer_id', 'LEFT')
+                        ->join('neo_customer.companies', 'neo_customer.companies.id = neo_job.jobs.customer_id', 'LEFT')
                         ->join('neo_master.business_verticals', 'neo_master.business_verticals.id = neo_job.jobs.business_vertical_id', 'LEFT')
                         ->where('neo_job.jobs.id', $job_id)->get()->row_array();
 
-    return 'JB-'.strtoupper(substr($result['customer_name'], 0, (strlen($result['customer_name'])>3 ? 4 : 3))).'-'.$result['code'].'-'.$job_id;
+    return 'JB-'.strtoupper(substr(trim($result['customer_name']), 0, (strlen(trim($result['customer_name']))>3 ? 4 : 3))).'-'.$result['code'].'-'.$job_id;
   }
 
   public function getPlacementDetails($candidate_id, $job_id) {
